@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private ViewPager viewPager;
     private static final String ARG_TYPE = "activity_type";
-
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +32,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText(getResources().getString(R.string.action_askforhelp));
-        tabLayout.getTabAt(1).setText(getResources().getString(R.string.action_offerhelp));
+        tabLayout.getTabAt(0).setText(getResources().getString(R.string.action_myprofile));
+        tabLayout.getTabAt(1).setText(getResources().getString(R.string.action_askforhelp));
+        tabLayout.getTabAt(2).setText(getResources().getString(R.string.action_offerhelp));
+
 
         tabLayout.addOnTabSelectedListener(this);
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,12 +54,23 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 startActivity(i);
             }
         });
+
+        //Select the tab in the middle
+        TabLayout.Tab tab = tabLayout.getTabAt(1);
+        tab.select();
+
     }
 
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
+        if(tab.getPosition()==0){
+            fab.setVisibility(View.GONE);
+        }
+        else{
+            fab.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

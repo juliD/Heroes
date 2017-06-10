@@ -20,8 +20,10 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             switch (index)
             {
                 case 0:
-                    return HelpFragment.newInstance("ask");
+                    return HelpFragment.newInstance("my");
                 case 1:
+                    return HelpFragment.newInstance("ask");
+                case 2:
                     return HelpFragment.newInstance("offer");
             }
 
@@ -31,7 +33,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         @Override
         public int getCount()
         {
-            return 2;
+            return 3;
         }
 
 }

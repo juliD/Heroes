@@ -43,8 +43,13 @@ public class HelpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View rootView = inflater.inflate(R.layout.fragment_help, container, false);
+
         //für test zwecke
         ArrayList<ListItem> listItems =new ArrayList<ListItem>();
+        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+
         if(fragment_type.equals("ask")){
 
             listItems.add(new ListItem("Suche Einkaufshilfe!!","Lorem ipsum dolor sit amet, consetetur sadipscing elitr, " +
@@ -53,19 +58,30 @@ public class HelpFragment extends Fragment {
             listItems.add(new ListItem("Bierbänke aufstellen","Muss noch 200 Bierbänke aufstellen, kann mir wer helfen?.",""));
             listItems.add(new ListItem("Müll","Kann mir jemand den Müll wegbringen?? Dankeee :D",""));
         }
-        else{
+        else if(fragment_type.equals("offer")){
 
             listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
             listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
+
+
+        }else{
+            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
+            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
+            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
+            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
+            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
+            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
+            //add profile header
+            View header = getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
+            listView.addHeaderView(header);
 
         }
 
 
 
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_help, container, false);
-        final ListView listView = (ListView) rootView.findViewById(R.id.listView);
-        final CustomArrayAdapter adapter = new CustomArrayAdapter(getContext(),listItems);
+
+
+        CustomArrayAdapter adapter = new CustomArrayAdapter(getContext(),listItems);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,6 +89,9 @@ public class HelpFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
+                if(position==0){
+                    return;
+                }
                 ListItem selected = (ListItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getActivity(), DetailItemActivity.class);
                 intent.putExtra("selected",selected);
