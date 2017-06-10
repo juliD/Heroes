@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pem.de.heroes">
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -19,7 +20,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailItemActivity"></activity>
-    </application>
+        <activity android:name=".DetailItemActivity" />
+        <activity android:name=".AddActivity"></activity>
+
+
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyC6xOHe0vjb7DyXHfdpjHouA4ekhXvKRR8"/>
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true"/>
+</application>
 
 </manifest>

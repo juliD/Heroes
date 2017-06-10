@@ -1,5 +1,6 @@
 package pem.de.heroes;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,8 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private ViewPager viewPager;
+    private static final String ARG_TYPE = "activity_type";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +43,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(MainActivity.this, AddActivity.class);
+
+                if(viewPager.getCurrentItem()==0){
+                    i.putExtra(ARG_TYPE,"ask");
+                }
+
+                startActivity(i);
             }
         });
     }
