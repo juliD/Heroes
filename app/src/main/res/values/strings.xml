@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Heroes</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Einstellungen</string>
+
+    <string name="action_askforhelp">Anfragen</string>
+    <string name="action_offerhelp">Angebote</string>
 </resources>
