@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pem.de.heroes">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -21,15 +22,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailItemActivity" />
-        <activity android:name=".AddActivity"></activity>
+        <activity android:name=".AddActivity" />
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC6xOHe0vjb7DyXHfdpjHouA4ekhXvKRR8" />
 
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyC6xOHe0vjb7DyXHfdpjHouA4ekhXvKRR8"/>
-    <uses-feature
-        android:glEsVersion="0x00020000"
-        android:required="true"/>
-</application>
+        <uses-feature
+            android:glEsVersion="0x00020000"
+            android:required="true" />
+
+    </application>
 
 </manifest>
