@@ -18,6 +18,9 @@ public class ListItem implements Parcelable {
         this.address = address;
     }
 
+    public ListItem() {
+    }
+
     public String getTitle() {
         return title;
     }

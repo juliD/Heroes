@@ -1,6 +1,5 @@
 package pem.de.heroes;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,11 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class HelpFragment extends Fragment {
 
@@ -22,7 +26,6 @@ public class HelpFragment extends Fragment {
     public HelpFragment() {
         // Required empty public constructor
     }
-
 
     public static HelpFragment newInstance(String type) {
         HelpFragment fragment = new HelpFragment();
@@ -41,92 +44,41 @@ public class HelpFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
-        //für test zwecke
-        ArrayList<ListItem> listItems =new ArrayList<ListItem>();
+        // ListView
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
-
-        if(fragment_type.equals("ask")){
-
-            listItems.add(new ListItem("Suche Einkaufshilfe!!","Lorem ipsum dolor sit amet, consetetur sadipscing elitr, " +
-                    "sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.",""));
-            listItems.add(new ListItem("Suche Umzugshelfer","Brauche dringend Hilfe für einem Umzug morgen Nachmittag.",""));
-            listItems.add(new ListItem("Bierbänke aufstellen","Muss noch 200 Bierbänke aufstellen, kann mir wer helfen?.",""));
-            listItems.add(new ListItem("Müll","Kann mir jemand den Müll wegbringen?? Dankeee :D",""));
-        }
-        else if(fragment_type.equals("offer")){
-
-            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
-            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
-
-
-        }else{
-            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
-            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
-            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
-            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
-            listItems.add(new ListItem("Gehe Einkaufen","Kann gerne jemandem was mitbringen!",""));
-            listItems.add(new ListItem("Fahre morgen zum Baumarkt","Wenn jemand was haben möchte, dann bescheid sagen, kann auch etwas größeres sein, da ich mit nem Transporter hinfahre.",""));
-            //add profile header
+        if (!fragment_type.equals("ask") && !fragment_type.equals("offer")) {
+            // add profile header
             View header = getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
             listView.addHeaderView(header);
-
         }
 
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = db.getReference(fragment_type);
+        ListAdapter adapter = new FirebaseListAdapter<ListItem>(this.getActivity(), ListItem.class, R.layout.item, ref) {
+            protected void populateView(View view, ListItem item, int position)
+            {
+                TextView titleView = (TextView) view.findViewById(R.id.item_title);
+                TextView infosView = (TextView) view.findViewById(R.id.item_description);
+                titleView.setText(item.getTitle());
+                infosView.setText(item.getDescription());
+            }
+        };
 
-
-
-
-        CustomArrayAdapter adapter = new CustomArrayAdapter(getContext(),listItems);
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
-                                    int position, long id) {
-                if(position==0){
-                    return;
-                }
+            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 ListItem selected = (ListItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getActivity(), DetailItemActivity.class);
-                intent.putExtra("selected",selected);
+                intent.putExtra("selected", selected);
                 startActivity(intent);
             }
-
         });
-
 
         return rootView;
     }
-
-
-    public class CustomArrayAdapter extends ArrayAdapter<ListItem> {
-        private final Context context;
-        private final ArrayList<ListItem> item;
-
-        public CustomArrayAdapter(Context context,  ArrayList<ListItem> item) {
-            super(context, -1, item);
-            this.context = context;
-            this.item = item;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.item, parent, false);
-            TextView titleView = (TextView) rowView.findViewById(R.id.item_title);
-            TextView infosView = (TextView) rowView.findViewById(R.id.item_description);
-            titleView.setText(item.get(position).getTitle());
-            infosView.setText(item.get(position).getDescription());
-
-            return rowView;
-        }
-    }
-
 }
