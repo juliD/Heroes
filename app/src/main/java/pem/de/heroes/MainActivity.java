@@ -1,6 +1,8 @@
 package pem.de.heroes;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
@@ -25,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private static final String ARG_TYPE = "activity_type";
     FloatingActionButton fab;
     private FirebaseAuth auth;
+    private String userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             // already signed in
+            update(auth.getCurrentUser());
 
         } else {
             signInAnonymoulsy();
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, AddActivity.class);
 
-                if(viewPager.getCurrentItem()==0){
+                if(viewPager.getCurrentItem()==1){
                     i.putExtra(ARG_TYPE,"ask");
                 }
 
@@ -85,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInAnonymously:success");
                             FirebaseUser user = auth.getCurrentUser();
+                            addUserToDatabase(user);
                             update(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -98,7 +105,24 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 });
     }
 
+    private void addUserToDatabase(FirebaseUser user) {
+
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
+        users.child(user.getUid()).setValue("Anonym");
+
+
+    }
+
     public void update(FirebaseUser currentUser){
+        userid=auth.getCurrentUser().getUid();
+        Log.d("Main","Preferences: userid = "+userid);
+        SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("userid", userid);
+        editor.commit();
+
+
+        //Download all data and save into shared preferences
 
 
     }

@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -56,15 +57,19 @@ public class HelpFragment extends Fragment {
             listView.addHeaderView(header);
         }
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = db.getReference(fragment_type);
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(fragment_type);
+
         ListAdapter adapter = new FirebaseListAdapter<ListItem>(this.getActivity(), ListItem.class, R.layout.item, ref) {
             protected void populateView(View view, ListItem item, int position)
             {
                 TextView titleView = (TextView) view.findViewById(R.id.item_title);
                 TextView infosView = (TextView) view.findViewById(R.id.item_description);
+                TextView userView = (TextView) view.findViewById(R.id.by_user);
                 titleView.setText(item.getTitle());
                 infosView.setText(item.getDescription());
+
+
             }
         };
 

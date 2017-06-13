@@ -11,16 +11,23 @@ public class ListItem implements Parcelable {
     private String description;
     private String title;
     private String address;
+    private String userID;
 
-    public ListItem(String title, String description, String address) {
+
+
+    public ListItem(String title, String description, String address, String userID) {
         this.description = description;
         this.title = title;
         this.address = address;
+        this.userID=userID;
+
     }
 
     public ListItem() {
     }
-
+    public String getUserID() {
+        return userID;
+    }
     public String getTitle() {
         return title;
     }
@@ -37,6 +44,7 @@ public class ListItem implements Parcelable {
         this.title = parcel.readString();
         this.description = parcel.readString();
         this.address = parcel.readString();
+        this.userID = parcel.readString();
     }
 
     @Override
@@ -49,6 +57,7 @@ public class ListItem implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(description);
         parcel.writeString(address);
+        parcel.writeString(userID);
     }
 
     public static final Parcelable.Creator<ListItem> CREATOR = new Parcelable.Creator<ListItem>(){
