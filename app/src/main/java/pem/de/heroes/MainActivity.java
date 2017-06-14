@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -150,10 +151,19 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         viewPager.setCurrentItem(tab.getPosition());
         if(tab.getPosition()==0){
             fab.setVisibility(View.GONE);
+            TextView karma = (TextView) findViewById(R.id.karma);
+            karma.setVisibility(View.GONE);
 
+            ImageButton edit =(ImageButton)findViewById(R.id.edit);
+            edit.setVisibility(View.VISIBLE);
         }
         else{
             fab.setVisibility(View.VISIBLE);
+            TextView karma = (TextView) findViewById(R.id.karma);
+            karma.setVisibility(View.VISIBLE);
+
+            ImageButton edit =(ImageButton)findViewById(R.id.edit);
+            edit.setVisibility(View.GONE);
         }
 
 
