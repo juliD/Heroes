@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             Helper.putDouble(editor,"homelong",home.longitude);
             editor.commit();
 
-            //Prompt user for home location
+            //TODO:Prompt user for home location
 
         }
 

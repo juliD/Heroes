@@ -66,13 +66,13 @@ public class Helper {
     public static String distanceToString (float distance){
         String s = "";
         if(distance<100){
-            s = "sehr nah";
+            s = "hier";
         }
         else if(distance<200 ){
-            s = "nah";
+            s = "sehr nah";
         }
         else if(distance<500){
-            s="hier";
+            s="nah";
         }
         else{
             s="Umgebung";
