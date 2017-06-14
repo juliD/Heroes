@@ -48,6 +48,7 @@ public class AddActivity extends AppCompatActivity {
                 EditText titleView = (EditText) findViewById(R.id.add_title);
                 EditText descView = (EditText) findViewById(R.id.add_description);
                 TextView addrView = (TextView)findViewById(R.id.address);
+                TextView cityView = (TextView) findViewById(R.id.city);
                 if(titleView.getText().equals("")&&descView.getText().equals("")&&addrView.getText().equals("")){
                     return;
                 }
@@ -56,7 +57,7 @@ public class AddActivity extends AppCompatActivity {
                 String child = type+System.currentTimeMillis();
                 typeref.child(child).child("title").setValue(titleView.getText().toString());
                 typeref.child(child).child("description").setValue(descView.getText().toString());
-                typeref.child(child).child("address").setValue(addrView.getText().toString());
+                typeref.child(child).child("address").setValue(addrView.getText().toString()+", "+cityView.getText().toString());
                 typeref.child(child).child("userid").setValue(userid);
                 finish();
             }

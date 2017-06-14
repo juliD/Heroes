@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             // already signed in
             update(auth.getCurrentUser());
             signInAnonymoulsy();
-
         } else {
             signInAnonymoulsy();
 
@@ -123,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("userid", userid);
             editor.putString("username","Anonym");
-            editor.putString("address","Marienplatz 5, München");
+            editor.putString("home","Marienplatz 5, München");
             editor.commit();
         }
 
@@ -139,8 +138,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = auth.getCurrentUser();
-        update(currentUser);
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            // already signed in
+            update(auth.getCurrentUser());
+        } else {
+            signInAnonymoulsy();
+        }
+
     }
 
 
