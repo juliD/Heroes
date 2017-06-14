@@ -34,6 +34,8 @@ public class AddActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
         userid = sharedPref.getString("userid","No UserID");
+        adr = sharedPref.getString("address","");
+        city = sharedPref.getString("city","");
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        Log.d("Main","onCreate");
         //Check if user is already logged in
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
@@ -143,19 +143,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            // already signed in
-            update(auth.getCurrentUser());
-        } else {
-            signInAnonymoulsy();
-        }
-
-    }
 
 
     @Override
