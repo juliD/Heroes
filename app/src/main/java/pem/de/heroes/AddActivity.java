@@ -51,43 +51,17 @@ public class AddActivity extends AppCompatActivity {
                 if(titleView.getText().equals("")&&descView.getText().equals("")&&addrView.getText().equals("")){
                     return;
                 }
-                addContent(titleView.getText().toString(),descView.getText().toString(),addrView.getText().toString());
+                DatabaseReference typeref = ref.child(type);
+
+                String child = type+System.currentTimeMillis();
+                typeref.child(child).child("title").setValue(titleView.getText().toString());
+                typeref.child(child).child("description").setValue(descView.getText().toString());
+                typeref.child(child).child("address").setValue(addrView.getText().toString());
+                typeref.child(child).child("userid").setValue(userid);
                 finish();
             }
         });
 
     }
-    public void addContent(final String t, final String d, final String a) {
-        DatabaseReference counter = ref.child(type+"count");
-        counter.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(final MutableData currentData) {
-                if (currentData.getValue() == null) {
-                    currentData.setValue(1);
 
-                } else {
-                    currentData.setValue((Long) currentData.getValue() + 1);
-
-                }
-                Long count = (Long)currentData.getValue();
-                DatabaseReference typeref = ref.child(type);
-                typeref.child(type+(count-1)).child("title").setValue(t);
-                typeref.child(type+(count-1)).child("description").setValue(d);
-                typeref.child(type+(count-1)).child("address").setValue(a);
-                typeref.child(type+(count-1)).child("userid").setValue(userid);
-
-                return Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                if (databaseError != null) {
-                    Log.d("Database AddActivity","Firebase counter increment failed.");
-                } else {
-                    Log.d("AddActivity","Firebase counter increment succeeded.");
-                }
-            }
-
-        });
-    }
 }

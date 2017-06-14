@@ -19,11 +19,11 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/by_user"
+            android:id="@+id/distance"
             android:layout_margin="@dimen/fab_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="~ Anonymous" />
+            android:text="sehr nah" />
     </LinearLayout>
 
     <TextView

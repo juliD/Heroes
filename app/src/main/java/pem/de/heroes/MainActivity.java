@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (auth.getCurrentUser() != null) {
             // already signed in
             update(auth.getCurrentUser());
+            signInAnonymoulsy();
 
         } else {
             signInAnonymoulsy();
@@ -117,9 +118,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         userid=auth.getCurrentUser().getUid();
         Log.d("Main","Preferences: userid = "+userid);
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("userid", userid);
-        editor.commit();
+
+        if(!sharedPref.contains("userid")){
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("userid", userid);
+            editor.putString("username","Anonym");
+            editor.putString("address","Marienplatz 5, München");
+            editor.commit();
+        }
+
+
 
 
         //Download all data and save into shared preferences

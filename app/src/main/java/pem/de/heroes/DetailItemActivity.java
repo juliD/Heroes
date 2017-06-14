@@ -23,13 +23,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class DetailItemActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     String marker;
+    ListItem listitem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_item);
 
-        ListItem listitem = getIntent().getParcelableExtra("selected");
+        listitem = getIntent().getParcelableExtra("selected");
         if(listitem!=null){
             TextView title = (TextView)findViewById(R.id.detail_title);
             TextView info = (TextView)findViewById(R.id.detail_description);
@@ -46,9 +47,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onMapReady(GoogleMap map) {
-        map.addMarker(new MarkerOptions().position(new LatLng(48.137154, 11.576124)).title(marker).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        LatLng pos = Helper.getLocationFromAddress(listitem.getAddress(),this);
+        map.addMarker(new MarkerOptions().position(pos).title(marker).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(new LatLng(48.137154, 11.576124)).zoom(15f).build();
+                .target(pos).zoom(15f).build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 }
