@@ -49,7 +49,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             marker=listitem.getTitle();
         }
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-        home = Helper.getLocationFromAddress(sharedPref.getString("home","Oettingenstraße 67, München"),this);
+        home = new LatLng(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
         Log.d("DetailItem",sharedPref.getString("home","Oettingenstraße 67, München"));
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);

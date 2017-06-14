@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,7 @@ public class HelpFragment extends Fragment {
 
         //Load Home preference
         SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-        home = Helper.getLocationFromAddress(sharedPref.getString("home","Oettingenstraße 67, München"),getActivity());
+        home =new LatLng(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
 
 
         // ListView
@@ -89,6 +90,7 @@ public class HelpFragment extends Fragment {
                 infosView.setText(item.getDescription());
 
                 float distance = Helper.calculateDistance(home,Helper.getLocationFromAddress(item.getAddress(),getActivity()));
+                Log.d("HelpFragment","Distance= "+distance);
                 distView.setText(Helper.distanceToString(distance));
             }
         };

@@ -22,6 +22,8 @@ public class AddActivity extends AppCompatActivity {
     private static final String ARG_TYPE = "activity_type";
     private String type ="offer";
     DatabaseReference ref;
+    private String adr;
+    private String city;
 
     String userid;
 
@@ -39,6 +41,10 @@ public class AddActivity extends AppCompatActivity {
                 type= extras.getString(ARG_TYPE);
             }
         }
+        TextView addrView = (TextView)findViewById(R.id.address);
+        TextView cityView = (TextView) findViewById(R.id.city);
+        addrView.setText(adr);
+        cityView.setText(city);
 
         Button create = (Button) findViewById(R.id.create);
         create.setOnClickListener(new View.OnClickListener() {
@@ -48,7 +54,7 @@ public class AddActivity extends AppCompatActivity {
                 EditText titleView = (EditText) findViewById(R.id.add_title);
                 EditText descView = (EditText) findViewById(R.id.add_description);
                 TextView addrView = (TextView)findViewById(R.id.address);
-                TextView cityView = (TextView) findViewById(R.id.city);
+
                 if(titleView.getText().equals("")&&descView.getText().equals("")&&addrView.getText().equals("")){
                     return;
                 }
@@ -57,7 +63,7 @@ public class AddActivity extends AppCompatActivity {
                 String child = type+System.currentTimeMillis();
                 typeref.child(child).child("title").setValue(titleView.getText().toString());
                 typeref.child(child).child("description").setValue(descView.getText().toString());
-                typeref.child(child).child("address").setValue(addrView.getText().toString()+", "+cityView.getText().toString());
+                typeref.child(child).child("address").setValue(adr+", "+city);
                 typeref.child(child).child("userid").setValue(userid);
                 finish();
             }

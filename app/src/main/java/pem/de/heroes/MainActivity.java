@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -42,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (auth.getCurrentUser() != null) {
             // already signed in
             update(auth.getCurrentUser());
-            signInAnonymoulsy();
         } else {
             signInAnonymoulsy();
 
@@ -122,14 +122,23 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("userid", userid);
             editor.putString("username","Anonym");
-            editor.putString("home","Marienplatz 5, München");
+            LatLng home = Helper.getLocationFromAddress("Marienplatz 5, München",this);
+            editor.putString("address","Marienplatz 5");
+            editor.putString("city","München");
+
+            editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
+            Helper.putDouble(editor,"homelat",home.latitude);
+            Helper.putDouble(editor,"homelong",home.longitude);
             editor.commit();
+
+            //Prompt user for home location
+
         }
 
 
 
 
-        //Download all data and save into shared preferences
+
 
 
     }
