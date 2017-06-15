@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -71,6 +72,7 @@ public class HelpFragment extends Fragment {
 
         // ListView
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
+
         if (!fragment_type.equals("ask") && !fragment_type.equals("offer")) {
             // add profile header
             View header = getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
