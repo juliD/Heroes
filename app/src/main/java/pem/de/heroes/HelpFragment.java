@@ -36,6 +36,7 @@ import java.util.Locale;
 public class HelpFragment extends Fragment {
 
     private static final String ARG_TYPE = "fragment_type";
+    private static final String ITEM_ID = "item_id";
     String fragment_type = "ask";
     LatLng home;
 
@@ -82,7 +83,7 @@ public class HelpFragment extends Fragment {
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference(fragment_type);
 
-        ListAdapter adapter = new FirebaseListAdapter<ListItem>(this.getActivity(), ListItem.class, R.layout.item, ref) {
+        final FirebaseListAdapter<ListItem> firebaseadapter = new FirebaseListAdapter<ListItem>(this.getActivity(), ListItem.class, R.layout.item, ref) {
             protected void populateView(View view, ListItem item, int position)
             {
                 TextView titleView = (TextView) view.findViewById(R.id.item_title);
@@ -96,14 +97,23 @@ public class HelpFragment extends Fragment {
                 distView.setText(Helper.distanceToString(distance));
             }
         };
+        final ListAdapter adapter = firebaseadapter;
 
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+
+                String itemID = firebaseadapter.getRef(position).getKey();      //get the key of our firebase item
                 ListItem selected = (ListItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getActivity(), DetailItemActivity.class);
                 intent.putExtra("selected", selected);
+                if(fragment_type.equals("offer")){
+                    intent.putExtra(ARG_TYPE,"offer");
+                }else{
+                    intent.putExtra(ARG_TYPE,"ask");
+                }
+                intent.putExtra(ITEM_ID, itemID);
                 startActivity(intent);
             }
         });

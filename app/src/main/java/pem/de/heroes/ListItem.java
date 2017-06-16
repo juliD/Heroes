@@ -3,48 +3,44 @@ package pem.de.heroes;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Julia on 10.06.2017.
- */
 
 public class ListItem implements Parcelable {
     private String description;
     private String title;
     private String address;
     private String userID;
+    private String agent;
 
 
 
-    public ListItem(String title, String description, String address, String userID) {
+    public ListItem(String title, String description, String address, String userID, String agent) {
         this.description = description;
         this.title = title;
         this.address = address;
-        this.userID=userID;
-
+        this.userID = userID;
+        this.agent = agent;
     }
 
     public ListItem() {
     }
-    public String getUserID() {
-        return userID;
-    }
+    public String getUserID() { return userID;}
     public String getTitle() {
         return title;
     }
-
     public String getDescription() {
         return description;
     }
-
     public String getAddress() {
         return address;
     }
+    public String getAgent() {return agent;}
 
     public ListItem(Parcel parcel){
         this.title = parcel.readString();
         this.description = parcel.readString();
         this.address = parcel.readString();
         this.userID = parcel.readString();
+        this.agent = parcel.readString();
     }
 
     @Override
@@ -58,6 +54,8 @@ public class ListItem implements Parcelable {
         parcel.writeString(description);
         parcel.writeString(address);
         parcel.writeString(userID);
+        parcel.writeString(agent);
+
     }
 
     public static final Parcelable.Creator<ListItem> CREATOR = new Parcelable.Creator<ListItem>(){

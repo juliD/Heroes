@@ -24,6 +24,7 @@ public class AddActivity extends AppCompatActivity {
     DatabaseReference ref;
     private String adr;
     private String city;
+    private String agent;
 
     String userid;
 
@@ -67,6 +68,7 @@ public class AddActivity extends AppCompatActivity {
                 typeref.child(child).child("description").setValue(descView.getText().toString());
                 typeref.child(child).child("address").setValue(adr+", "+city);
                 typeref.child(child).child("userid").setValue(userid);
+                typeref.child(child).child("agent").setValue("");
                 finish();
             }
         });
