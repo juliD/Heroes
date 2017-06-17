@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     FloatingActionButton fab;
     private FirebaseAuth auth;
     private String userid;
+    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             update(auth.getCurrentUser());
         } else {
             signInAnonymoulsy();
-
         }
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -116,8 +116,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     public void update(FirebaseUser currentUser){
         userid=auth.getCurrentUser().getUid();
-        Log.d("Main","Preferences: userid = "+userid);
+        prefManager = new PrefManager(this);
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
+
+        prefManager.setUserid(userid);
 
         if(!sharedPref.contains("userid")){
             SharedPreferences.Editor editor = sharedPref.edit();

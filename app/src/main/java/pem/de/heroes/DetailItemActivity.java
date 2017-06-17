@@ -90,10 +90,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //if the
-                Log.d("wert vom Vergliech", "onClick: " + preferenceUserID.equals(listUserID));
-                Log.d("wert vom userid", "onClick: " + preferenceUserID);
-                Log.d("wert vom listitem", "onClick: " + listUserID);
+
                 if(preferenceUserID.equals(listUserID)){
                    Toast.makeText(DetailItemActivity.this, "Du kannst nicht deinen eigenen Auftrag annehmen", Toast.LENGTH_SHORT).show();
                 }else if(listUserID!=null){

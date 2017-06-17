@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,7 @@ public class HelpFragment extends Fragment {
     private static final String ITEM_ID = "item_id";
     String fragment_type = "ask";
     LatLng home;
+
 
     public HelpFragment() {
         // Required empty public constructor
@@ -59,6 +61,7 @@ public class HelpFragment extends Fragment {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
 
+
     }
 
     @Override
@@ -76,7 +79,10 @@ public class HelpFragment extends Fragment {
 
         if (!fragment_type.equals("ask") && !fragment_type.equals("offer")) {
             // add profile header
+
             View header = getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
+            TextView profil_name = (TextView) header.findViewById(R.id.profile_name);
+            profil_name.setText(PrefManager.getUsername());
             listView.addHeaderView(header);
         }
 
