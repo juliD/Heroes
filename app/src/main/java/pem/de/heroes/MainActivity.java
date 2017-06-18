@@ -42,10 +42,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         Log.d("Main","onCreate");
         //Check if user is already logged in
         auth = FirebaseAuth.getInstance();
+        Log.d("Main","Firebase: "+auth);
         if (auth.getCurrentUser() != null) {
             // already signed in
             update(auth.getCurrentUser());
         } else {
+            Log.d("Main","Firebase: signing in now");
             signInAnonymoulsy();
         }
 
@@ -115,11 +117,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     public void update(FirebaseUser currentUser){
-        userid=auth.getCurrentUser().getUid();
+        userid = currentUser.getUid();
         prefManager = new PrefManager(this);
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
 
         prefManager.setUserid(userid);
+        Log.d("MainActivity","authorization: "+ userid);
 
         if(!sharedPref.contains("userid")){
             SharedPreferences.Editor editor = sharedPref.edit();

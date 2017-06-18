@@ -63,12 +63,10 @@ public class AddActivity extends AppCompatActivity {
                 }
                 DatabaseReference typeref = ref.child(type);
 
-                String child = type+System.currentTimeMillis();
-                typeref.child(child).child("title").setValue(titleView.getText().toString());
-                typeref.child(child).child("description").setValue(descView.getText().toString());
-                typeref.child(child).child("address").setValue(adr+", "+city);
-                typeref.child(child).child("userid").setValue(userid);
-                typeref.child(child).child("agent").setValue("");
+
+                ListItem listItem = new ListItem(titleView.getText().toString(), descView.getText().toString(),adr+", "+city,userid,"");
+                typeref.push().setValue(listItem);
+
                 finish();
             }
         });

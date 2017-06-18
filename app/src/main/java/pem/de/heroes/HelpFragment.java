@@ -108,12 +108,16 @@ public class HelpFragment extends Fragment {
 
                 float distance = Helper.calculateDistance(home,Helper.getLocationFromAddress(item.getAddress(),getActivity()));
                 Log.d("HelpFragment","Distance= "+distance);
-                distView.setText(Helper.distanceToString(distance));
+                if(distance<1000) {
+                    distView.setText(Math.round(distance) + "m");
+                }else{
+                    distView.setText(Math.round(distance/1000) + "km");
+                }
             }
         };
-        final ListAdapter adapter = firebaseadapter;
 
-        listView.setAdapter(adapter);
+
+        listView.setAdapter(firebaseadapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {

@@ -13,11 +13,11 @@ public class ListItem implements Parcelable {
 
 
 
-    public ListItem(String title, String description, String address, String userID, String agent) {
+    public ListItem(String title, String description, String address, String userid, String agent) {
         this.description = description;
         this.title = title;
         this.address = address;
-        this.userid = userID;
+        this.userid = userid;
         this.agent = agent;
     }
 
