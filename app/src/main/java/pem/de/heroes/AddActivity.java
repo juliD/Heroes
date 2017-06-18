@@ -22,7 +22,7 @@ public class AddActivity extends AppCompatActivity {
     private static final String ARG_TYPE = "activity_type";
     private String type ="offer";
     DatabaseReference ref;
-    private String adr;
+    private String street;
     private String city;
     private String agent;
 
@@ -35,7 +35,7 @@ public class AddActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
         userid = sharedPref.getString("userid","No UserID");
-        adr = sharedPref.getString("address","");
+        street = sharedPref.getString("street","");
         city = sharedPref.getString("city","");
 
         if (savedInstanceState == null) {
@@ -46,7 +46,7 @@ public class AddActivity extends AppCompatActivity {
         }
         TextView addrView = (TextView)findViewById(R.id.address);
         TextView cityView = (TextView) findViewById(R.id.city);
-        addrView.setText(adr);
+        addrView.setText(street);
         cityView.setText(city);
 
         Button create = (Button) findViewById(R.id.create);
@@ -66,7 +66,7 @@ public class AddActivity extends AppCompatActivity {
                 String child = type+System.currentTimeMillis();
                 typeref.child(child).child("title").setValue(titleView.getText().toString());
                 typeref.child(child).child("description").setValue(descView.getText().toString());
-                typeref.child(child).child("address").setValue(adr+", "+city);
+                typeref.child(child).child("address").setValue(street+", "+city);
                 typeref.child(child).child("userid").setValue(userid);
                 typeref.child(child).child("agent").setValue("");
                 finish();

@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     FloatingActionButton fab;
     private FirebaseAuth auth;
     private String userid;
-    private PrefManager prefManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,25 +115,18 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     public void update(FirebaseUser currentUser){
         userid=auth.getCurrentUser().getUid();
-        prefManager = new PrefManager(this);
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
-
-        prefManager.setUserid(userid);
 
         if(!sharedPref.contains("userid")){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("userid", userid);
-            editor.putString("username","Anonym");
-            LatLng home = Helper.getLocationFromAddress("Marienplatz 5, München",this);
-            editor.putString("address","Marienplatz 5");
-            editor.putString("city","München");
+            LatLng home = Helper.getLocationFromAddress(sharedPref.getString("street","Marienplatz 1") +", " + sharedPref.getString("city","München"),this);
 
             editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
             Helper.putDouble(editor,"homelat",home.latitude);
             Helper.putDouble(editor,"homelong",home.longitude);
-            editor.commit();
+            editor.apply();
 
-            //TODO:Prompt user for home location
 
         }
 

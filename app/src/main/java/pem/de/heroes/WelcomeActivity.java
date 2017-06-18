@@ -2,6 +2,7 @@ package pem.de.heroes;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,19 +29,22 @@ public class WelcomeActivity extends AppCompatActivity {
     private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
-    private PrefManager prefManager;
+    private SharedPreferences sharedPref;
     private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Checking for first time launch - before calling setContentView()
-        prefManager = new PrefManager(this);
-        if (!prefManager.isFirstTimeLaunch()) {
+        sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+
+        if(sharedPref.contains("username")){
+            //username has already been written into shared preferences => not the first time using the app
             launchHomeScreen();
             finish();
         }
+
+
 
         // Making notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
@@ -87,9 +91,15 @@ public class WelcomeActivity extends AppCompatActivity {
                 int current = getItem(+1);
                 if (current < layouts.length) {
                     // move to next screen
-                    viewPager.setCurrentItem(current);
+                    if(current==3){
+                        if(writeAddress()){
+                            viewPager.setCurrentItem(current);
+                        }
+                    }
                 } else {
-                    launchHomeScreen();
+                    if(writeUsername()){
+                        launchHomeScreen();
+                    }
                 }
             }
         });
@@ -119,20 +129,41 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void launchHomeScreen() {
-        prefManager.setFirstTimeLaunch(false);
-        EditText editText = (EditText) findViewById(R.id.username);
-        String username = editText.getText().toString();
-        if (username.equals("")){
-            Toast.makeText(this,"Bitte gib deinen Namen ein", Toast.LENGTH_SHORT).show();
-            return;
-        }else{
-            prefManager.setUsername(username);      //sets the username in the shared preference
             startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
             finish();
-        }
-
     }
 
+    private boolean writeAddress(){
+        EditText stadt_edit = (EditText) findViewById(R.id.city);
+        String city = stadt_edit.getText().toString();
+        EditText street_edit = (EditText) findViewById(R.id.street);
+        String street = street_edit.getText().toString();
+
+        if (city.equals("")||street.equals("")) {
+            Toast.makeText(this, "Bitte gib deine Stadt und Straße ein", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("city", city);
+            editor.putString("street", street);
+            editor.apply();
+            return true;
+        }
+    }
+
+    private boolean writeUsername() {
+        EditText editText = (EditText) findViewById(R.id.username);
+        String username = editText.getText().toString();
+        if (username.equals("")) {
+            Toast.makeText(this, "Bitte gib deinen Namen ein", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("username", username);
+            editor.apply();
+            return true;
+        }
+    }
     //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
