@@ -69,13 +69,21 @@ public class HelpFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
+
+
+        return rootView;
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
         //Load Home preference
         SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         home =new LatLng(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
 
 
         // ListView
-        ListView listView = (ListView) rootView.findViewById(R.id.listView);
+        ListView listView = (ListView) getView().findViewById(R.id.listView);
 
         if (!fragment_type.equals("ask") && !fragment_type.equals("offer")) {
             // add profile header
@@ -125,8 +133,6 @@ public class HelpFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
-        return rootView;
     }
 
 
