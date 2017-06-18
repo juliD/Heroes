@@ -20,7 +20,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             switch (index)
             {
                 case 0:
-                    return HelpFragment.newInstance("my");
+                    return new ProfileFragment();
                 case 1:
                     return HelpFragment.newInstance("ask");
                 case 2:

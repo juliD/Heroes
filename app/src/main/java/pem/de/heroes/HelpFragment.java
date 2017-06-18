@@ -13,15 +13,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,13 +41,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class HelpFragment extends Fragment {
+public class HelpFragment extends Fragment implements GeoQueryEventListener {
 
     private static final String ARG_TYPE = "fragment_type";
     private static final String ITEM_ID = "item_id";
     String fragment_type = "ask";
     LatLng home;
+    ListView listView;
+    pem.de.heroes.FirebaseListAdapter<ListItem> adapter;
+    ArrayList<ListItem> items;
+    DatabaseReference ref;
+    GeoFire geoFire;
 
 
     public HelpFragment() {
@@ -60,6 +74,11 @@ public class HelpFragment extends Fragment {
         if (getArguments() != null) {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
+        ref = FirebaseDatabase.getInstance().getReference(fragment_type);
+        geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference("geofire/"+fragment_type));
+
+
+
 
 
     }
@@ -83,25 +102,12 @@ public class HelpFragment extends Fragment {
 
 
         // ListView
-        ListView listView = (ListView) getView().findViewById(R.id.listView);
-
-        if (!fragment_type.equals("ask") && !fragment_type.equals("offer")) {
-            // add profile header
-            View header = getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
-
-            //write profilename into textview from shared preferences
-            TextView profil_name = (TextView) header.findViewById(R.id.profile_name);
-            profil_name.setText(sharedPref.getString("username","Anonym"));
-
-            listView.addHeaderView(header);
-        }
+        listView = (ListView) getView().findViewById(R.id.listView);
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference(fragment_type);
-
-        final FirebaseListAdapter<ListItem> firebaseadapter = new FirebaseListAdapter<ListItem>(this.getActivity(), ListItem.class, R.layout.item, ref) {
-            protected void populateView(View view, ListItem item, int position)
-            {
+        adapter = new pem.de.heroes.FirebaseListAdapter<ListItem>(ref.equalTo("geofire"),ListItem.class,R.layout.item,getActivity()) {
+            @Override
+            protected void populateView(View view, ListItem item) {
                 TextView titleView = (TextView) view.findViewById(R.id.item_title);
                 TextView infosView = (TextView) view.findViewById(R.id.item_description);
                 TextView distView = (TextView) view.findViewById(R.id.distance);
@@ -116,15 +122,28 @@ public class HelpFragment extends Fragment {
                     distView.setText(Math.round(distance/1000) + "km");
                 }
             }
+
+            @Override
+            protected List<ListItem> filters(List<ListItem> models, CharSequence constraint) {
+                return null;
+            }
+
+            @Override
+            protected Map<String, ListItem> filterKeys(List<ListItem> mModels) {
+                return null;
+            }
         };
+        listView.setAdapter(adapter);
 
 
-        listView.setAdapter(firebaseadapter);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(home.latitude, home.longitude),2);
+        query.addGeoQueryEventListener(this);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
-                String itemID = firebaseadapter.getRef(position).getKey();      //get the key of our firebase item
+                //String itemID = firebaseadapter.getRef(position).getKey();      //get the key of our firebase item
                 ListItem selected = (ListItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getActivity(), DetailItemActivity.class);
                 intent.putExtra("selected", selected);
@@ -133,10 +152,61 @@ public class HelpFragment extends Fragment {
                 }else{
                     intent.putExtra(ARG_TYPE,"ask");
                 }
-                intent.putExtra(ITEM_ID, itemID);
+                //intent.putExtra(ITEM_ID, itemID);
                 startActivity(intent);
             }
         });
+
+
+
+
+    }
+
+    @Override
+    public void onKeyEntered(String key, GeoLocation location) {
+        DatabaseReference tempRef = ref.child(key);
+        tempRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String key = dataSnapshot.getKey();
+                if (!adapter.exists(key)) {
+                    //add new item
+                    Log.d("HelpFragment", "item added " + key);
+                    adapter.addSingle(dataSnapshot);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    //update item
+                    Log.d("HelpFragment", "item updated: " + key);
+                    adapter.update(dataSnapshot, key);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("HelpFragment", "cancelled with error:" + databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void onKeyExited(String key) {
+        adapter.remove(key);
+    }
+
+    @Override
+    public void onKeyMoved(String key, GeoLocation location) {
+
+    }
+
+    @Override
+    public void onGeoQueryReady() {
+
+    }
+
+    @Override
+    public void onGeoQueryError(DatabaseError error) {
+        Log.e("HelpFragment", "There was an error with this query: " + error);
     }
 
 

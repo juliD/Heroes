@@ -10,12 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddActivity extends AppCompatActivity {
 
@@ -37,6 +45,8 @@ public class AddActivity extends AppCompatActivity {
         userid = sharedPref.getString("userid","No UserID");
         street = sharedPref.getString("street","");
         city = sharedPref.getString("city","");
+        final double latitude = Helper.getDouble(sharedPref,"homelat",0);
+        final double longitude = Helper.getDouble(sharedPref,"homelong",0);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -62,9 +72,18 @@ public class AddActivity extends AppCompatActivity {
                     return;
                 }
                 DatabaseReference typeref = ref.child(type);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+                String currentDateandTime = sdf.format(Calendar.getInstance().getTime());
+                ListItem listItem = new ListItem(titleView.getText().toString(), descView.getText().toString(),street+", "+city,userid,"",currentDateandTime);
+                String key = typeref.push().getKey();
+                Map<String, Object> post = listItem.toMap();
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/"+key,post);
+                typeref.updateChildren(childUpdates);
 
-                ListItem listItem = new ListItem(titleView.getText().toString(), descView.getText().toString(),street+", "+city,userid,"");
-                typeref.push().setValue(listItem);
+                GeoFire geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference("geofire"));
+                geoFire.setLocation("/"+type+"/"+key, new GeoLocation(latitude,longitude));
+
 
                 finish();
             }
