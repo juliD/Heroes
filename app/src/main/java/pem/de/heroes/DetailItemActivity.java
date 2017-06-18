@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -87,13 +88,17 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         final DatabaseReference typeref = ref.child(type);
 
         Button accept = (Button) findViewById(R.id.accept);
+        if(preferenceUserID.equals(listUserID) && listUserID.equals("")){
+            accept.setBackgroundColor(ContextCompat.getColor(this,R.color.gray));
+        }
+
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if(preferenceUserID.equals(listUserID)){
                    Toast.makeText(DetailItemActivity.this, "Du kannst nicht deinen eigenen Auftrag annehmen", Toast.LENGTH_SHORT).show();
-                }else if(listUserID!=null){
+                }else if(listUserID.equals("")){
                     Toast.makeText(DetailItemActivity.this, "Dieser Auftrag wurde schon von jemandem angenommen", Toast.LENGTH_SHORT).show();
                 }else{
                     typeref.child(itemID).child("agent").setValue(preferenceUserID);

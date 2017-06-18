@@ -35,6 +35,9 @@ public class ProfileFragment extends Fragment {
         //write profilename into textview from shared preferences
         TextView profil_name = (TextView) view.findViewById(R.id.profile_name);
         profil_name.setText(sharedPref.getString("username","Anonym"));
+
+
+
         return view;
     }
 

@@ -3,6 +3,7 @@
     <color name="colorPrimary">#37718e</color>
     <color name="colorPrimaryDark">#326680</color>
     <color name="colorAccent">#c33c54</color>
+    <color name="gray">#999999</color>
 
     <!-- could be changed in the future-->
     <!-- Screens background color-->

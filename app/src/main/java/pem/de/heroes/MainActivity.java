@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         Log.d("Main","onCreate");
         //Check if user is already logged in
         auth = FirebaseAuth.getInstance();
@@ -79,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             }
         });
 
+
+
+
         //Select the tab in the middle
         TabLayout.Tab tab = tabLayout.getTabAt(1);
         tab.select();
@@ -109,8 +113,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private void addUserToDatabase(FirebaseUser user) {
 
+        SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
-        users.child(user.getUid()).setValue("Anonym");
+        users.child(user.getUid()).child("username").setValue(sharedPref.getString("username","Anonym"));
+        users.child(user.getUid()).child("karma").setValue(0);
 
 
     }
@@ -151,7 +157,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         viewPager.setCurrentItem(tab.getPosition());
         if(tab.getPosition()==0){
             fab.setVisibility(View.GONE);
+
             TextView karma = (TextView) findViewById(R.id.karma);
+
             karma.setVisibility(View.GONE);
 
             ImageButton edit =(ImageButton)findViewById(R.id.edit);
@@ -160,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         else{
             fab.setVisibility(View.VISIBLE);
             TextView karma = (TextView) findViewById(R.id.karma);
+            SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+            karma.setText(sharedPref.getInt("karma",0)+" Karma");
             karma.setVisibility(View.VISIBLE);
 
             ImageButton edit =(ImageButton)findViewById(R.id.edit);

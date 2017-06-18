@@ -160,6 +160,7 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("username", username);
+            editor.putInt("karma",0);
             editor.apply();
             return true;
         }
