@@ -42,7 +42,7 @@ public class PrefManager {
     }
 
     public static String getUsername(){
-        return pref.getString("userid","Anonym");
+        return pref.getString("username","Anonym");
     }
 
     public void setHome(){
