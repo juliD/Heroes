@@ -87,10 +87,12 @@ public class HelpFragment extends Fragment {
 
         if (!fragment_type.equals("ask") && !fragment_type.equals("offer")) {
             // add profile header
-
             View header = getActivity().getLayoutInflater().inflate(R.layout.profile_header, null);
+
+            //write profilename into textview from shared preferences
             TextView profil_name = (TextView) header.findViewById(R.id.profile_name);
-            profil_name.setText(PrefManager.getUsername());
+            profil_name.setText(sharedPref.getString("username","Anonym"));
+
             listView.addHeaderView(header);
         }
 
