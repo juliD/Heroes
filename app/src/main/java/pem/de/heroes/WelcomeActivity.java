@@ -10,6 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,12 +39,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
 
-        if(sharedPref.contains("username")){
+        if (sharedPref.contains("username")) {
             //username has already been written into shared preferences => not the first time using the app
             launchHomeScreen();
             finish();
         }
-
 
 
         // Making notification bar transparent
@@ -89,17 +89,22 @@ public class WelcomeActivity extends AppCompatActivity {
                 // checking for last page
                 // if last page home screen will be launched
                 int current = getItem(+1);
-                if (current < layouts.length) {
-                    // move to next screen
-                    if(current==3){
-                        if(writeAddress()){
+                // move to next screen
+                switch (current) {
+                    case 1:
+                    case 2:
+                        viewPager.setCurrentItem(current);
+                        break;
+                    case 3:
+                        if (writeAddress()) {
                             viewPager.setCurrentItem(current);
                         }
-                    }
-                } else {
-                    if(writeUsername()){
-                        launchHomeScreen();
-                    }
+                        break;
+                    case 4:
+                        if (writeUsername()) {
+                            launchHomeScreen();
+                        }
+                        break;
                 }
             }
         });
