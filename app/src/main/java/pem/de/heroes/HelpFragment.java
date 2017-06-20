@@ -8,6 +8,7 @@ import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +100,7 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
         //Load Home preference
         SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         home =new LatLng(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
+        final String userid = sharedPref.getString("userid","No UserID");
 
 
         // ListView
@@ -113,6 +115,14 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
                 TextView distView = (TextView) view.findViewById(R.id.distance);
                 titleView.setText(item.getTitle());
                 infosView.setText(item.getDescription());
+
+                //check if I am agent or if it is my offer and set background color depending on that
+                if(item.getAgent().equals(userid)){
+                    view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.accepted));
+                }
+                if(item.getUserID().equals(userid)){
+                    view.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.own));
+            }
 
                 float distance = Helper.calculateDistance(home,Helper.getLocationFromAddress(item.getAddress(),getActivity()));
                 Log.d("HelpFragment","Distance= "+distance);
@@ -143,7 +153,8 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
 
-                //String itemID = firebaseadapter.getRef(position).getKey();      //get the key of our firebase item
+                String itemID = adapter.getKey(position);      //get the key of our firebase item
+
                 ListItem selected = (ListItem) parent.getItemAtPosition(position);
                 Intent intent = new Intent(getActivity(), DetailItemActivity.class);
                 intent.putExtra("selected", selected);
@@ -152,7 +163,7 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
                 }else{
                     intent.putExtra(ARG_TYPE,"ask");
                 }
-                //intent.putExtra(ITEM_ID, itemID);
+                intent.putExtra(ITEM_ID, itemID);
                 startActivity(intent);
             }
         });

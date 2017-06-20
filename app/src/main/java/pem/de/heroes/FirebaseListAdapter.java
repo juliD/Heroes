@@ -17,6 +17,7 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +55,7 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Filt
         this.mLayout = mLayout;
         mInflater = activity.getLayoutInflater();
         mModels = new ArrayList<>();
-        mModelKeys = new HashMap<>();
+        mModelKeys = new LinkedHashMap<>();
         // Look for all child events. We will then map them to our own internal ArrayList, which backs ListView
         mListener = this.mRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -166,6 +167,19 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter implements Filt
         mModels.remove(oldModel);
         mModelKeys.remove(key);
         notifyDataSetChanged();
+    }
+    public String getKey(int i){
+
+        for(Map.Entry<String, T>entry : mModelKeys.entrySet()){
+            if(i==0){
+                return entry.getKey();
+            }
+            else{
+                i--;
+            }
+
+        }
+        return "";
     }
 
     @Override
