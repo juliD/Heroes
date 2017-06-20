@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
+
         <activity
             android:name="WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">  >
@@ -20,6 +21,7 @@
             </intent-filter>
 
         </activity>
+
         <activity
             android:name="MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -32,9 +34,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
         <activity
             android:name=".AddActivity"
             android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".EditSettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
