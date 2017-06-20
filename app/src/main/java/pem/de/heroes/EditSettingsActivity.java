@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.google.firebase.database.DatabaseReference;
@@ -31,12 +33,33 @@ public class EditSettingsActivity extends AppCompatActivity {
         city = sharedPref.getString("city", "");
         radius = sharedPref.getInt("radius", 500);
 
-        final TextView usernameView = (TextView) findViewById(R.id.username);
-        final TextView streetView = (TextView) findViewById(R.id.street);
-        final TextView cityView = (TextView) findViewById(R.id.city);
-        usernameView.setText(username);
-        streetView.setText(street);
-        cityView.setText(city);
+        final EditText usernameEdit = (EditText) findViewById(R.id.username);
+        final EditText streetEdit = (EditText) findViewById(R.id.street);
+        final EditText cityEdit = (EditText) findViewById(R.id.city);
+        final TextView radiusText = (TextView) findViewById(R.id.textView4);
+        usernameEdit.setText(username);
+        streetEdit.setText(street);
+        cityEdit.setText(city);
+        radiusText.setText(radius + " Meter");
+
+        final SeekBar radiusBar = (SeekBar) findViewById(R.id.radius);
+        radiusBar.setProgress(getProgress(radius));
+        radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                radiusText.setText(getRadius(progress) + " Meter");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // do nothing
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // do nothing
+            }
+        });
 
         ImageButton cancelButton = (ImageButton) findViewById(R.id.cancel);
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -50,17 +73,27 @@ public class EditSettingsActivity extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameView.getText().toString();
-                String city = cityView.getText().toString();
-                String street = streetView.getText().toString();
+                String username = usernameEdit.getText().toString();
+                String city = cityEdit.getText().toString();
+                String street = streetEdit.getText().toString();
+                int radius = getRadius(radiusBar.getProgress());
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("username", username);
                 editor.putString("city", city);
                 editor.putString("street", street);
+                editor.putInt("radius", radius);
                 editor.apply();
                 finish();
             }
         });
+    }
+
+    private int getRadius(int progress) {
+        return progress * 100 + 100; // minimum = 100m, step = 100m
+    }
+
+    private int getProgress(int radius) {
+        return (radius - 100) / 100;
     }
 }
