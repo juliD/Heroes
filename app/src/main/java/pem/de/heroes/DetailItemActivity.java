@@ -102,6 +102,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     Toast.makeText(DetailItemActivity.this, "Dieser Auftrag wurde schon von jemandem angenommen", Toast.LENGTH_SHORT).show();
                 }else{
                     typeref.child(itemID).child("agent").setValue(preferenceUserID);
+
                 }
 
             }
