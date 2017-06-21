@@ -43,7 +43,9 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-        sharedPref.edit().clear().commit();
+
+        //Um das Tutorial anzuzeigen Kommentierung entfernen
+        //sharedPref.edit().clear().commit();
 
         if (sharedPref.contains("username")) {
             //username has already been written into shared preferences => not the first time using the app
