@@ -7,7 +7,7 @@
     tools:showIn="@layout/activity_welcome">
 
 
-    <android.support.v4.view.ViewPager
+    <pem.de.heroes.CustomViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -36,17 +36,6 @@
         android:layout_alignParentRight="true"
         android:background="@null"
         android:text="Weiter"
-        android:textColor="@android:color/white" />
-
-    <Button
-        android:id="@+id/btn_skip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="8dp"
-        android:layout_alignParentLeft="true"
-        android:background="@null"
-        android:text="Überspringen"
         android:textColor="@android:color/white" />
 
 </RelativeLayout>

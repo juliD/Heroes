@@ -10,8 +10,10 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -22,22 +24,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+
 public class WelcomeActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
+    private CustomViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
-    private Button btnSkip, btnNext;
+    private Button btnNext;
     private SharedPreferences sharedPref;
     private String username;
+    private boolean statusaddress=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        sharedPref.edit().clear().commit();
 
         if (sharedPref.contains("username")) {
             //username has already been written into shared preferences => not the first time using the app
@@ -53,9 +59,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome);
 
-        viewPager = (ViewPager) findViewById(R.id.view_pager);
+        viewPager = (CustomViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-        btnSkip = (Button) findViewById(R.id.btn_skip);
         btnNext = (Button) findViewById(R.id.btn_next);
 
 
@@ -76,16 +81,11 @@ public class WelcomeActivity extends AppCompatActivity {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
-        btnSkip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchHomeScreen();
-            }
-        });
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // checking for last page
                 // if last page home screen will be launched
                 int current = getItem(+1);
@@ -98,10 +98,11 @@ public class WelcomeActivity extends AppCompatActivity {
                     case 3:
                         if (writeAddress()) {
                             viewPager.setCurrentItem(current);
+                            statusaddress=true;
                         }
                         break;
                     case 4:
-                        if (writeUsername()) {
+                        if (writeUsername()&& statusaddress) {
                             launchHomeScreen();
                         }
                         break;
@@ -152,6 +153,7 @@ public class WelcomeActivity extends AppCompatActivity {
             editor.putString("city", city);
             editor.putString("street", street);
             editor.apply();
+            viewPager.setPagingEnabled(true);
             return true;
         }
     }
@@ -181,12 +183,13 @@ public class WelcomeActivity extends AppCompatActivity {
             if (position == layouts.length - 1) {
                 // last page. make button text to Start
                 btnNext.setText("Start");
-                btnSkip.setVisibility(View.GONE);
-            } else {
-                // still pages are left
+            } if(position==2&&!statusaddress){
+               viewPager.setPagingEnabled(false);
+            } else{
+                // Pages are still left to be seen
                 btnNext.setText("Weiter");
-                btnSkip.setVisibility(View.VISIBLE);
             }
+
         }
 
         @Override
@@ -196,8 +199,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
         @Override
         public void onPageScrollStateChanged(int arg0) {
-
         }
+
     };
 
     /**
@@ -247,4 +250,6 @@ public class WelcomeActivity extends AppCompatActivity {
             container.removeView(view);
         }
     }
+
+
 }
