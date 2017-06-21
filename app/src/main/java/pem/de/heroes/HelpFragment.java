@@ -76,6 +76,7 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
         ref = FirebaseDatabase.getInstance().getReference(fragment_type);
+        ref.orderByChild("date");
         geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference("geofire/"+fragment_type));
 
 
