@@ -57,6 +57,7 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
     GeoFire geoFire;
 
 
+
     public HelpFragment() {
         // Required empty public constructor
     }
@@ -102,6 +103,7 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
         SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         home =new LatLng(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
         final String userid = sharedPref.getString("userid","No UserID");
+        final int radius = sharedPref.getInt("radius", 500);
 
 
         // ListView
@@ -147,7 +149,7 @@ public class HelpFragment extends Fragment implements GeoQueryEventListener {
         listView.setAdapter(adapter);
 
 
-        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(home.latitude, home.longitude),2);
+        GeoQuery query = geoFire.queryAtLocation(new GeoLocation(home.latitude, home.longitude),radius);
         query.addGeoQueryEventListener(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
