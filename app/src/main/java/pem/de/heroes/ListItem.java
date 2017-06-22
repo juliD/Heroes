@@ -26,11 +26,11 @@ public class ListItem implements Parcelable {
         this.userid = userid;
         this.agent = agent;
         this.date = date;
-
     }
 
     public ListItem() {
     }
+
     public String getUserID() { return userid;}
     public String getTitle() {
         return title;
@@ -51,7 +51,6 @@ public class ListItem implements Parcelable {
         this.userid = parcel.readString();
         this.agent = parcel.readString();
         this.date = parcel.readString();
-
     }
 
     @Override
@@ -67,7 +66,6 @@ public class ListItem implements Parcelable {
         parcel.writeString(userid);
         parcel.writeString(agent);
         parcel.writeString(date);
-
     }
 
     @Exclude
