@@ -97,6 +97,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         myViewPagerAdapter = new DetailViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        viewPager.setPagingEnabled(false);
 
         listitem = getIntent().getParcelableExtra("selected");
 
@@ -133,6 +134,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             title.setText(listitem.getTitle());
             info.setText(listitem.getDescription());
 
+
+            //enable swiping
+            if(listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)){
+                viewPager.setPagingEnabled(true);
+            }
+
             if (listUserID.equals(preferenceUserID)) {
                 if (listitem.getAgent().equals("")) {
                     agent_textview.setText("Leider hat noch niemand deine Anfrage angenommen.");
@@ -140,16 +147,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     agentref = ref.child("users").child(listitem.getAgent());
                     setAgent();
                 }
-                //accept.setVisibility(View.GONE);
             } else {
                 if (listitem.getAgent().equals("")) {
                     agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schanpp' ihn dir!");
                 } else if (listitem.getAgent().equals(preferenceUserID)) {
                     agent_textview.setText("Du hast diese Anfrage angenommen!");
-                   //accept.setVisibility(View.GONE);
                 } else {
                     agent_textview.setText("Jemand anderes hat die Anfrage leider vor dir angenommen.");
-                    //accept.setVisibility(View.GONE);
                 }
             }
 
@@ -170,7 +174,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     } else {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
-                        accept.setVisibility(View.GONE);
+                        viewPager.setPagingEnabled(true);
                     }
 
                 }
