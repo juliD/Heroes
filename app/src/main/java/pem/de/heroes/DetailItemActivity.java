@@ -90,7 +90,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 else if(listitem.getAgent().equals(preferenceUserID)){
                     agent_textview.setText("Du hast diese Anfrage angenommen!");
                 }else{
-                    agent_textview.setText("Jemand anderes hat den Anfrage leider vor dir angenommen.");
+                    agent_textview.setText("Jemand anderes hat die Anfrage leider vor dir angenommen.");
                 }
             }
             marker = listitem.getTitle();
@@ -116,7 +116,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 if (preferenceUserID.equals(listUserID)) {
                     Toast.makeText(DetailItemActivity.this, "Du kannst nicht deinen eigene Anfrage annehmen", Toast.LENGTH_SHORT).show();
                 } else if (listUserID.equals("")) {
-                    Toast.makeText(DetailItemActivity.this, "Dieser Auftrag wurde schon von jemandem angenommen", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailItemActivity.this, "Diese Anfrage wurde schon von jemandem angenommen", Toast.LENGTH_SHORT).show();
                 } else {
                     typeref.child(itemID).child("agent").setValue(preferenceUserID);
                 }
