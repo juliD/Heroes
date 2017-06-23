@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:showIn="@layout/newactivity_detail_item">
+    android:layout_height="match_parent">
 
 
     <pem.de.heroes.CustomViewPager
@@ -16,16 +15,10 @@
         android:id="@+id/layoutDots"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dots_height"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dots_margin_bottom"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:orientation="horizontal"></LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@id/layoutDots"
-        android:alpha=".5"
-        android:background="@android:color/white" />
 
 </RelativeLayout>

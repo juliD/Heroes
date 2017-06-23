@@ -10,17 +10,17 @@ import java.util.Map;
  * Created by fealt on 22.06.2017.
  */
 @IgnoreExtraProperties
-public class Agent {
+public class User {
 
     private String userid;
     private String username;
     private int karma;
 
-    public Agent(){
+    public User(){
         //default constructor required for datasnapshot
     }
 
-    public Agent(String userid, String username, int karma){
+    public User(String userid, String username, int karma){
         this.userid = userid;
         this.username = username;
         this.karma = karma;
