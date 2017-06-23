@@ -36,7 +36,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private Button btnNext;
     private SharedPreferences sharedPref;
     private String username;
-    private boolean statusaddress=false;
+    private boolean statusaddress = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,11 +100,11 @@ public class WelcomeActivity extends AppCompatActivity {
                     case 3:
                         if (writeAddress()) {
                             viewPager.setCurrentItem(current);
-                            statusaddress=true;
+                            statusaddress = true;
                         }
                         break;
                     case 4:
-                        if (writeUsername()&& statusaddress) {
+                        if (writeUsername() && statusaddress) {
                             launchHomeScreen();
                         }
                         break;
@@ -137,17 +137,17 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void launchHomeScreen() {
-            startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
-            finish();
+        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+        finish();
     }
 
-    private boolean writeAddress(){
+    private boolean writeAddress() {
         EditText stadt_edit = (EditText) findViewById(R.id.city);
         String city = stadt_edit.getText().toString();
         EditText street_edit = (EditText) findViewById(R.id.street);
         String street = street_edit.getText().toString();
 
-        if (city.equals("")||street.equals("")) {
+        if (city.equals("") || street.equals("")) {
             Toast.makeText(this, "Bitte gib deine Stadt und Straße ein", Toast.LENGTH_SHORT).show();
             return false;
         } else {
@@ -169,11 +169,12 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("username", username);
-            editor.putInt("karma",0);
+            editor.putInt("karma", 0);
             editor.apply();
             return true;
         }
     }
+
     //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
@@ -185,9 +186,10 @@ public class WelcomeActivity extends AppCompatActivity {
             if (position == layouts.length - 1) {
                 // last page. make button text to Start
                 btnNext.setText("Start");
-            } if(position==2&&!statusaddress){
-               viewPager.setPagingEnabled(false);
-            } else{
+            }
+            if (position == 2 && !statusaddress) {
+                viewPager.setPagingEnabled(false);
+            } else {
                 // Pages are still left to be seen
                 btnNext.setText("Weiter");
             }
