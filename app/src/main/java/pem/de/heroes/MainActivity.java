@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -164,6 +167,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         viewPager.setCurrentItem(tab.getPosition());
+        Toolbar t = (Toolbar) findViewById(R.id.toolbar);
+
+
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) t.getLayoutParams();
+
+
+
+
+
+
         if(tab.getPosition()==0){
             fab.setVisibility(View.GONE);
 
@@ -173,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             ImageButton edit =(ImageButton)findViewById(R.id.edit);
             edit.setVisibility(View.VISIBLE);
+            params.setScrollFlags(0);
+
         }
         else{
             fab.setVisibility(View.VISIBLE);
@@ -183,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             ImageButton edit =(ImageButton)findViewById(R.id.edit);
             edit.setVisibility(View.GONE);
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         }
 
 
