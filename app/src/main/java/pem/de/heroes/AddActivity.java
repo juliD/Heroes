@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class AddActivity extends AppCompatActivity {
 
-    private static final String ARG_TYPE = "activity_type";
+    private static final String ARG_TYPE = "fragment_type";
     private String type ="offer";
     DatabaseReference ref;
     private String street;
@@ -71,11 +71,14 @@ public class AddActivity extends AppCompatActivity {
                 if(titleView.getText().equals("")&&descView.getText().equals("")&&addrView.getText().equals("")){
                     return;
                 }
+                Log.d("AddActivity","type: "+ type);
                 DatabaseReference typeref = ref.child(type);
+
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
                 String currentDateandTime = sdf.format(Calendar.getInstance().getTime());
                 ListItem listItem = new ListItem(titleView.getText().toString(), descView.getText().toString(),street+", "+city,userid,"",currentDateandTime);
                 String key = typeref.push().getKey();
+                Log.d("AddActivity","added key: "+ key);
                 Map<String, Object> post = listItem.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/"+key,post);

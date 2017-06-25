@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private static final String TAG = "MainActivity";
     private ViewPager viewPager;
-    private static final String ARG_TYPE = "activity_type";
+    private static final String ARG_TYPE = "fragment_type";
     FloatingActionButton fab;
     private FirebaseAuth auth;
     private String userid;
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tab.select();
 
     }
+
     public void signInAnonymoulsy(){
         auth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

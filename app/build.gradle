@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -35,5 +36,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     compile 'com.firebaseui:firebase-ui:1.1.1'
     compile 'com.firebase:geofire-android:2.1.1'
+    compile 'com.android.support:recyclerview-v7:25.1.0'
     testCompile 'junit:junit:4.12'
 }

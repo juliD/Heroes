@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -77,12 +78,15 @@ public class EditSettingsActivity extends AppCompatActivity {
                 String city = cityEdit.getText().toString();
                 String street = streetEdit.getText().toString();
                 int radius = getRadius(radiusBar.getProgress());
+                LatLng newLoc = Helper.getLocationFromAddress(street+", "+city,getApplicationContext());
 
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putString("username", username);
                 editor.putString("city", city);
                 editor.putString("street", street);
                 editor.putInt("radius", radius);
+                Helper.putDouble(editor,"homelat",newLoc.latitude);
+                Helper.putDouble(editor,"homelong",newLoc.longitude);
                 editor.apply();
                 finish();
             }

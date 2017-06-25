@@ -2,21 +2,28 @@ package pem.de.heroes;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.database.Exclude;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 
-public class ListItem implements Parcelable {
+public class ListItem implements Parcelable,Comparable<ListItem> {
     private String description;
     private String title;
     private String address;
     private String userid;
     private String agent;
     private String date;
-
+    private String id;
+    private int distance;
 
 
     public ListItem(String title, String description, String address, String userid, String agent, String date) {
@@ -31,6 +38,13 @@ public class ListItem implements Parcelable {
     public ListItem() {
     }
 
+    public String getid() {
+        return id;
+    }
+
+    public void setid(String id) {
+        this.id = id;
+    }
     public String getUserID() { return userid;}
     public String getTitle() {
         return title;
@@ -43,6 +57,13 @@ public class ListItem implements Parcelable {
     }
     public String getAgent() {return agent;}
     public String getDate(){return date;}
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 
     public ListItem(Parcel parcel){
         this.title = parcel.readString();
@@ -51,6 +72,8 @@ public class ListItem implements Parcelable {
         this.userid = parcel.readString();
         this.agent = parcel.readString();
         this.date = parcel.readString();
+        this.id = parcel.readString();
+        this.distance = parcel.readInt();
     }
 
     @Override
@@ -66,6 +89,8 @@ public class ListItem implements Parcelable {
         parcel.writeString(userid);
         parcel.writeString(agent);
         parcel.writeString(date);
+        parcel.writeString(id);
+        parcel.writeInt(distance);
     }
 
     @Exclude
@@ -93,4 +118,25 @@ public class ListItem implements Parcelable {
             return new ListItem[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull ListItem o) {
+        DateFormat format = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH);
+        Date first=new Date();
+        Date second=new Date();
+        try {
+            first = format.parse(this.getDate());
+            second = format.parse(o.getDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(first.before(second)){
+            return 1;
+        }
+        else if(second.before(first)){
+            return -1;
+        }else{
+            return 0;
+        }
+    }
 }
