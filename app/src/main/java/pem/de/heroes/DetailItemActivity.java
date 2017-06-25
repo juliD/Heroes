@@ -151,7 +151,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 } else {
                     agentref = ref.child("users").child(listitem.getAgent());
                     setAgent();
-                    accept.setText("Karma überweisen");
                 }
             } else {
                 if (listitem.getAgent().equals("")) {
@@ -164,10 +163,14 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
 
 
-            //color button grey
+            //color button green
             if (preferenceUserID.equals(listUserID)) {
                 if(!(listitem.getAgent().equals(""))){
+                    accept.setText("Karma überweisen");
                     accept.setBackgroundColor(ContextCompat.getColor(this, R.color.complete));
+                }else{
+                    accept.setText("Anfrage löschen");
+                    accept.setBackgroundColor(ContextCompat.getColor(this,R.color.delete));
                 }
 
             }
@@ -178,15 +181,27 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                     if (preferenceUserID.equals(listUserID)) {
                         if(!(listitem.getAgent().equals(""))){
+                            finish();
+                            //code after this should be run anyways even though we call finish
                             Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
-                            givKarma(agentref.child("karma"));
+                            giveKarma(agentref.child("karma"));
+                            ref.child("geofire").child(type).child(itemID).removeValue();
+                            typeref.child(itemID).removeValue();
+
+
+
+
                         }else{
-                            Toast.makeText(DetailItemActivity.this, "Platzhalter", Toast.LENGTH_SHORT).show();
+                            finish();
+                            Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
+                            ref.child("geofire").child(type).child(itemID).removeValue();
+                            typeref.child(itemID).removeValue();
+
+
+
                         }
 
-                    } else if (listUserID.equals("")) {
-                        Toast.makeText(DetailItemActivity.this, "Diese Anfrage wurde schon von jemandem angenommen", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }  else {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
                         viewPager.setPagingEnabled(true);
@@ -241,7 +256,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
-    private void givKarma(DatabaseReference reference){
+    private void giveKarma(DatabaseReference reference){
         reference.runTransaction(new Transaction.Handler(){
             @Override
                 public Transaction.Result doTransaction(final MutableData currentData) {

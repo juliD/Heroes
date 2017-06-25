@@ -6,6 +6,7 @@
     <color name="gray">#999999</color>
     <color name="own">#0f40a1</color>
     <color name="complete">#499167</color>
+    <color name="delete">#ff0000</color>
     <color name="accepted">#831403</color>
 
     <!-- could be changed in the future-->
