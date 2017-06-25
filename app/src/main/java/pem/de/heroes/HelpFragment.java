@@ -56,6 +56,7 @@ public class HelpFragment extends Fragment {
     private int initialListSize;
     private int iterationCount;
     private boolean fetchedItemIds;
+    String userid;
 
     public HelpFragment() {
         // Required empty public constructor
@@ -101,7 +102,7 @@ public class HelpFragment extends Fragment {
         //Load Preferences
         SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         home = new GeoLocation(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
-        final String userid = sharedPref.getString("userid","No UserID");
+        userid = sharedPref.getString("userid","No UserID");
         final int radius = sharedPref.getInt("radius", 500);
 
 
@@ -229,9 +230,17 @@ public class HelpFragment extends Fragment {
 
                 if(itemToDistance.containsKey(dataSnapshot.getKey())){
                     if(keys.contains(dataSnapshot.getKey())){
-                        itemUpdated(listItem);
+                        if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)){
+                            list.remove(getUserPosition(dataSnapshot.getKey()));
+                        }else{
+                            itemUpdated(listItem);
+                        }
+
                     }else{
-                        newItem(listItem);
+                        if(listItem.getAgent().equals("")||listItem.getAgent().equals(userid)){
+                            newItem(listItem);
+                        }
+
                     }
                 }
 

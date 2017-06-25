@@ -149,7 +149,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 }
             } else {
                 if (listitem.getAgent().equals("")) {
-                    agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schanpp' ihn dir!");
+                    agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
                 } else if (listitem.getAgent().equals(preferenceUserID)) {
                     agent_textview.setText("Du hast diese Anfrage angenommen!");
                 } else {
