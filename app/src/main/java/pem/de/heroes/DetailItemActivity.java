@@ -32,6 +32,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -54,6 +56,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     TextView agent_textview;
     TextView owner_username_textview;
     private Button accept;
+
+    User agent;
+    User owner;
 
     private CustomViewPager viewPager;
     private DetailViewPagerAdapter myViewPagerAdapter;
@@ -146,6 +151,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 } else {
                     agentref = ref.child("users").child(listitem.getAgent());
                     setAgent();
+                    accept.setText("Karma überweisen");
                 }
             } else {
                 if (listitem.getAgent().equals("")) {
@@ -160,7 +166,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
             //color button grey
             if (preferenceUserID.equals(listUserID)) {
-                accept.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
+                if(!(listitem.getAgent().equals(""))){
+                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.complete));
+                }
+
             }
 
             accept.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +177,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 public void onClick(View v) {
 
                     if (preferenceUserID.equals(listUserID)) {
-                        Toast.makeText(DetailItemActivity.this, "Du kannst nicht deinen eigene Anfrage annehmen", Toast.LENGTH_SHORT).show();
+                        if(!(listitem.getAgent().equals(""))){
+                            Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
+                            givKarma(agentref.child("karma"));
+                        }else{
+                            Toast.makeText(DetailItemActivity.this, "Platzhalter", Toast.LENGTH_SHORT).show();
+                        }
+
                     } else if (listUserID.equals("")) {
                         Toast.makeText(DetailItemActivity.this, "Diese Anfrage wurde schon von jemandem angenommen", Toast.LENGTH_SHORT).show();
                     } else {
@@ -206,7 +221,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //get database value
 
-                    User agent = dataSnapshot.getValue(User.class);
+                    agent = dataSnapshot.getValue(User.class);
                     if(agent!=null){
                         agent_textview.setText(agent.getUsername());
                     }
@@ -225,12 +240,36 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+
+    private void givKarma(DatabaseReference reference){
+        reference.runTransaction(new Transaction.Handler(){
+            @Override
+                public Transaction.Result doTransaction(final MutableData currentData) {
+                    if (currentData.getValue() == null) {
+                        currentData.setValue(100);
+                    } else {
+                        int karma = currentData.getValue(Integer.class);
+                        currentData.setValue(karma + 100);
+                    }
+                    return Transaction.success(currentData);
+                }
+
+            public void onComplete(DatabaseError firebaseError, boolean committed, DataSnapshot currentData) {
+                if (firebaseError != null) {
+                    System.out.println("Firebase counter increment failed.");
+                } else {
+                    System.out.println("Firebase counter increment succeeded.");
+                }
+            }
+        });
+    }
+
     public void setUsername() {
             ValueEventListener ownerListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     //get database value
-                    User owner = dataSnapshot.getValue(User.class);
+                    owner = dataSnapshot.getValue(User.class);
                     if(owner!=null){
                         owner_username_textview.setText(owner.getUsername());
                     }
@@ -248,6 +287,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             ownerref.addListenerForSingleValueEvent(ownerListener);
 
     }
+
+
 
 
 

@@ -230,14 +230,14 @@ public class HelpFragment extends Fragment {
 
                 if(itemToDistance.containsKey(dataSnapshot.getKey())){
                     if(keys.contains(dataSnapshot.getKey())){
-                        if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)){
+                        if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)&&!listItem.getUserID().equals(userid)){
                             list.remove(getUserPosition(dataSnapshot.getKey()));
                         }else{
                             itemUpdated(listItem);
                         }
 
                     }else{
-                        if(listItem.getAgent().equals("")||listItem.getAgent().equals(userid)){
+                        if(listItem.getAgent().equals("")||listItem.getAgent().equals(userid)||listItem.getUserID().equals(userid)){
                             newItem(listItem);
                         }
 

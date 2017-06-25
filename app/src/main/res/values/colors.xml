@@ -5,6 +5,7 @@
     <color name="colorAccent">#c33c54</color>
     <color name="gray">#999999</color>
     <color name="own">#0f40a1</color>
+    <color name="complete">#499167</color>
     <color name="accepted">#831403</color>
 
     <!-- could be changed in the future-->
