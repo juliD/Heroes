@@ -9,12 +9,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import pem.de.heroes.R;
 
 public class ProfileFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private SharedPreferences sharedPreferences;
-    private TextView usernameView;
+    private TextView usernameTextView;
+    private TextView titleTextView;
+    private TextView karmaTextView;
+    private ProgressBar karmaProgressBar;
 
     public ProfileFragment() {
 
@@ -32,9 +38,20 @@ public class ProfileFragment extends Fragment implements SharedPreferences.OnSha
 
         sharedPreferences = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        String username = sharedPreferences.getString("username", "");
+        int karma = sharedPreferences.getInt("karma", 0);
 
-        usernameView = (TextView) view.findViewById(R.id.profile_name);
-        usernameView.setText(sharedPreferences.getString("username", ""));
+        usernameTextView = (TextView) view.findViewById(R.id.usernameTextView);
+        usernameTextView.setText(username);
+
+        titleTextView = (TextView) view.findViewById(R.id.titleTextView);
+        titleTextView.setText("Local Hero");
+
+        karmaTextView = (TextView) view.findViewById(R.id.karmaTextView);
+        karmaTextView.setText("250 / 1000 Karma");
+
+        karmaProgressBar = (ProgressBar) view.findViewById(R.id.karmaProgressBar);
+        karmaProgressBar.setProgress(25);
 
         return view;
     }
@@ -43,7 +60,7 @@ public class ProfileFragment extends Fragment implements SharedPreferences.OnSha
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.e("Profile", key);
         if (key.equals("username")) {
-            usernameView.setText(sharedPreferences.getString("username", ""));
+            usernameTextView.setText(sharedPreferences.getString("username", ""));
         }
     }
 }
