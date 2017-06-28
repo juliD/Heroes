@@ -187,7 +187,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                             giveKarma(agentref.child("karma"));
                             ref.child("geofire").child(type).child(itemID).removeValue();
                             typeref.child(itemID).removeValue();
-
+                            finish();
 
 
 

@@ -6,6 +6,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -26,9 +27,9 @@ public class Helper {
         try {
             List<Address> address = coder.getFromLocationName(strAddress, 5);
             Log.d("Helper",strAddress);
-            while (address.size()==0) {
-                address = coder.getFromLocationName(strAddress, 1);
-                Log.d("Helper","in loop address:" +strAddress);
+            if (address.size()==0) {;
+                Toast.makeText(context, "Bitte gib eine echte Adresse ein...", Toast.LENGTH_SHORT).show();
+                return null;
             }
 
             if (address == null) {

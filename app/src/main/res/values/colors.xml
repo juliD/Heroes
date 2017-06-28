@@ -57,5 +57,7 @@
         <item>@color/detail_dot_inactive</item>
     </array>
 
+    <color name="notification_icon">#24009c</color>
+
 
 </resources>

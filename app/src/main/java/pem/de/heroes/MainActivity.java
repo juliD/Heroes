@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -24,9 +25,11 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private FirebaseAuth auth;
     private String userid;
     SharedPreferences sharedPref;
+    String notificationToken;
+    FirebaseUser fuser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         Log.d("Main","onCreate");
         //Check if user is already logged in
         auth = FirebaseAuth.getInstance();
+
         Log.d("Main","Firebase: "+auth);
         if (auth.getCurrentUser() != null) {
             // already signed in
@@ -144,11 +150,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     public void update(FirebaseUser currentUser){
-
+        fuser=auth.getCurrentUser();
         userid = currentUser.getUid();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
 
         Log.d("MainActivity","authorization: "+ userid);
+        new TokenTask().execute("");
 
 
         if(!sharedPref.contains("userid")){
@@ -163,14 +170,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
         }
-
-
-
-
-
-
-
     }
+
+
+
 
     public void getKarma(){
 
@@ -258,4 +261,21 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             karma.setText(sharedPreferences.getInt("karma",0)+" Karma");
         }
     }
+
+    public class TokenTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            Task<GetTokenResult> t1 = fuser.getToken(false);
+            try {
+                Tasks.await(t1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            final String token = t1.getResult().getToken();
+            notificationToken = token;
+            return null;
+        }
+    }
+
 }

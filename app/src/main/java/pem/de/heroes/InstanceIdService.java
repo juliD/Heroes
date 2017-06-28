@@ -1,7 +1,11 @@
 package pem.de.heroes;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -22,6 +26,9 @@ public class InstanceIdService extends FirebaseInstanceIdService {
         sendRegistrationToServer(refreshedToken);
     }
     private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        SharedPreferences sharedPref=this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        String userid = sharedPref.getString("userid","No User ID");
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("users/"+userid);
+        users.child("pushToken").setValue(token);
     }
 }
