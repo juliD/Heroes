@@ -10,4 +10,10 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btn_back"><![CDATA[<< Back]]></string>
+
+    <string name="successes">Erfolge</string>
+    <string name="asks_created">Anfragen erstellt</string>
+    <string name="asks_fullfilled">Anfragen erfüllt</string>
+    <string name="offers_created">Angebote erstellt</string>
+    <string name="offers_used">Angebote genutzt</string>
 </resources>

@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) t.getLayoutParams();
-
+        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
 
 
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             ImageButton edit =(ImageButton)findViewById(R.id.edit);
             edit.setVisibility(View.VISIBLE);
-            params.setScrollFlags(0);
+            //params.setScrollFlags(0);
 
         }
         else{
@@ -198,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             ImageButton edit =(ImageButton)findViewById(R.id.edit);
             edit.setVisibility(View.GONE);
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
         }
 
 

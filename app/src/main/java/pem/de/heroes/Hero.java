@@ -2,11 +2,11 @@ package pem.de.heroes;
 
 class Hero {
     private String name;
-    private int requiredKarma;
+    private int requiredKarmaTillNextLevel;
 
-    public Hero(String name, int requiredKarma) {
+    public Hero(String name, int requiredKarmaTillNextLevel) {
         this.name = name;
-        this.requiredKarma = requiredKarma;
+        this.requiredKarmaTillNextLevel = requiredKarmaTillNextLevel;
     }
 
     public String getName() {
@@ -17,11 +17,11 @@ class Hero {
         this.name = name;
     }
 
-    public int getRequiredKarma() {
-        return requiredKarma;
+    public int getRequiredKarmaTillNextLevel() {
+        return requiredKarmaTillNextLevel;
     }
 
-    public void setRequiredKarma(int requiredKarma) {
-        this.requiredKarma = requiredKarma;
+    public void setRequiredKarmaTillNextLevel(int requiredKarmaTillNextLevel) {
+        this.requiredKarmaTillNextLevel = requiredKarmaTillNextLevel;
     }
 }
