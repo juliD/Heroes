@@ -54,7 +54,14 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC6xOHe0vjb7DyXHfdpjHouA4ekhXvKRR8" />
+            android:value="AIzaSyC6xOHe0vjb7DyXHfdpjHouA4ekhXvKRR8"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/notification"/>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/notification_icon"/>
+
 
         <uses-feature
             android:glEsVersion="0x00020000"
@@ -73,6 +80,7 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
+
 
     </application>
 

@@ -1,14 +1,18 @@
 package pem.de.heroes;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,13 +25,18 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
+public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener,SharedPreferences.OnSharedPreferenceChangeListener{
 
     private static final String TAG = "MainActivity";
     private ViewPager viewPager;
@@ -35,17 +44,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     FloatingActionButton fab;
     private FirebaseAuth auth;
     private String userid;
+    SharedPreferences sharedPref;
+    String notificationToken;
+    FirebaseUser fuser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        sharedPref=this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        sharedPref.registerOnSharedPreferenceChangeListener(this);
 
 
         Log.d("Main","onCreate");
         //Check if user is already logged in
         auth = FirebaseAuth.getInstance();
+
         Log.d("Main","Firebase: "+auth);
         if (auth.getCurrentUser() != null) {
             // already signed in
@@ -54,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             Log.d("Main","Firebase: signing in now");
             signInAnonymoulsy();
         }
+
+        getKarma();
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         TabsPagerAdapter tabsAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -74,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Intent i = new Intent(MainActivity.this, AddActivity.class);
 
                 if(viewPager.getCurrentItem()==1){
@@ -100,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
+
+
     public void signInAnonymoulsy(){
         auth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -125,20 +144,18 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     private void addUserToDatabase(FirebaseUser user) {
 
-        SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
         users.child(user.getUid()).child("username").setValue(sharedPref.getString("username","Anonym"));
         users.child(user.getUid()).child("karma").setValue(0);
-
-
     }
 
     public void update(FirebaseUser currentUser){
-
+        fuser=auth.getCurrentUser();
         userid = currentUser.getUid();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
 
         Log.d("MainActivity","authorization: "+ userid);
+        new TokenTask().execute("");
 
 
         if(!sharedPref.contains("userid")){
@@ -153,16 +170,45 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
 
         }
-
-
-
-
-
-
-
     }
 
 
+
+
+    public void getKarma(){
+
+        DatabaseReference userref = FirebaseDatabase.getInstance().getReference("users/"+sharedPref.getString("userid","No User ID"));
+        int x=0;
+        ValueEventListener ownerListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //get database value
+                User me = dataSnapshot.getValue(User.class);
+                if(me!=null){
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt("karma",me.getKarma());
+                    editor.commit();
+                    Log.e("Main","me exists...");
+                    if(viewPager.getCurrentItem()!=0){
+                        TextView karma = (TextView)findViewById(R.id.karma);
+                        karma.setText(me.getKarma()+" Karma");
+                    }
+                }
+                else{
+                    Log.e("Main","Something went wrong with my karma");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting agent failed, create log
+                Log.w("on cancelled", "Database: ", databaseError.toException());
+            }
+        };
+        //firebase referenz auf den User
+        userref.addListenerForSingleValueEvent(ownerListener);
+    }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
@@ -172,9 +218,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) t.getLayoutParams();
         params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-
-
-
 
 
         if(tab.getPosition()==0){
@@ -192,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         else{
             fab.setVisibility(View.VISIBLE);
             TextView karma = (TextView) findViewById(R.id.karma);
-            SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+            sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
             karma.setText(sharedPref.getInt("karma",0)+" Karma");
             karma.setVisibility(View.VISIBLE);
 
@@ -212,4 +255,29 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     public void onTabReselected(TabLayout.Tab tab) {
 
     }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(viewPager.getCurrentItem()!=0){
+            TextView karma = (TextView) findViewById(R.id.karma);
+            karma.setText(sharedPreferences.getInt("karma",0)+" Karma");
+        }
+    }
+
+    public class TokenTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            Task<GetTokenResult> t1 = fuser.getToken(false);
+            try {
+                Tasks.await(t1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            final String token = t1.getResult().getToken();
+            notificationToken = token;
+            return null;
+        }
+    }
+
 }

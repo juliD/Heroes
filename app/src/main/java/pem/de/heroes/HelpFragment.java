@@ -223,7 +223,10 @@ public class HelpFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("Fragment", "datasnapshot Key: "+ dataSnapshot.getKey());
-                ListItem listItem = dataSnapshot.getValue(ListItem.class);
+                final ListItem listItem = dataSnapshot.getValue(ListItem.class);
+                if(listItem==null){
+                    return;
+                }
                 Log.d("Fragment", "Item Title: "+listItem.getTitle());
                 listItem.setid(dataSnapshot.getKey());
                 listItem.setDistance(itemToDistance.get(dataSnapshot.getKey()));
