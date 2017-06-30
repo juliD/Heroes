@@ -26,9 +26,15 @@ public class InstanceIdService extends FirebaseInstanceIdService {
         sendRegistrationToServer(refreshedToken);
     }
     private void sendRegistrationToServer(String token) {
+        Log.d("InstanceIdService","this is the Refreshed token: "+token);
         SharedPreferences sharedPref=this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         String userid = sharedPref.getString("userid","No User ID");
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users/"+userid);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("pushToken",token);
+        editor.commit();
+
         users.child("pushToken").setValue(token);
     }
 }

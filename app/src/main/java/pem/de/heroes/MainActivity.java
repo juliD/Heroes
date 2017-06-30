@@ -153,8 +153,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         userid = currentUser.getUid();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
 
-        Log.d("MainActivity","authorization: "+ userid);
-        new TokenTask().execute("");
 
 
         if(!sharedPref.contains("userid")){
@@ -263,29 +261,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
     }
 
-    public class TokenTask extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... params) {
-            Task<GetTokenResult> t1 = fuser.getToken(false);
-            try {
-                Tasks.await(t1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            final String token = t1.getResult().getToken();
-
-            //Add Token to sharedPreferences
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("pushToken",token);
-            editor.commit();
-
-            //Add Token to database
-            DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
-            users.child(fuser.getUid()).child("pushToken").setValue(sharedPref.getString("pushToken",""));
-
-            return null;
-        }
-    }
 
 }

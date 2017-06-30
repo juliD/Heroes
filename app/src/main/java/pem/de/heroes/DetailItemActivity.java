@@ -60,6 +60,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private String itemID;
     private String preferenceUserID;
     private String listUserID;
+    private String token;
     TextView agent_textview;
     TextView owner_username_textview;
     private Button accept;
@@ -98,7 +99,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
-
+        token = sharedPref.getString("pushToken", "No token");
         viewPager = (CustomViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
 
@@ -215,6 +216,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
                         viewPager.setPagingEnabled(true);
+
+                        //Add token for push notifications
+                        typeref.child(itemID).child("follower").child("agent").setValue(token);
                     }
 
                 }

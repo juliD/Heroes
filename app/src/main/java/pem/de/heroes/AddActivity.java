@@ -95,7 +95,7 @@ public class AddActivity extends AppCompatActivity {
 
 
                 //Add token for push notifications
-                typeref.child(key).child("follower").child(userid).setValue(token);
+                typeref.child(key).child("follower").child("owner").setValue(token);
 
                 //add the menssages directory
                 Map<String, Object> messagesdir = new HashMap<String, Object>();
