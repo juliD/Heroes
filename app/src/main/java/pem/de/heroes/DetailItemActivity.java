@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +38,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 public class DetailItemActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -65,6 +72,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
+
+    DatabaseReference messagesref;
+    EditText messagefield;
+    LinearLayout linear;
+
+    String chat_userid;
+    String chat_message;
 
 
     @Override
@@ -124,10 +138,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 
-
-
-
     private void buildRequestPage(View view) {
+        setTitle("Anfrage");
         accept = (Button) view.findViewById(R.id.accept);
         if (listitem != null) {
             TextView title = (TextView) view.findViewById(R.id.detail_title);
@@ -141,7 +153,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
 
             //enable swiping
-            if(listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)){
+            if (listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)) {
                 viewPager.setPagingEnabled(true);
             }
 
@@ -165,12 +177,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
             //color button green
             if (preferenceUserID.equals(listUserID)) {
-                if(!(listitem.getAgent().equals(""))){
+                if (!(listitem.getAgent().equals(""))) {
                     accept.setText("Karma überweisen");
                     accept.setBackgroundColor(ContextCompat.getColor(this, R.color.complete));
-                }else{
+                } else {
                     accept.setText("Anfrage löschen");
-                    accept.setBackgroundColor(ContextCompat.getColor(this,R.color.delete));
+                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.delete));
                 }
 
             }
@@ -180,7 +192,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 public void onClick(View v) {
 
                     if (preferenceUserID.equals(listUserID)) {
-                        if(!(listitem.getAgent().equals(""))){
+                        if (!(listitem.getAgent().equals(""))) {
                             finish();
                             //code after this should be run anyways even though we call finish
                             Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
@@ -190,18 +202,16 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                             finish();
 
 
-
-                        }else{
+                        } else {
                             finish();
                             Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
                             ref.child("geofire").child(type).child(itemID).removeValue();
                             typeref.child(itemID).removeValue();
 
 
-
                         }
 
-                    }  else {
+                    } else {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
                         viewPager.setPagingEnabled(true);
@@ -213,7 +223,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     private void buildChatPage(View view) {
-        if(listitem!=null){
+        if (listitem != null) {
             owner_username_textview = (TextView) view.findViewById(R.id.username);
             TextView address = (TextView) view.findViewById(R.id.show_address);
 
@@ -226,10 +236,89 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             SupportMapFragment mapFragment =
                     (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
             mapFragment.getMapAsync(this);
+
+            linear = (LinearLayout) view.findViewById(R.id.linearlayout);
+
+            messagesref = typeref.child(itemID).child("messages");
+
+            ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
+            messagefield = (EditText) view.findViewById(R.id.messagefield);
+
+
+
+
+            btn_send.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Map<String, Object> messagemap = new HashMap<String, Object>();
+                    String messagekey = messagesref.push().getKey();
+                    messagesref.updateChildren(messagemap);
+
+
+                    Map<String, Object> messagemapInner = new HashMap<String, Object>();
+                    messagemapInner.put("userid", preferenceUserID);
+                    messagemapInner.put("message", messagefield.getText().toString());
+
+                    messagesref.child(messagekey).updateChildren(messagemapInner);
+
+                    messagefield.setText("");
+                }
+            });
+
+
+            messagesref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    seeChatMessages(dataSnapshot);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    seeChatMessages(dataSnapshot);
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
         }
     }
 
-    public void setAgent() {
+    private void seeChatMessages(DataSnapshot dataSnapshot) {
+        LayoutInflater inflator = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        Iterator i = dataSnapshot.getChildren().iterator();
+
+        while (i.hasNext()) {
+            chat_message = (String) ((DataSnapshot) i.next()).getValue();
+            chat_userid = (String) ((DataSnapshot) i.next()).getValue();
+
+            View item = inflator.inflate(R.layout.chatmessagelayout, null);
+
+            TextView chatmessage = (TextView) item.findViewById(R.id.chatmessage);
+            TextView chatuserid = (TextView) item.findViewById(R.id.usernamechat);
+
+            chatmessage.setText(chat_message);
+            chatuserid.setText(chat_userid);
+
+            linear.addView(item);
+        }
+    }
+
+    private void setAgent() {
         if (!listitem.getAgent().equals("")) {
             ValueEventListener agentListener = new ValueEventListener() {
                 @Override
@@ -237,7 +326,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     //get database value
 
                     agent = dataSnapshot.getValue(User.class);
-                    if(agent!=null){
+                    if (agent != null) {
                         agent_textview.setText(agent.getUsername());
                     }
 
@@ -255,19 +344,18 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-
-    private void giveKarma(DatabaseReference reference){
-        reference.runTransaction(new Transaction.Handler(){
+    private void giveKarma(DatabaseReference reference) {
+        reference.runTransaction(new Transaction.Handler() {
             @Override
-                public Transaction.Result doTransaction(final MutableData currentData) {
-                    if (currentData.getValue() == null) {
-                        currentData.setValue(100);
-                    } else {
-                        int karma = currentData.getValue(Integer.class);
-                        currentData.setValue(karma + 100);
-                    }
-                    return Transaction.success(currentData);
+            public Transaction.Result doTransaction(final MutableData currentData) {
+                if (currentData.getValue() == null) {
+                    currentData.setValue(100);
+                } else {
+                    int karma = currentData.getValue(Integer.class);
+                    currentData.setValue(karma + 100);
                 }
+                return Transaction.success(currentData);
+            }
 
             public void onComplete(DatabaseError firebaseError, boolean committed, DataSnapshot currentData) {
                 if (firebaseError != null) {
@@ -279,32 +367,61 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    public void setUsername() {
-            ValueEventListener ownerListener = new ValueEventListener() {
+    private void loadChatMessage(){
+        if(messagesref!=null){
+            messagesref.addChildEventListener(new ChildEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    //get database value
-                    owner = dataSnapshot.getValue(User.class);
-                    if(owner!=null){
-                        owner_username_textview.setText(owner.getUsername());
-                    }
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    seeChatMessages(dataSnapshot);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    seeChatMessages(dataSnapshot);
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-                    // Getting agent failed, create log
-                    Log.w("on cancelled", "loadPost:onCancelled", databaseError.toException());
-                    Toast.makeText(DetailItemActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
+
                 }
-            };
-            //firebase referenz auf den User, der im listitem steht.
-            ownerref.addListenerForSingleValueEvent(ownerListener);
+            });
+        }
 
     }
 
+    private void setUsername() {
+        ValueEventListener ownerListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //get database value
+                owner = dataSnapshot.getValue(User.class);
+                if (owner != null) {
+                    owner_username_textview.setText(owner.getUsername());
+                }
 
+            }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting agent failed, create log
+                Log.w("on cancelled", "loadPost:onCancelled", databaseError.toException());
+                Toast.makeText(DetailItemActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
+            }
+        };
+        //firebase referenz auf den User, der im listitem steht.
+        ownerref.addListenerForSingleValueEvent(ownerListener);
+
+    }
 
 
     private void addBottomDots(int currentPage) {

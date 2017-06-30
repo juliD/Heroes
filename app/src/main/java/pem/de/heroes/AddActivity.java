@@ -40,6 +40,7 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+        setTitle("Anfrage auf");
         ref = FirebaseDatabase.getInstance().getReference();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
         userid = sharedPref.getString("userid","No UserID");
@@ -52,6 +53,12 @@ public class AddActivity extends AppCompatActivity {
             Bundle extras = getIntent().getExtras();
             if(extras != null) {
                 type= extras.getString(ARG_TYPE);
+                if (type.equals("ask")) {
+                    setTitle("Anfrage erstellen");
+                }else{
+                    setTitle("Angebot aufgeben");
+                }
+
             }
         }
         TextView addrView = (TextView)findViewById(R.id.address);
@@ -83,6 +90,11 @@ public class AddActivity extends AppCompatActivity {
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/"+key,post);
                 typeref.updateChildren(childUpdates);
+
+                //add the menssages directory
+                Map<String, Object> messagesdir = new HashMap<String, Object>();
+                messagesdir.put("messages", "");
+                typeref.child(key).updateChildren(messagesdir);
 
                 GeoFire geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference("geofire"));
                 geoFire.setLocation("/"+type+"/"+key, new GeoLocation(latitude,longitude));
