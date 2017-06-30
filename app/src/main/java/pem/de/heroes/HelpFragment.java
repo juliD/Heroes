@@ -227,6 +227,7 @@ public class HelpFragment extends Fragment {
                 if(listItem==null){
                     return;
                 }
+
                 Log.d("Fragment", "Item Title: "+listItem.getTitle());
                 listItem.setid(dataSnapshot.getKey());
                 listItem.setDistance(itemToDistance.get(dataSnapshot.getKey()));
@@ -240,6 +241,7 @@ public class HelpFragment extends Fragment {
                         }
 
                     }else{
+
                         if(listItem.getAgent().equals("")||listItem.getAgent().equals(userid)||listItem.getUserID().equals(userid)){
                             newItem(listItem);
                         }

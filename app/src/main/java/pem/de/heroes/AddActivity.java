@@ -33,6 +33,7 @@ public class AddActivity extends AppCompatActivity {
     private String street;
     private String city;
     private String agent;
+    private String token;
 
     String userid;
 
@@ -45,6 +46,7 @@ public class AddActivity extends AppCompatActivity {
         userid = sharedPref.getString("userid","No UserID");
         street = sharedPref.getString("street","");
         city = sharedPref.getString("city","");
+        token = sharedPref.getString("pushToken","");
         final double latitude = Helper.getDouble(sharedPref,"homelat",0);
         final double longitude = Helper.getDouble(sharedPref,"homelong",0);
 
@@ -83,6 +85,9 @@ public class AddActivity extends AppCompatActivity {
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/"+key,post);
                 typeref.updateChildren(childUpdates);
+
+                //Add token for push notifications
+                typeref.child(key).child("follower").child(userid).setValue(token);
 
                 GeoFire geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference("geofire"));
                 geoFire.setLocation("/"+type+"/"+key, new GeoLocation(latitude,longitude));

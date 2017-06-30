@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private FirebaseAuth auth;
     private String userid;
     SharedPreferences sharedPref;
-    String notificationToken;
     FirebaseUser fuser;
 
     @Override
@@ -275,7 +274,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 e.printStackTrace();
             }
             final String token = t1.getResult().getToken();
-            notificationToken = token;
+
+            //Add Token to sharedPreferences
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("pushToken",token);
+            editor.commit();
+
+            //Add Token to database
+            DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
+            users.child(fuser.getUid()).child("pushToken").setValue(sharedPref.getString("pushToken",""));
+
             return null;
         }
     }
