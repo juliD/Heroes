@@ -4,8 +4,13 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -24,13 +29,21 @@ public class MessagingService extends FirebaseMessagingService {
         // message, here is where that should be initiated.
         Log.d(TAG, "From: " + remoteMessage.getFrom());
         Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        Log.d(TAG,"ClickAction "+remoteMessage.getNotification().getClickAction());
+
+
         sendNotification(remoteMessage.getNotification().getTitle(),remoteMessage.getNotification().getBody());
+
     }
 
     public void sendNotification(String title, String body){
+        Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.hero_bw);
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.notification)
+                        .setLargeIcon(largeIcon)
+                        .setAutoCancel(true)
                         .setContentTitle(title)
                         .setContentText(body);
 
