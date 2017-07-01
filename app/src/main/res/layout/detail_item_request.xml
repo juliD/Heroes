@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         android:text="Title"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -51,17 +51,25 @@
 
     <TextView
         android:id="@+id/agent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="252dp"
+        android:layout_height="19dp"
         android:layout_gravity="start"
-        android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="34dp"
         android:text="Bearbeiter konnte leider nicht geladen werden."
         android:textAlignment="textStart"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_description" />
+        app:layout_constraintTop_toBottomOf="@+id/detail_description"
+        app:layout_constraintLeft_toRightOf="@+id/textView14"
+        android:layout_marginLeft="8dp" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:text="Bearbeiter:"
+        app:layout_constraintBaseline_toBaselineOf="@+id/agent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

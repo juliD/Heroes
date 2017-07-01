@@ -3,7 +3,9 @@ package pem.de.heroes;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
@@ -12,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +84,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     String chat_userid;
     String chat_message;
+    ScrollView scrollview;
 
 
     @Override
@@ -237,8 +242,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             address.setText(listitem.getAddress());
 
             home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
-            SupportMapFragment mapFragment =
-                    (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
             mapFragment.getMapAsync(this);
 
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
@@ -247,6 +251,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
             ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
             messagefield = (EditText) view.findViewById(R.id.messagefield);
+            scrollview = ((ScrollView) view.findViewById(R.id.scrollview));
 
 
 
@@ -254,49 +259,20 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             btn_send.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //creates a node in messages that will later contain the message and userid
                     Map<String, Object> messagemap = new HashMap<String, Object>();
                     String messagekey = messagesref.push().getKey();
                     messagesref.updateChildren(messagemap);
 
-
+                    //adds the message and the userid to the node
                     Map<String, Object> messagemapInner = new HashMap<String, Object>();
                     messagemapInner.put("userid", preferenceUserID);
                     messagemapInner.put("message", messagefield.getText().toString());
-
                     messagesref.child(messagekey).updateChildren(messagemapInner);
 
                     messagefield.setText("");
                 }
             });
-
-
-            messagesref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    seeChatMessages(dataSnapshot);
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    seeChatMessages(dataSnapshot);
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
 
         }
     }
@@ -304,22 +280,71 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private void seeChatMessages(DataSnapshot dataSnapshot) {
         LayoutInflater inflator = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        //iterates through all the children of messages. Takes the values and creates a new textview with them.
         Iterator i = dataSnapshot.getChildren().iterator();
-
         while (i.hasNext()) {
             chat_message = (String) ((DataSnapshot) i.next()).getValue();
             chat_userid = (String) ((DataSnapshot) i.next()).getValue();
 
-            View item = inflator.inflate(R.layout.chatmessagelayout, null);
+            View item = inflator.inflate(R.layout.layoutmessages2, null);
 
             TextView chatmessage = (TextView) item.findViewById(R.id.chatmessage);
-            TextView chatuserid = (TextView) item.findViewById(R.id.usernamechat);
+            TextView usernamechat = (TextView) item.findViewById(R.id.usernamechat);
+            LinearLayout linearlayout2 = (LinearLayout) item.findViewById(R.id.linearlayout2);
+            LinearLayout containermessage = (LinearLayout) item.findViewById(R.id.containermessage);
+
+
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0,12,0,12);
+            item.setLayoutParams(layoutParams);
 
             chatmessage.setText(chat_message);
-            chatuserid.setText(chat_userid);
+
+            if(chat_userid.equals(listitem.getUserID())){
+                if(owner==null){
+                    usernamechat.setText("Anfragensteller");
+                }else{
+                    usernamechat.setText(owner.getUsername());
+                }
+
+
+                linearlayout2.setGravity(Gravity.END);
+                containermessage.setBackgroundResource(R.drawable.roundedrectangle);
+                GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();
+                gd.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                gd.setStroke(4, (ContextCompat.getColor(this, R.color.colorPrimary)));
+                containermessage.setGravity(Gravity.END);
+                usernamechat.setGravity(Gravity.END);
+                chatmessage.setGravity(Gravity.END);
+            }else if(listitem.getAgent()!=null){
+                if(agent==null){
+                    usernamechat.setText("Bearbeiter");
+                }else{
+                    usernamechat.setText(agent.getUsername());
+                }
+
+                linearlayout2.setGravity(Gravity.START);
+                containermessage.setBackgroundResource(R.drawable.roundedrectangle);
+                GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();
+                gd.setColor(ContextCompat.getColor(this, R.color.colorAccent));
+                gd.setStroke(4, (ContextCompat.getColor(this, R.color.colorAccent)));
+                containermessage.setGravity(Gravity.START);
+                usernamechat.setGravity(Gravity.START);
+                chatmessage.setGravity(Gravity.START);            }
 
             linear.addView(item);
+
         }
+
+        //makes sure that chat is scrolled to the bottom and the latest message is displayed.
+        scrollview.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+
     }
 
     private void setAgent() {
@@ -332,6 +357,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     agent = dataSnapshot.getValue(User.class);
                     if (agent != null) {
                         agent_textview.setText(agent.getUsername());
+                        agent.setUserid(listitem.getAgent());
+                        messagesEventListener();
+
                     }
 
                 }
@@ -371,36 +399,27 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    private void loadChatMessage(){
-        if(messagesref!=null){
-            messagesref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    seeChatMessages(dataSnapshot);
-                }
+    private void messagesEventListener(){
+        messagesref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                seeChatMessages(dataSnapshot);
+            }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    seeChatMessages(dataSnapshot);
-                }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                seeChatMessages(dataSnapshot);
+            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
-                }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
     }
 
     private void setUsername() {
@@ -411,10 +430,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 owner = dataSnapshot.getValue(User.class);
                 if (owner != null) {
                     owner_username_textview.setText(owner.getUsername());
+                    owner.setUserid(listitem.getUserID());
+                    messagesEventListener();
                 }
 
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting agent failed, create log
@@ -424,7 +444,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         };
         //firebase referenz auf den User, der im listitem steht.
         ownerref.addListenerForSingleValueEvent(ownerListener);
-
     }
 
 
@@ -513,3 +532,19 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 }
+
+/*        <TextView
+            android:id="@+id/usernamechat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp" />
+
+
+        <TextView
+            android:id="@+id/chatmessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp" />*/
