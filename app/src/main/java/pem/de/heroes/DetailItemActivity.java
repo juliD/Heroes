@@ -532,19 +532,3 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
 }
-
-/*        <TextView
-            android:id="@+id/usernamechat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp" />
-
-
-        <TextView
-            android:id="@+id/chatmessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp" />*/
