@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#326680</color>
     <color name="colorAccent">#c33c54</color>
     <color name="gray">#999999</color>
-    <color name="lightgray">#dddddd</color>
+    <color name="lightgray">#e9e9e9</color>
     <color name="own">#0f40a1</color>
     <color name="complete">#499167</color>
     <color name="delete">#ff0000</color>

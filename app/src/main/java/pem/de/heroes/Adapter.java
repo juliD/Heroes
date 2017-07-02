@@ -7,7 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -23,13 +26,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     private Context context;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, info, dist;
+        public TextView title, info, dist, status;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.item_title);
             info = (TextView) view.findViewById(R.id.item_description);
             dist = (TextView) view.findViewById(R.id.distance);
+            status = (TextView) view.findViewById(R.id.status);
         }
 
 
@@ -47,6 +51,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item, parent, false);
 
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0,0,0,8);
+        itemView.setLayoutParams(layoutParams);
+
         return new MyViewHolder(itemView);
     }
 
@@ -63,10 +71,20 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
         //check if I am agent or if it is my offer and set background color depending on that
         if(item.getAgent().equals(userid)){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.accepted));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.bg_screen2));
+            holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
+            holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
+            holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
+            holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
+            holder.status.setText("Hilf!");
         }
         if(item.getUserID().equals(userid)){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.own));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+            holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
+            holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
+            holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
+            holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
+            holder.status.setText("Deins!");
         }
 
 

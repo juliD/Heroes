@@ -59,6 +59,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     String marker;
     ListItem listitem;
     LatLng home;
+    TextView address;
     private DatabaseReference ref;
     private String type = "offer";
     private String itemID;
@@ -151,6 +152,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             TextView title = (TextView) view.findViewById(R.id.detail_title);
             TextView info = (TextView) view.findViewById(R.id.detail_description);
             agent_textview = (TextView) view.findViewById(R.id.agent);
+            address = (TextView) view.findViewById(R.id.show_address);
 
             listUserID = listitem.getUserID();
 
@@ -158,15 +160,25 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             info.setText(listitem.getDescription());
 
 
+
+
+
+
             //enable swiping
             if (listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)) {
                 viewPager.setPagingEnabled(true);
+
+                showAddress();
             }
 
             if (listUserID.equals(preferenceUserID)) {
                 if (listitem.getAgent().equals("")) {
                     agent_textview.setText("Leider hat noch niemand deine Anfrage angenommen.");
+                    accept.setText("Anfrage löschen");
+                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.delete));
                 } else {
+                    accept.setText("Karma überweisen");
+                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.complete));
                     agentref = ref.child("users").child(listitem.getAgent());
                     setAgent();
                 }
@@ -175,23 +187,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
                 } else if (listitem.getAgent().equals(preferenceUserID)) {
                     agent_textview.setText("Du hast diese Anfrage angenommen!");
+                    accept.setText("Wieder abgeben");
                 } else {
                     agent_textview.setText("Jemand anderes hat die Anfrage leider vor dir angenommen.");
                 }
             }
 
-
-            //color button green
-            if (preferenceUserID.equals(listUserID)) {
-                if (!(listitem.getAgent().equals(""))) {
-                    accept.setText("Karma überweisen");
-                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.complete));
-                } else {
-                    accept.setText("Anfrage löschen");
-                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.delete));
-                }
-
-            }
 
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -217,13 +218,20 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                         }
 
-                    } else {
+                    } else if(listitem.getAgent().equals("")){
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
                         viewPager.setPagingEnabled(true);
+                        showAddress();
+                        accept.setText("Wieder abgeben");
 
                         //Add token for push notifications
                         typeref.child(itemID).child("follower").child("agent").setValue(token);
+                    }else if(listitem.getAgent().equals(preferenceUserID)){
+                        agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
+                        typeref.child(itemID).child("agent").setValue("");
+                        typeref.child(itemID).child("follower").child("agent").setValue("");
+                        accept.setText("Annehmen");
                     }
 
                 }
@@ -234,16 +242,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private void buildChatPage(View view) {
         if (listitem != null) {
             owner_username_textview = (TextView) view.findViewById(R.id.username);
-            TextView address = (TextView) view.findViewById(R.id.show_address);
+
 
             ownerref = ref.child("users").child(listitem.getUserID());
 
             setUsername();
-            address.setText(listitem.getAddress());
 
-            home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
-            mapFragment.getMapAsync(this);
 
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
@@ -315,6 +319,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 gd.setColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 gd.setStroke(4, (ContextCompat.getColor(this, R.color.colorPrimary)));
                 containermessage.setGravity(Gravity.END);
+
                 usernamechat.setGravity(Gravity.END);
                 chatmessage.setGravity(Gravity.END);
             }else if(listitem.getAgent()!=null){
@@ -374,6 +379,14 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             //firebase referenz auf den User, der im listitem steht.
             agentref.addListenerForSingleValueEvent(agentListener);
         }
+    }
+
+    private void showAddress(){
+        address.setText(listitem.getAddress());
+
+        home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
+        mapFragment.getMapAsync(this);
     }
 
     private void giveKarma(DatabaseReference reference) {

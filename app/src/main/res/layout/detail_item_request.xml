@@ -6,6 +6,16 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/textView13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Adresse:"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@+id/show_address" />
+
+    <TextView
         android:id="@+id/detail_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,13 +65,46 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginRight="16dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="24dp"
         android:text="Bearbeiter konnte leider nicht geladen werden."
         android:textAlignment="textStart"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detail_description"
         app:layout_constraintLeft_toRightOf="@+id/textView14"
-        android:layout_marginLeft="8dp" />
+        android:layout_marginLeft="8dp"
+        app:layout_constraintHorizontal_bias="0.0" />
+
+    <TextView
+        android:id="@+id/show_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="8dp"
+        android:gravity="end"
+        android:text="Die Adresse und Karte wird dir erst angezeigt wenn du den Vorgang angenommen hast."
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toTopOf="@+id/maps"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@+id/textView13"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <fragment
+        android:id="@+id/maps"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="160dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/accept" />
 
     <TextView
         android:id="@+id/textView14"
