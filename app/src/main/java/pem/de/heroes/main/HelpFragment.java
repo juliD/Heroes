@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.main;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +33,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import pem.de.heroes.shared.Helper;
+import pem.de.heroes.R;
+import pem.de.heroes.model.ListItem;
 
 
 public class HelpFragment extends Fragment {

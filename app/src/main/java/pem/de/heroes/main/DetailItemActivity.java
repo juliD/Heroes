@@ -1,9 +1,8 @@
-package pem.de.heroes;
+package pem.de.heroes.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.content.ContextCompat;
@@ -46,6 +45,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import pem.de.heroes.shared.Helper;
+import pem.de.heroes.R;
+import pem.de.heroes.welcome.CustomViewPager;
+import pem.de.heroes.model.ListItem;
+import pem.de.heroes.model.User;
 
 
 public class DetailItemActivity extends AppCompatActivity implements OnMapReadyCallback {

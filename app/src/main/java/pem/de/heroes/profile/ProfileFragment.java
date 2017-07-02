@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.profile;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import pem.de.heroes.R;
 
 public class ProfileFragment extends Fragment {
 

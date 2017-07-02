@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;

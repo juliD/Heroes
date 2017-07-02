@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="WelcomeActivity"
+            android:name=".welcome.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">  >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name="MainActivity"
+            android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="MainActivity" />
@@ -32,28 +32,28 @@
         </activity>
 
         <activity
-            android:name=".DetailItemActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".main.DetailItemActivity"
+            android:parentActivityName=".main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".main.MainActivity" />
         </activity>
 
         <activity
-            android:name=".AddActivity"
-            android:parentActivityName=".MainActivity">
+            android:name=".main.AddActivity"
+            android:parentActivityName=".main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".main.MainActivity" />
         </activity>
 
         <activity
-            android:name=".EditSettingsActivity"
-            android:parentActivityName=".MainActivity"
+            android:name=".profile.EditSettingsActivity"
+            android:parentActivityName=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".main.MainActivity" />
         </activity>
 
         <meta-data
@@ -72,14 +72,14 @@
             android:required="true" />
 
         <service
-            android:name=".MessagingService">
+            android:name=".service.MessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".InstanceIdService">
+            android:name=".service.InstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<pem.de.heroes.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<pem.de.heroes.profile.SquareLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,4 +18,4 @@
         android:textSize="30sp"
         android:gravity="center" />
 
-</pem.de.heroes.SquareLayout>
+</pem.de.heroes.profile.SquareLayout>

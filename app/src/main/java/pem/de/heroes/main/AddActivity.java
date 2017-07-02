@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.main;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -12,18 +12,17 @@ import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import pem.de.heroes.shared.Helper;
+import pem.de.heroes.R;
+import pem.de.heroes.model.ListItem;
 
 public class AddActivity extends AppCompatActivity {
 

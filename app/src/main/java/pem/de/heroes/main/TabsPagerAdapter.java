@@ -1,7 +1,9 @@
-package pem.de.heroes;
+package pem.de.heroes.main;
 
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import pem.de.heroes.profile.ProfileFragment;
 
 /**
  * Created by Julia on 10.06.2017.

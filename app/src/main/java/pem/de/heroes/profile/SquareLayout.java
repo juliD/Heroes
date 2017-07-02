@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.profile;
 
 import android.content.Context;
 import android.util.AttributeSet;

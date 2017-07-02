@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.profile;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import pem.de.heroes.shared.Helper;
+import pem.de.heroes.R;
 
 public class EditSettingsActivity extends AppCompatActivity {
 

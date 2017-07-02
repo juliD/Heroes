@@ -1,7 +1,6 @@
-package pem.de.heroes;
+package pem.de.heroes.main;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,9 +9,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
+
+import pem.de.heroes.R;
+import pem.de.heroes.model.ListItem;
 
 /**
  * Created by Julia on 25.06.2017.

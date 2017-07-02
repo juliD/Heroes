@@ -1,6 +1,6 @@
-package pem.de.heroes;
+package pem.de.heroes.profile;
 
-class Hero {
+public class Hero {
     private String name;
     private int requiredKarmaTillNextLevel;
 

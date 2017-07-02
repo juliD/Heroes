@@ -1,4 +1,4 @@
-package pem.de.heroes;
+package pem.de.heroes.welcome;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,10 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -24,7 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.support.v4.view.ViewPager.SCROLL_STATE_DRAGGING;
+import pem.de.heroes.main.MainActivity;
+import pem.de.heroes.R;
 
 public class WelcomeActivity extends AppCompatActivity {
 
