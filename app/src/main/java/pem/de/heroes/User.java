@@ -1,20 +1,17 @@
 package pem.de.heroes;
 
-import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * Created by fealt on 22.06.2017.
- */
 @IgnoreExtraProperties
 public class User {
 
     private String userid;
     private String username;
     private int karma;
+    private int asksCreated;
+    private int asksFullfilled;
+    private int offersCreated;
+    private int offersUsed;
 
     public User(){
         //default constructor required for datasnapshot
@@ -26,29 +23,59 @@ public class User {
         this.karma = karma;
     }
 
-
-    public String getUserid(){
+    public String getUserid() {
         return userid;
     }
-    public String getUsername(){
-        return username;
-    }
 
-    public int getKarma(){
-        return karma;
-    }
-
-    public void setUserid(String userid){
+    public void setUserid(String userid) {
         this.userid = userid;
     }
 
-    public void setUsername(String username){
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
         this.username = username;
     }
-    public void setKarma(int karma){
+
+    public int getKarma() {
+        return karma;
+    }
+
+    public void setKarma(int karma) {
         this.karma = karma;
     }
 
+    public int getAsksCreated() {
+        return asksCreated;
+    }
 
+    public void setAsksCreated(int asksCreated) {
+        this.asksCreated = asksCreated;
+    }
 
+    public int getAsksFullfilled() {
+        return asksFullfilled;
+    }
+
+    public void setAsksFullfilled(int asksFullfilled) {
+        this.asksFullfilled = asksFullfilled;
+    }
+
+    public int getOffersCreated() {
+        return offersCreated;
+    }
+
+    public void setOffersCreated(int offersCreated) {
+        this.offersCreated = offersCreated;
+    }
+
+    public int getOffersUsed() {
+        return offersUsed;
+    }
+
+    public void setOffersUsed(int offersUsed) {
+        this.offersUsed = offersUsed;
+    }
 }

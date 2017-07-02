@@ -1,29 +1,23 @@
 package pem.de.heroes;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableWrapper;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class ProfileFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-    private SharedPreferences sharedPreferences;
-    private TextView usernameTextView;
+public class ProfileFragment extends Fragment {
 
     private final Hero[] heroes = {
             new Hero("Wannabe Hero", 100),
@@ -32,10 +26,6 @@ public class ProfileFragment extends Fragment implements SharedPreferences.OnSha
             new Hero("Master Hero", 100000),
             new Hero("Local Hero", 1000000)
     };
-
-    private final int MIN_COUNT_BRONZE = 10;
-    private final int MIN_COUNT_SILVER = 50;
-    private final int MIN_COUNT_GOLD = 100;
 
     public ProfileFragment() {
 
@@ -51,33 +41,72 @@ public class ProfileFragment extends Fragment implements SharedPreferences.OnSha
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        sharedPreferences = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        String username = sharedPreferences.getString("username", "");
-        int karma = sharedPreferences.getInt("karma", 0);
+        final TextView username = (TextView) view.findViewById(R.id.username);
+        final View hero = view.findViewById(R.id.hero);
+        final View medal1 = view.findViewById(R.id.medal1);
+        final View medal2 = view.findViewById(R.id.medal2);
+        final View medal3 = view.findViewById(R.id.medal3);
+        final View medal4 = view.findViewById(R.id.medal4);
 
-        usernameTextView = (TextView) view.findViewById(R.id.usernameTextView);
-        usernameTextView.setText(username);
+        setHero(hero, 0);
+        setMedal(medal1, 0);
+        setMedal(medal2, 0);
+        setMedal(medal3, 0);
+        setMedal(medal4, 0);
 
-        setHero(view, 50000);
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
 
-        setMedal(view, R.id.medal1, 5);
-        setMedal(view, R.id.medal2, 20);
-        setMedal(view, R.id.medal3, 53);
-        setMedal(view, R.id.medal4, 125);
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                onChildChanged(dataSnapshot, s);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                switch (dataSnapshot.getKey()) {
+                    case "karma":
+                        setHero(hero, dataSnapshot.getValue(Integer.class));
+                        break;
+                    case "asksCreated":
+                        setMedal(medal1, dataSnapshot.getValue(Integer.class));
+                        break;
+                    case "asksFullfilled":
+                        setMedal(medal2, dataSnapshot.getValue(Integer.class));
+                        break;
+                    case "offersCreated":
+                        setMedal(medal3, dataSnapshot.getValue(Integer.class));
+                        break;
+                    case "offersUsed":
+                        setMedal(medal4, dataSnapshot.getValue(Integer.class));
+                        break;
+                    case "username":
+                        username.setText(dataSnapshot.getValue(String.class));
+                        break;
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         return view;
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.e("Profile", key);
-        if (key.equals("username")) {
-            usernameTextView.setText(sharedPreferences.getString("username", ""));
-        }
-    }
-
-    private void setHero(View view, int karma) {
+    private void setHero(View heroView, int karma) {
         Hero hero = null;
         int progress = karma;
         for (Hero h : heroes) {
@@ -94,48 +123,53 @@ public class ProfileFragment extends Fragment implements SharedPreferences.OnSha
             progress = hero.getRequiredKarmaTillNextLevel(); // maximum
         }
 
-        TextView titleTextView = (TextView) view.findViewById(R.id.titleTextView);
-        titleTextView.setText(hero.getName());
+        TextView heroTitle = (TextView) heroView.findViewById(R.id.heroTitle);
+        heroTitle.setText(hero.getName());
 
-        TextView  karmaTextView = (TextView) view.findViewById(R.id.karmaTextView);
-        karmaTextView.setText(progress + " / " + hero.getRequiredKarmaTillNextLevel() + " Karma");
+        TextView karmaText = (TextView) heroView.findViewById(R.id.karmaText);
+        karmaText.setText(progress + " / " + hero.getRequiredKarmaTillNextLevel() + " Karma");
 
-        ProgressBar karmaProgressBar = (ProgressBar) view.findViewById(R.id.karmaProgressBar);
-        karmaProgressBar.setProgress(100 * progress / hero.getRequiredKarmaTillNextLevel()); // percentage
+        ProgressBar karmaProgress = (ProgressBar) heroView.findViewById(R.id.karmaProgress);
+        karmaProgress.setProgress(100 * progress / hero.getRequiredKarmaTillNextLevel()); // percentage
     }
 
-    private void setMedal(View view, int resource, int progress) {
-        RelativeLayout medal = (RelativeLayout) view.findViewById(resource);
-        ProgressBar medalProgressBar = (ProgressBar) medal.findViewById(R.id.progressBar);
-        TextView medalNumber = (TextView) medal.findViewById(R.id.number);
+    private void setMedal(View medalView, int progress) {
+        ProgressBar medalProgressBar = (ProgressBar) medalView.findViewById(R.id.progressBar);
+        TextView medalNumber = (TextView) medalView.findViewById(R.id.number);
+
+        final int MIN_COUNT_GOLD = 100;
+        final int MIN_COUNT_SILVER = 50;
+        final int MIN_COUNT_BRONZE = 10;
+
+        int color = 0, max = 0;
+        Drawable progressDrawable = null;
 
         if (progress < MIN_COUNT_BRONZE) {
-            int colorNormal = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null);
-            Drawable progressNormal = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_normal, null);
-            medalNumber.setTextColor(colorNormal);
-            medalProgressBar.setProgressDrawable(progressNormal);
-            medalProgressBar.setMax(MIN_COUNT_BRONZE);
+            color = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null);
+            progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_normal, null);
+            max = MIN_COUNT_BRONZE;
         } else if (progress < MIN_COUNT_SILVER) {
-            int colorBronze = ResourcesCompat.getColor(getResources(), R.color.bronze, null);
-            Drawable progressBronze = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_bronze, null);
-            medalNumber.setTextColor(colorBronze);
-            medalProgressBar.setProgressDrawable(progressBronze);
-            medalProgressBar.setMax(MIN_COUNT_SILVER);
+            color = ResourcesCompat.getColor(getResources(), R.color.bronze, null);
+            progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_bronze, null);
+            max = MIN_COUNT_SILVER;
         } else if (progress < MIN_COUNT_GOLD) {
-            int colorSilver = ResourcesCompat.getColor(getResources(), R.color.silver, null);
-            Drawable progressSilver = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_silver, null);
-            medalNumber.setTextColor(colorSilver);
-            medalProgressBar.setProgressDrawable(progressSilver);
-            medalProgressBar.setMax(MIN_COUNT_GOLD);
+            color = ResourcesCompat.getColor(getResources(), R.color.silver, null);
+            progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_silver, null);
+            max = MIN_COUNT_GOLD;
         } else {
-            int colorGold = ResourcesCompat.getColor(getResources(), R.color.gold, null);
-            Drawable progressGold = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_gold, null);
-            medalNumber.setTextColor(colorGold);
-            medalProgressBar.setProgressDrawable(progressGold);
-            medalProgressBar.setMax(MIN_COUNT_GOLD);
+            color = ResourcesCompat.getColor(getResources(), R.color.gold, null);
+            progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_gold, null);
+            max = MIN_COUNT_GOLD;
         }
 
-        medalProgressBar.setProgress(progress < MIN_COUNT_GOLD ? progress: MIN_COUNT_GOLD); // maximum
+        medalNumber.setTextColor(color);
         medalNumber.setText(progress + "");
+
+        progress = progress < MIN_COUNT_GOLD ? progress: MIN_COUNT_GOLD;
+        if (medalProgressBar.getProgress() != progress || progress == 0) {
+            medalProgressBar.setProgressDrawable(progressDrawable);
+            medalProgressBar.setMax(max);
+            medalProgressBar.setProgress(progress); // maximum
+        }
     }
 }
