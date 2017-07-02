@@ -12,8 +12,12 @@ import android.widget.TextView;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -92,11 +96,14 @@ public class AddActivity extends AppCompatActivity {
                 childUpdates.put("/"+key,post);
                 typeref.updateChildren(childUpdates);
 
+                // Increment value for statistics
+                DatabaseReference countCreated = ref.child("users").child(userid).child(type + "sCreated");
+                countCreated.runTransaction(new IncrementTransactionHandler());
 
-                //Add token for push notifications
+                // Add token for push notifications
                 typeref.child(key).child("follower").child("owner").setValue(token);
 
-                //add the menssages directory
+                // Add the menssages directory
                 Map<String, Object> messagesdir = new HashMap<String, Object>();
                 messagesdir.put("messages", "");
                 typeref.child(key).updateChildren(messagesdir);
