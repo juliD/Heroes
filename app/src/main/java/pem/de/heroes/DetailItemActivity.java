@@ -160,10 +160,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             info.setText(listitem.getDescription());
 
 
-
-
-
-
             //enable swiping
             if (listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)) {
                 viewPager.setPagingEnabled(true);
@@ -218,7 +214,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                         }
 
-                    } else if(listitem.getAgent().equals("")){
+                    } else if (listitem.getAgent().equals("")) {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
                         viewPager.setPagingEnabled(true);
@@ -227,7 +223,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                         //Add token for push notifications
                         typeref.child(itemID).child("follower").child("agent").setValue(token);
-                    }else if(listitem.getAgent().equals(preferenceUserID)){
+                    } else if (listitem.getAgent().equals(preferenceUserID)) {
                         agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
                         typeref.child(itemID).child("agent").setValue("");
                         typeref.child(itemID).child("follower").child("agent").setValue("");
@@ -256,8 +252,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
             messagefield = (EditText) view.findViewById(R.id.messagefield);
             scrollview = ((ScrollView) view.findViewById(R.id.scrollview));
-
-
 
 
             btn_send.setOnClickListener(new View.OnClickListener() {
@@ -298,21 +292,14 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             LinearLayout containermessage = (LinearLayout) item.findViewById(R.id.containermessage);
 
 
-
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0,12,0,12);
+            layoutParams.setMargins(0, 12, 0, 12);
             item.setLayoutParams(layoutParams);
 
             chatmessage.setText(chat_message);
 
-            if(chat_userid.equals(listitem.getUserID())){
-                if(owner==null){
-                    usernamechat.setText("Anfragensteller");
-                }else{
-                    usernamechat.setText(owner.getUsername());
-                }
-
-
+            if (chat_userid.equals(preferenceUserID)) {
+                usernamechat.setText("Du");
                 linearlayout2.setGravity(Gravity.END);
                 containermessage.setBackgroundResource(R.drawable.roundedrectangle);
                 GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();
@@ -322,13 +309,20 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                 usernamechat.setGravity(Gravity.END);
                 chatmessage.setGravity(Gravity.END);
-            }else if(listitem.getAgent()!=null){
-                if(agent==null){
-                    usernamechat.setText("Bearbeiter");
+            } else {
+                if(listUserID.equals(preferenceUserID)){
+                    if (agent == null) {
+                        usernamechat.setText("Bearbeiter");
+                    } else {
+                        usernamechat.setText(agent.getUsername());
+                    }
                 }else{
-                    usernamechat.setText(agent.getUsername());
+                    if(owner ==null){
+                        usernamechat.setText("Anfragensteller");
+                    }else{
+                        usernamechat.setText(owner.getUsername());
+                    }
                 }
-
                 linearlayout2.setGravity(Gravity.START);
                 containermessage.setBackgroundResource(R.drawable.roundedrectangle);
                 GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();
@@ -336,7 +330,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 gd.setStroke(4, (ContextCompat.getColor(this, R.color.colorAccent)));
                 containermessage.setGravity(Gravity.START);
                 usernamechat.setGravity(Gravity.START);
-                chatmessage.setGravity(Gravity.START);            }
+                chatmessage.setGravity(Gravity.START);
+            }
 
             linear.addView(item);
 
@@ -381,7 +376,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
-    private void showAddress(){
+    private void showAddress() {
         address.setText(listitem.getAddress());
 
         home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
@@ -412,7 +407,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
-    private void messagesEventListener(){
+    private void messagesEventListener() {
         messagesref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -425,13 +420,16 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+            }
 
             @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
     }
 
@@ -448,6 +446,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 }
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting agent failed, create log

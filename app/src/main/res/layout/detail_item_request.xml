@@ -64,15 +64,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="24dp"
         android:text="Bearbeiter konnte leider nicht geladen werden."
-        android:textAlignment="textStart"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/detail_description"
+        android:textAlignment="textEnd"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/textView14"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/detail_description" />
 
     <TextView
         android:id="@+id/show_address"
