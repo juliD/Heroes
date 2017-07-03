@@ -368,8 +368,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     if (agent != null) {
                         agent_textview.setText(agent.getUsername());
                         agent.setUserid(listitem.getAgent());
-                        messagesEventListener();
-
                     }
 
                 }
