@@ -98,6 +98,10 @@ public class EditSettingsActivity extends AppCompatActivity {
                 final String city = cityEdit.getText().toString();
                 final String street = streetEdit.getText().toString();
                 final int radius = getRadius(radiusBar.getProgress());
+                if (username.isEmpty() || city.isEmpty() || street.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Fülle bitte alle Felder aus ...", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
                 if (newLoc == null) {

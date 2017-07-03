@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -27,66 +28,64 @@ import pem.de.heroes.model.ListItem;
 public class AddActivity extends AppCompatActivity {
 
     private static final String ARG_TYPE = "fragment_type";
-    private String type ="offer";
-    DatabaseReference ref;
+    private String type = "offer";
+    private DatabaseReference ref;
     private String street;
     private String city;
-    private String agent;
     private String token;
-
-    String userid;
+    private String userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-        setTitle("Anfrage auf");
-        ref = FirebaseDatabase.getInstance().getReference();
-        SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
-        userid = sharedPref.getString("userid","No UserID");
-        street = sharedPref.getString("street","");
-        city = sharedPref.getString("city","");
-        token = sharedPref.getString("pushToken","");
-        final double latitude = Helper.getDouble(sharedPref,"homelat",0);
-        final double longitude = Helper.getDouble(sharedPref,"homelong",0);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
-            if(extras != null) {
-                type= extras.getString(ARG_TYPE);
-                if (type.equals("ask")) {
-                    setTitle("Anfrage erstellen");
-                }else{
-                    setTitle("Angebot aufgeben");
-                }
-
+            if (extras != null) {
+                type = extras.getString(ARG_TYPE);
+                setTitle(type.equals("ask") ? "Anfrage erstellen" : "Angebot aufgeben");
             }
         }
-        TextView addrView = (TextView)findViewById(R.id.address);
-        TextView cityView = (TextView) findViewById(R.id.city);
-        addrView.setText(street);
+
+        ref = FirebaseDatabase.getInstance().getReference();
+        SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        userid = sharedPref.getString("userid", "No UserID");
+        street = sharedPref.getString("street", "");
+        city = sharedPref.getString("city", "");
+        token = sharedPref.getString("pushToken", "");
+        final double latitude = Helper.getDouble(sharedPref, "homelat", 0);
+        final double longitude = Helper.getDouble(sharedPref, "homelong", 0);
+
+        final TextView streetView = (TextView) findViewById(R.id.street);
+        final TextView cityView = (TextView) findViewById(R.id.city);
+        final EditText titleView = (EditText) findViewById(R.id.add_title);
+        final EditText descView = (EditText) findViewById(R.id.add_description);
+
+        streetView.setText(street);
         cityView.setText(city);
 
         Button create = (Button) findViewById(R.id.create);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String title = titleView.getText().toString();
+                String description = descView.getText().toString();
+                String address = street + ", " + city;
 
-                EditText titleView = (EditText) findViewById(R.id.add_title);
-                EditText descView = (EditText) findViewById(R.id.add_description);
-                TextView addrView = (TextView)findViewById(R.id.address);
-
-                if(titleView.getText().equals("")&&descView.getText().equals("")&&addrView.getText().equals("")){
+                if (title.isEmpty() || description.isEmpty() || street.isEmpty() || city.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Fülle bitte alle Felder aus ...", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Log.d("AddActivity","type: "+ type);
+
+                Log.d("AddActivity", "type: "+ type);
                 DatabaseReference typeref = ref.child(type);
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
-                String currentDateandTime = sdf.format(Calendar.getInstance().getTime());
-                ListItem listItem = new ListItem(titleView.getText().toString(), descView.getText().toString(),street+", "+city,userid,"",currentDateandTime);
+                String currentDateAndTime = sdf.format(Calendar.getInstance().getTime());
+                ListItem listItem = new ListItem(title, description, address, userid, "", currentDateAndTime);
                 String key = typeref.push().getKey();
-                Log.d("AddActivity","added key: "+ key);
+                Log.d("AddActivity", "added key: " + key);
                 Map<String, Object> post = listItem.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/"+key,post);
@@ -104,15 +103,12 @@ public class AddActivity extends AppCompatActivity {
                 messagesdir.put("messages", "");
                 typeref.child(key).updateChildren(messagesdir);
 
-
+                // Add to GeoFire
                 GeoFire geoFire = new GeoFire(FirebaseDatabase.getInstance().getReference("geofire"));
                 geoFire.setLocation("/"+type+"/"+key, new GeoLocation(latitude,longitude));
-
 
                 finish();
             }
         });
-
     }
-
 }
