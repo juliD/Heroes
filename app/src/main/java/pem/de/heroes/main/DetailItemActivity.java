@@ -78,6 +78,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     User agent;
     User owner;
 
+    String agent_name;
+
     private CustomViewPager viewPager;
     private DetailViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
@@ -321,7 +323,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 chatmessage.setGravity(Gravity.END);
             } else {
                 if(listUserID.equals(preferenceUserID)){
-                    if (agent == null) {
+                    if (agent_name == null) {
                         usernamechat.setText("Bearbeiter");
                     } else {
                         usernamechat.setText(agent.getUsername());
@@ -366,7 +368,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                     agent = dataSnapshot.getValue(User.class);
                     if (agent != null) {
-                        agent_textview.setText(agent.getUsername());
+                        agent_name = agent.getUsername();
+                        agent_textview.setText(agent_name);
                         agent.setUserid(listitem.getAgent());
                     }
 

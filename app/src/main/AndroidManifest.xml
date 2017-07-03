@@ -24,6 +24,7 @@
 
         <activity
             android:name=".main.MainActivity"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="MainActivity" />
@@ -33,6 +34,7 @@
 
         <activity
             android:name=".main.DetailItemActivity"
+            android:launchMode="singleInstance"
             android:parentActivityName=".main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -41,6 +43,7 @@
 
         <activity
             android:name=".main.AddActivity"
+            android:launchMode="singleInstance"
             android:parentActivityName=".main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -49,6 +52,7 @@
 
         <activity
             android:name=".profile.EditSettingsActivity"
+            android:launchMode="singleInstance"
             android:parentActivityName=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
