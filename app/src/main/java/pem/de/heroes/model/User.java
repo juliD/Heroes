@@ -9,9 +9,9 @@ public class User {
     private String username;
     private int karma;
     private int asksCreated;
-    private int asksFullfilled;
+    private int asksDone;
     private int offersCreated;
-    private int offersUsed;
+    private int offersDone;
 
     public User(){
         //default constructor required for datasnapshot
@@ -55,12 +55,12 @@ public class User {
         this.asksCreated = asksCreated;
     }
 
-    public int getAsksFullfilled() {
-        return asksFullfilled;
+    public int getAsksDone() {
+        return asksDone;
     }
 
-    public void setAsksFullfilled(int asksFullfilled) {
-        this.asksFullfilled = asksFullfilled;
+    public void setAsksDone(int asksDone) {
+        this.asksDone = asksDone;
     }
 
     public int getOffersCreated() {
@@ -71,11 +71,11 @@ public class User {
         this.offersCreated = offersCreated;
     }
 
-    public int getOffersUsed() {
-        return offersUsed;
+    public int getOffersDone() {
+        return offersDone;
     }
 
-    public void setOffersUsed(int offersUsed) {
-        this.offersUsed = offersUsed;
+    public void setOffersDone(int offersDone) {
+        this.offersDone = offersDone;
     }
 }

@@ -198,27 +198,29 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if (preferenceUserID.equals(listUserID)) {
                         if (!(listitem.getAgent().equals(""))) {
                             finish();
-                            //code after this should be run anyways even though we call finish
+                            // code after this should be run anyways even though we call finish
                             Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
-                            giveKarma(agentref.child("karma"));
+
+                            // agent gets karma and +1 for his 'done' medal
+                            agentref.child("karma").runTransaction(new CounterTransactionHandler(+100));
+                            agentref.child(type + "sDone").runTransaction(new CounterTransactionHandler(+1));
+
                             ref.child("geofire").child(type).child(itemID).removeValue();
                             typeref.child(itemID).removeValue();
                             finish();
-
-
                         } else {
                             finish();
                             Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
+
+                            // owner gets -1 for his 'created' medal
+                            ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
+
                             ref.child("geofire").child(type).child(itemID).removeValue();
                             typeref.child(itemID).removeValue();
-
-
                         }
-
                     } else if (listitem.getAgent().equals("")) {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
@@ -234,7 +236,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         typeref.child(itemID).child("follower").child("agent").setValue("");
                         accept.setText("Annehmen");
                     }
-
                 }
             });
         }
@@ -387,29 +388,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
         mapFragment.getMapAsync(this);
-    }
-
-    private void giveKarma(DatabaseReference reference) {
-        reference.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(final MutableData currentData) {
-                if (currentData.getValue() == null) {
-                    currentData.setValue(100);
-                } else {
-                    int karma = currentData.getValue(Integer.class);
-                    currentData.setValue(karma + 100);
-                }
-                return Transaction.success(currentData);
-            }
-
-            public void onComplete(DatabaseError firebaseError, boolean committed, DataSnapshot currentData) {
-                if (firebaseError != null) {
-                    System.out.println("Firebase counter increment failed.");
-                } else {
-                    System.out.println("Firebase counter increment succeeded.");
-                }
-            }
-        });
     }
 
     private void messagesEventListener() {

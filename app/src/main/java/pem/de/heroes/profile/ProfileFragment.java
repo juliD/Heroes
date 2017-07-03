@@ -74,13 +74,13 @@ public class ProfileFragment extends Fragment {
                     case "asksCreated":
                         setMedal(medal1, dataSnapshot.getValue(Integer.class));
                         break;
-                    case "asksFullfilled":
+                    case "asksDone":
                         setMedal(medal2, dataSnapshot.getValue(Integer.class));
                         break;
                     case "offersCreated":
                         setMedal(medal3, dataSnapshot.getValue(Integer.class));
                         break;
-                    case "offersUsed":
+                    case "offersDone":
                         setMedal(medal4, dataSnapshot.getValue(Integer.class));
                         break;
                     case "username":
