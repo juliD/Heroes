@@ -114,8 +114,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
-
-
     public void signInAnonymoulsy(){
         auth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -140,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
     private void addUserToDatabase(FirebaseUser user) {
-
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
         users.child(user.getUid()).child("username").setValue(sharedPref.getString("username","Anonym"));
         users.child(user.getUid()).child("karma").setValue(0);
@@ -167,42 +164,33 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
     }
 
+    public void getKarma() {
+        // firebase reference on the user
+        DatabaseReference userref = FirebaseDatabase.getInstance().getReference().child("users").child(userid);
 
-
-
-    public void getKarma(){
-
-        DatabaseReference userref = FirebaseDatabase.getInstance().getReference("users/"+sharedPref.getString("userid","No User ID"));
-        int x=0;
-        ValueEventListener ownerListener = new ValueEventListener() {
+        userref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //get database value
+                // get database value
                 User me = dataSnapshot.getValue(User.class);
-                if(me!=null){
+                if (me != null){
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putInt("karma",me.getKarma());
+                    editor.putInt("karma", me.getKarma());
                     editor.commit();
-                    Log.e("Main","me exists...");
-                    if(viewPager.getCurrentItem()!=0){
-                        TextView karma = (TextView)findViewById(R.id.karma);
-                        karma.setText(me.getKarma()+" Karma");
-                    }
+                    Log.e("Main", "me exists ...");
+                    TextView karma = (TextView)findViewById(R.id.karma);
+                    karma.setText(me.getKarma() + " Karma");
+                } else {
+                    Log.e("Main", "Something went wrong with my karma");
                 }
-                else{
-                    Log.e("Main","Something went wrong with my karma");
-                }
-
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Getting agent failed, create log
+                // Getting user failed, create log
                 Log.w("on cancelled", "Database: ", databaseError.toException());
             }
-        };
-        //firebase referenz auf den User
-        userref.addListenerForSingleValueEvent(ownerListener);
+        });
     }
 
     @Override
@@ -258,7 +246,4 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             karma.setText(sharedPreferences.getInt("karma",0)+" Karma");
         }
     }
-
-
-
 }
