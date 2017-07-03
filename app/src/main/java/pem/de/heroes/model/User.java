@@ -8,19 +8,26 @@ public class User {
     private String userid;
     private String username;
     private int karma;
+
+    private String city;
+    private String street;
+    private int radius;
+    private double homelat;
+    private double homelong;
+
     private int asksCreated;
     private int asksDone;
     private int offersCreated;
     private int offersDone;
 
-    public User(){
-        //default constructor required for datasnapshot
-    }
-
     public User(String userid, String username, int karma){
         this.userid = userid;
         this.username = username;
         this.karma = karma;
+    }
+
+    public User() {
+        // default constructor required for DataSnapshot
     }
 
     public String getUserid() {
@@ -45,6 +52,46 @@ public class User {
 
     public void setKarma(int karma) {
         this.karma = karma;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
+    public double getHomelat() {
+        return homelat;
+    }
+
+    public void setHomelat(double homelat) {
+        this.homelat = homelat;
+    }
+
+    public double getHomelong() {
+        return homelong;
+    }
+
+    public void setHomelong(double homelong) {
+        this.homelong = homelong;
     }
 
     public int getAsksCreated() {

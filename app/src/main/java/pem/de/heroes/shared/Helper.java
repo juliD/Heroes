@@ -26,19 +26,13 @@ public class Helper {
 
         try {
             List<Address> address = coder.getFromLocationName(strAddress, 5);
-            Log.d("Helper",strAddress);
-            if (address.size()==0) {;
-                Toast.makeText(context, "Bitte gib eine echte Adresse ein...", Toast.LENGTH_SHORT).show();
+            Log.d("Helper", strAddress);
+            if (address == null || address.size() == 0) {
                 return null;
             }
 
-            if (address == null) {
-                return null;
-            }
             Address location = address.get(0);
             p1 = new LatLng(location.getLatitude(), location.getLongitude());
-
-            return p1;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -25,7 +25,6 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     private String id;
     private int distance;
 
-
     public ListItem(String title, String description, String address, String userid, String agent, String date) {
         this.description = description;
         this.title = title;
@@ -36,6 +35,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     }
 
     public ListItem() {
+        // default constructor required for DataSnapshot
     }
 
     public String getid() {
