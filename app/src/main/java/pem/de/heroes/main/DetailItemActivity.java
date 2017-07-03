@@ -264,17 +264,21 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 @Override
                 public void onClick(View view) {
                     //creates a node in messages that will later contain the message and userid
-                    Map<String, Object> messagemap = new HashMap<String, Object>();
-                    String messagekey = messagesref.push().getKey();
-                    messagesref.updateChildren(messagemap);
+                    if (messagefield.getText().length() > 0) {
+                        Map<String, Object> messagemap = new HashMap<String, Object>();
+                        String messagekey = messagesref.push().getKey();
+                        messagesref.updateChildren(messagemap);
 
-                    //adds the message and the userid to the node
-                    Map<String, Object> messagemapInner = new HashMap<String, Object>();
-                    messagemapInner.put("userid", preferenceUserID);
-                    messagemapInner.put("message", messagefield.getText().toString());
-                    messagesref.child(messagekey).updateChildren(messagemapInner);
+                        //adds the message and the userid to the node
+                        Map<String, Object> messagemapInner = new HashMap<String, Object>();
+                        messagemapInner.put("userid", preferenceUserID);
+                        messagemapInner.put("message", messagefield.getText().toString());
+                        messagesref.child(messagekey).updateChildren(messagemapInner);
 
-                    messagefield.setText("");
+                        messagefield.setText("");
+                    } else {
+                        Toast.makeText(DetailItemActivity.this, "Message too short", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 

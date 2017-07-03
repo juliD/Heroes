@@ -1,16 +1,11 @@
 <resources>
-    <string name="app_name">Heroes</string>
+    <string name="app_name">Local Hero</string>
     <string name="action_settings">Einstellungen</string>
     <string name="add_title">Titel</string>
     <string name="add_discription">Beschreibung</string>
     <string name="action_askforhelp">Anfragen</string>
     <string name="action_offerhelp">Angebote</string>
     <string name="action_myprofile">Profil</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="btn_back"><![CDATA[<< Back]]></string>
-
     <string name="successes">Erfolge</string>
     <string name="asks_created">Anfragen erstellt</string>
     <string name="asks_fullfilled">Anfragen erfüllt</string>
