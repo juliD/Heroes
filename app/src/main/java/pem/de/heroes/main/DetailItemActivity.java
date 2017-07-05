@@ -38,8 +38,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -98,7 +96,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.newactivity_detail_item);
+        setContentView(R.layout.activity_detail_item);
 
         ref = FirebaseDatabase.getInstance().getReference();
         if (savedInstanceState == null) {
@@ -119,8 +117,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         // layouts of all detail sliders
         layouts = new int[]{
-                R.layout.detail_item_request,
-                R.layout.detail_item_chat
+                R.layout.fragment_detail_item_request,
+                R.layout.fragment_detail_item_chat
         };
 
         // adding bottom dots
