@@ -80,11 +80,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private User owner;
 
     private LinearLayout dotsLayout;
-    private TextView[] dots;
     private int[] layouts;
 
     private LinearLayout linear;
-
     private String chat_userid;
     private String chat_message;
     private ScrollView scrollview;
@@ -103,15 +101,15 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
         }
 
+        listitem = getIntent().getParcelableExtra("selected");
+        listUserID = listitem.getUserID();
+
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
         token = sharedPref.getString("pushToken", "No token");
-
-        listitem = getIntent().getParcelableExtra("selected");
-        listUserID = listitem.getUserID();
 
         viewPager = (CustomViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
@@ -124,6 +122,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         };
 
         viewPager.setAdapter(new DetailViewPagerAdapter());
+
 
         // adding bottom dots
         addBottomDots(0);
@@ -271,21 +270,16 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private void buildChatPage(View view) {
         if (listitem != null) {
             owner_username_textview = (TextView) view.findViewById(R.id.username);
-
+            linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
             ownerref = ref.child("users").child(listitem.getUserID());
+            messagesref = typeref.child(itemID).child("messages");
 
             setUsername();
 
-
-            linear = (LinearLayout) view.findViewById(R.id.linearlayout);
-
-            messagesref = typeref.child(itemID).child("messages");
-
-            ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
+            final ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
             final EditText messagefield = (EditText) view.findViewById(R.id.messagefield);
             scrollview = ((ScrollView) view.findViewById(R.id.scrollview));
-
 
             btn_send.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -308,7 +302,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 }
             });
-
         }
     }
 
@@ -456,7 +449,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
 
     private void addBottomDots(int currentPage) {
-        dots = new TextView[layouts.length];
+        TextView[] dots = new TextView[layouts.length];
 
         int[] colorsActive = getResources().getIntArray(R.array.array_detail_dot_active);
         int[] colorsInactive = getResources().getIntArray(R.array.array_detail_dot_inactive);
@@ -518,5 +511,4 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             container.removeView(view);
         }
     }
-
 }
