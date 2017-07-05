@@ -1,4 +1,4 @@
-package pem.de.heroes.main;
+package pem.de.heroes.detail;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -44,9 +44,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import pem.de.heroes.shared.CounterTransactionHandler;
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
-import pem.de.heroes.welcome.CustomViewPager;
+import pem.de.heroes.shared.CustomViewPager;
 import pem.de.heroes.model.ListItem;
 import pem.de.heroes.model.User;
 
@@ -55,42 +56,38 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     private static final String ARG_TYPE = "fragment_type";
     private static final String ITEM_ID = "item_id";
+
+    private DatabaseReference ref;
     private DatabaseReference agentref;
     private DatabaseReference typeref;
     private DatabaseReference ownerref;
+    private DatabaseReference messagesref;
     private SharedPreferences sharedPref;
-    String marker;
-    ListItem listitem;
-    LatLng home;
-    TextView address;
-    private DatabaseReference ref;
+
     private String type = "offer";
     private String itemID;
     private String preferenceUserID;
     private String listUserID;
     private String token;
-    TextView agent_textview;
-    TextView owner_username_textview;
-    private Button accept;
-
-    User agent;
-    User owner;
-
-    String agent_name;
+    private ListItem listitem;
+    private LatLng home;
 
     private CustomViewPager viewPager;
-    private DetailViewPagerAdapter myViewPagerAdapter;
+    private TextView agent_textview;
+    private TextView owner_username_textview;
+
+    private User agent;
+    private User owner;
+
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
 
-    DatabaseReference messagesref;
-    EditText messagefield;
-    LinearLayout linear;
+    private LinearLayout linear;
 
-    String chat_userid;
-    String chat_message;
-    ScrollView scrollview;
+    private String chat_userid;
+    private String chat_message;
+    private ScrollView scrollview;
 
 
     @Override
@@ -98,7 +95,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_item);
 
-        ref = FirebaseDatabase.getInstance().getReference();
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
@@ -106,11 +102,17 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 itemID = extras.getString(ITEM_ID);
             }
         }
+
+        ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
         token = sharedPref.getString("pushToken", "No token");
+
+        listitem = getIntent().getParcelableExtra("selected");
+        listUserID = listitem.getUserID();
+
         viewPager = (CustomViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
 
@@ -121,18 +123,48 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 R.layout.fragment_detail_item_chat
         };
 
+        viewPager.setAdapter(new DetailViewPagerAdapter());
+
         // adding bottom dots
         addBottomDots(0);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                addBottomDots(position);
+            }
 
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
 
-        myViewPagerAdapter = new DetailViewPagerAdapter();
-        viewPager.setAdapter(myViewPagerAdapter);
-        viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
+
+        // enable swiping
+        if (listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)) {
+            showBottomDots();
+        } else {
+            hideBottomDots();
+        }
+    }
+
+    private void showBottomDots() {
+        viewPager.setPagingEnabled(true);
+        dotsLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void hideBottomDots() {
         viewPager.setPagingEnabled(false);
+        dotsLayout.setVisibility(View.INVISIBLE);
+    }
 
-        listitem = getIntent().getParcelableExtra("selected");
-
-
+    private void showAddressOnMap() {
+        home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -149,28 +181,19 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-
     private void buildRequestPage(View view) {
-        setTitle("Anfrage");
-        accept = (Button) view.findViewById(R.id.accept);
         if (listitem != null) {
-            TextView title = (TextView) view.findViewById(R.id.detail_title);
-            TextView info = (TextView) view.findViewById(R.id.detail_description);
+            final TextView title = (TextView) view.findViewById(R.id.detail_title);
+            final TextView description = (TextView) view.findViewById(R.id.detail_description);
+            final TextView address = (TextView) view.findViewById(R.id.show_address);
             agent_textview = (TextView) view.findViewById(R.id.agent);
-            address = (TextView) view.findViewById(R.id.show_address);
+            final Button accept = (Button) view.findViewById(R.id.accept);
 
-            listUserID = listitem.getUserID();
-
+            setTitle(listitem.getTitle());
             title.setText(listitem.getTitle());
-            info.setText(listitem.getDescription());
-
-
-            //enable swiping
-            if (listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)) {
-                viewPager.setPagingEnabled(true);
-
-                showAddress();
-            }
+            description.setText(listitem.getDescription());
+            address.setText(listitem.getAddress());
+            showAddressOnMap();
 
             if (listUserID.equals(preferenceUserID)) {
                 if (listitem.getAgent().equals("")) {
@@ -193,7 +216,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     agent_textview.setText("Jemand anderes hat die Anfrage leider vor dir angenommen.");
                 }
             }
-
 
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -223,17 +245,22 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         }
                     } else if (listitem.getAgent().equals("")) {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
-                        agent_textview.setText("Du hast diese Anfrage angenommen!");
-                        viewPager.setPagingEnabled(true);
-                        showAddress();
-                        accept.setText("Wieder abgeben");
-
-                        //Add token for push notifications
                         typeref.child(itemID).child("follower").child("agent").setValue(token);
+                        listitem.setAgent(preferenceUserID);
+
+                        showBottomDots();
+                        showAddressOnMap();
+
+                        agent_textview.setText("Du hast diese Anfrage angenommen!");
+                        accept.setText("Wieder abgeben");
                     } else if (listitem.getAgent().equals(preferenceUserID)) {
-                        agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
                         typeref.child(itemID).child("agent").setValue("");
                         typeref.child(itemID).child("follower").child("agent").setValue("");
+                        listitem.setAgent("");
+
+                        hideBottomDots();
+
+                        agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
                         accept.setText("Annehmen");
                     }
                 }
@@ -256,7 +283,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             messagesref = typeref.child(itemID).child("messages");
 
             ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
-            messagefield = (EditText) view.findViewById(R.id.messagefield);
+            final EditText messagefield = (EditText) view.findViewById(R.id.messagefield);
             scrollview = ((ScrollView) view.findViewById(R.id.scrollview));
 
 
@@ -294,7 +321,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             chat_message = (String) ((DataSnapshot) i.next()).getValue();
             chat_userid = (String) ((DataSnapshot) i.next()).getValue();
 
-            View item = inflator.inflate(R.layout.layoutmessages2, null);
+            View item = inflator.inflate(R.layout.fragment_message_layout, null);
 
             TextView chatmessage = (TextView) item.findViewById(R.id.chatmessage);
             TextView usernamechat = (TextView) item.findViewById(R.id.usernamechat);
@@ -320,18 +347,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 usernamechat.setGravity(Gravity.END);
                 chatmessage.setGravity(Gravity.END);
             } else {
-                if(listUserID.equals(preferenceUserID)){
-                    if (agent_name == null) {
-                        usernamechat.setText("Bearbeiter");
-                    } else {
-                        usernamechat.setText(agent.getUsername());
-                    }
-                }else{
-                    if(owner ==null){
-                        usernamechat.setText("Anfragensteller");
-                    }else{
-                        usernamechat.setText(owner.getUsername());
-                    }
+                if (listUserID.equals(preferenceUserID)) {
+                    usernamechat.setText(agent.getUsername() != null ? agent.getUsername() : "Bearbeiter");
+                } else {
+                    usernamechat.setText(owner != null ? owner.getUsername() : "Anfragensteller");
                 }
                 linearlayout2.setGravity(Gravity.START);
                 containermessage.setBackgroundResource(R.drawable.roundedrectangle);
@@ -366,8 +385,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                     agent = dataSnapshot.getValue(User.class);
                     if (agent != null) {
-                        agent_name = agent.getUsername();
-                        agent_textview.setText(agent_name);
+                        agent_textview.setText(agent.getUsername());
                         agent.setUserid(listitem.getAgent());
                     }
 
@@ -383,14 +401,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             //firebase referenz auf den User, der im listitem steht.
             agentref.addListenerForSingleValueEvent(agentListener);
         }
-    }
-
-    private void showAddress() {
-        address.setText(listitem.getAddress());
-
-        home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
-        mapFragment.getMapAsync(this);
     }
 
     private void messagesEventListener() {
@@ -464,28 +474,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             dots[currentPage].setTextColor(colorsActive[currentPage]);
     }
 
-    private int getItem(int i) {
-        return viewPager.getCurrentItem() + i;
-    }
-
-    ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int position) {
-            addBottomDots(position);
-        }
-
-        @Override
-        public void onPageScrolled(int arg0, float arg1, int arg2) {
-
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
-
-    };
-
     /**
      * View pager adapter
      */
@@ -500,12 +488,14 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View view = layoutInflater.inflate(layouts[position], container, false);
-            //Elemente müssen mit zugehöriger View angesprochen werden.
+
+            // Elemente müssen mit zugehöriger View angesprochen werden.
             if (position == 0) {
                 buildRequestPage(view);
             } else if (position == 1) {
                 buildChatPage(view);
             }
+
             container.addView(view);
 
             return view;

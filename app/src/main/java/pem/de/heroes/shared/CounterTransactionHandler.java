@@ -1,4 +1,4 @@
-package pem.de.heroes.main;
+package pem.de.heroes.shared;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

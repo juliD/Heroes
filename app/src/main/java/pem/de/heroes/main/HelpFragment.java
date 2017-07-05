@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import pem.de.heroes.detail.DetailItemActivity;
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
 import pem.de.heroes.model.ListItem;

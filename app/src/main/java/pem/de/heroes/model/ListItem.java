@@ -65,6 +65,10 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         this.distance = distance;
     }
 
+    public void setAgent(String agent) {
+        this.agent = agent;
+    }
+
     public ListItem(Parcel parcel){
         this.title = parcel.readString();
         this.description = parcel.readString();

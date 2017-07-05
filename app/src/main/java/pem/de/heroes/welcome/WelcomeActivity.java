@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import pem.de.heroes.main.MainActivity;
 import pem.de.heroes.R;
+import pem.de.heroes.shared.CustomViewPager;
 
 public class WelcomeActivity extends AppCompatActivity {
 

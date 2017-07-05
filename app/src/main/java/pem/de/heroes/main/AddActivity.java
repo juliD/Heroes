@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import pem.de.heroes.shared.CounterTransactionHandler;
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
 import pem.de.heroes.model.ListItem;
