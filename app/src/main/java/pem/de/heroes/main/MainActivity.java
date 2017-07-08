@@ -141,6 +141,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
         users.child(user.getUid()).child("username").setValue(sharedPref.getString("username","Anonym"));
         users.child(user.getUid()).child("karma").setValue(0);
+        users.child(user.getUid()).child("asksCreated").setValue(0);
+        users.child(user.getUid()).child("asksDone").setValue(0);
+        users.child(user.getUid()).child("offersCreated").setValue(0);
+        users.child(user.getUid()).child("offersDone").setValue(0);
+        users.child(user.getUid()).child("city").setValue(sharedPref.getString("city","München"));
+        users.child(user.getUid()).child("street").setValue(sharedPref.getString("street","Marienplatz 1"));
+        users.child(user.getUid()).child("radius").setValue(500);
     }
 
     public void update(FirebaseUser currentUser){
@@ -153,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if(!sharedPref.contains("userid")){
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("userid", userid);
+            editor.putInt("radius", 500);
             LatLng home = Helper.getLocationFromAddress(sharedPref.getString("street","Marienplatz 1") +", " + sharedPref.getString("city","München"),this);
 
             editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
@@ -166,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     public void getKarma() {
         // firebase reference on the user
-        DatabaseReference userref = FirebaseDatabase.getInstance().getReference().child("users").child(userid);
+        DatabaseReference userref = FirebaseDatabase.getInstance().getReference("users/"+sharedPref.getString("userid","No User ID"));
 
         userref.addValueEventListener(new ValueEventListener() {
             @Override

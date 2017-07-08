@@ -1,5 +1,7 @@
 package pem.de.heroes.profile;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -56,7 +58,8 @@ public class ProfileFragment extends Fragment {
         setMedal(medal3, 0);
         setMedal(medal4, 0);
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SharedPreferences sharedPref=getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        String userId = sharedPref.getString("userid","");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
 
         ref.addChildEventListener(new ChildEventListener() {

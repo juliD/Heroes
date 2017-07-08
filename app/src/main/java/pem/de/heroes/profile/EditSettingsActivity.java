@@ -40,7 +40,7 @@ public class EditSettingsActivity extends AppCompatActivity {
 
         final SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String userId = sharedPref.getString("userid","");
         final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

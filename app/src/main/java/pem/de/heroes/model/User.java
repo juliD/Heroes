@@ -26,6 +26,19 @@ public class User {
         this.karma = karma;
     }
 
+    public User(String userid, String username, int karma, String city, String street, int radius, int asksCreated, int asksDone, int offersCreated, int offersDone) {
+        this.userid = userid;
+        this.username = username;
+        this.karma = karma;
+        this.city = city;
+        this.street = street;
+        this.radius = radius;
+        this.asksCreated = asksCreated;
+        this.asksDone = asksDone;
+        this.offersCreated = offersCreated;
+        this.offersDone = offersDone;
+    }
+
     public User() {
         // default constructor required for DataSnapshot
     }

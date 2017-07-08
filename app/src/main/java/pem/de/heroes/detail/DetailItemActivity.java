@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import pem.de.heroes.main.HelpFragment;
 import pem.de.heroes.shared.CounterTransactionHandler;
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
@@ -231,6 +232,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                             ref.child("geofire").child(type).child(itemID).removeValue();
                             typeref.child(itemID).removeValue();
+
                             finish();
                         } else {
                             finish();
@@ -241,6 +243,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                             ref.child("geofire").child(type).child(itemID).removeValue();
                             typeref.child(itemID).removeValue();
+
                         }
                     } else if (listitem.getAgent().equals("")) {
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);

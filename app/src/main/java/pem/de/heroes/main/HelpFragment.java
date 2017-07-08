@@ -20,6 +20,7 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.geofire.util.GeoUtils;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,6 +45,7 @@ public class HelpFragment extends Fragment {
 
     private static final String ARG_TYPE = "fragment_type";
     private static final String ITEM_ID = "item_id";
+    private static final String TAG = "HelpFragment";
     String fragment_type = "ask";
 
     private List<ListItem> list = new ArrayList<>();
@@ -76,6 +78,7 @@ public class HelpFragment extends Fragment {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
         ref = FirebaseDatabase.getInstance().getReference(fragment_type);
+
         ref.orderByChild("date");
         DatabaseReference georef = FirebaseDatabase.getInstance().getReference("geofire/"+fragment_type);
         geoFire = new GeoFire(georef);
@@ -179,13 +182,18 @@ public class HelpFragment extends Fragment {
 
             @Override
             public void onKeyExited(String key) {
-                Log.d("Fragment", "onKeyExited: ");
-                if (itemWithListeners.contains(key)) {
-                    int position = getUserPosition(key);
+
+                int position = getUserPosition(key);
+                Log.d("Fragment", "onKeyExited: "+position);
+                if(position!=-1){
                     list.remove(position);
+                    itemToDistance.remove(key);
                     keys.remove(position);
                     adapter.notifyItemRemoved(position);
                 }
+
+
+
             }
 
             @Override
@@ -224,6 +232,7 @@ public class HelpFragment extends Fragment {
     }
 
     private void setupListeners(){
+
         itemValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -240,7 +249,9 @@ public class HelpFragment extends Fragment {
                 if(itemToDistance.containsKey(dataSnapshot.getKey())){
                     if(keys.contains(dataSnapshot.getKey())){
                         if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)&&!listItem.getUserID().equals(userid)){
+                            Log.d(TAG,"removing item");
                             list.remove(getUserPosition(dataSnapshot.getKey()));
+                            adapter.notifyDataSetChanged();
                         }else{
                             itemUpdated(listItem);
                         }
