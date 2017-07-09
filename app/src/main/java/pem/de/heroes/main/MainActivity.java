@@ -1,5 +1,6 @@
 package pem.de.heroes.main;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,12 +9,22 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,12 +56,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     SharedPreferences sharedPref;
     FirebaseUser fuser;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedPref=this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(this);
+
+
 
 
         Log.d("Main","onCreate");
@@ -67,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
 
         getKarma();
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         TabsPagerAdapter tabsAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -187,7 +204,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                     editor.commit();
                     Log.e("Main", "me exists ...");
                     TextView karma = (TextView)findViewById(R.id.karma);
-                    karma.setText(me.getKarma() + " Karma");
+                    if(karma!=null) {
+                        karma.setText(me.getKarma() + " Karma");
+                    }
                 } else {
                     Log.e("Main", "Something went wrong with my karma");
                 }
@@ -254,4 +273,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             karma.setText(sharedPreferences.getInt("karma",0)+" Karma");
         }
     }
+
+
+
 }

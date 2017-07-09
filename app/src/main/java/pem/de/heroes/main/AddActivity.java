@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,7 @@ import pem.de.heroes.model.ListItem;
 
 public class AddActivity extends AppCompatActivity {
 
+    private static final String TAG = "AddActivity";
     private static final String ARG_TYPE = "fragment_type";
     private String type = "offer";
     private DatabaseReference ref;
@@ -62,6 +65,7 @@ public class AddActivity extends AppCompatActivity {
         final TextView cityView = (TextView) findViewById(R.id.city);
         final EditText titleView = (EditText) findViewById(R.id.add_title);
         final EditText descView = (EditText) findViewById(R.id.add_description);
+        final EditText tagView = (EditText) findViewById(R.id.tags);
 
         streetView.setText(street);
         cityView.setText(city);
@@ -73,6 +77,8 @@ public class AddActivity extends AppCompatActivity {
                 String title = titleView.getText().toString();
                 String description = descView.getText().toString();
                 String address = street + ", " + city;
+                String tags = tagView.getText().toString();
+                Log.d(TAG,"Tags: "+tags);
 
                 if (title.isEmpty() || description.isEmpty() || street.isEmpty() || city.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Fülle bitte alle Felder aus ...", Toast.LENGTH_SHORT).show();
@@ -84,13 +90,14 @@ public class AddActivity extends AppCompatActivity {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
                 String currentDateAndTime = sdf.format(Calendar.getInstance().getTime());
-                ListItem listItem = new ListItem(title, description, address, userid, "", currentDateAndTime);
+                ListItem listItem = new ListItem(title, description, address, userid, "", currentDateAndTime,tags);
                 String key = typeref.push().getKey();
                 Log.d("AddActivity", "added key: " + key);
                 Map<String, Object> post = listItem.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/"+key,post);
                 typeref.updateChildren(childUpdates);
+
 
                 // Increment value for statistics
                 DatabaseReference countCreated = ref.child("users").child(userid).child(type + "sCreated");

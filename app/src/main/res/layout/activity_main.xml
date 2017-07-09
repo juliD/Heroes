@@ -18,18 +18,11 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            app:titleTextColor="@color/white"
+            app:subtitleTextColor="@color/white"
             app:layout_scrollFlags="scroll|enterAlways">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:text="@string/app_name"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <ImageButton
+           <ImageButton
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -37,6 +30,8 @@
                 android:layout_marginRight="16dp"
                 android:background="@android:color/transparent"
                 android:src="@drawable/ic_mode_edit_white_24dp" />
+
+
 
             <TextView
                 android:id="@+id/karma"
@@ -47,6 +42,8 @@
                 android:text="120 Karma"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
+
+
 
         </android.support.v7.widget.Toolbar>
 

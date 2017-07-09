@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import pem.de.heroes.R;
@@ -24,6 +27,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
     private List<ListItem> items;
     private String userid;
     private Context context;
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info, dist, status;
@@ -44,6 +49,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         this.userid=userid;
         this.context=context;
     }
+
 
 
     @Override
@@ -90,6 +96,11 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     }
 
+    public void setFilter(List<ListItem> filtereditems) {
+        items = new ArrayList<>();
+        items.addAll(filtereditems);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

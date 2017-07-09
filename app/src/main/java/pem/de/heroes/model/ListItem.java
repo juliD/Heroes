@@ -9,6 +9,7 @@ import com.google.firebase.database.Exclude;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -24,20 +25,26 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     private String date;
     private String id;
     private int distance;
+    private String tags;
 
-    public ListItem(String title, String description, String address, String userid, String agent, String date) {
+
+
+    public ListItem(String title, String description, String address, String userid, String agent, String date, String tags) {
         this.description = description;
         this.title = title;
         this.address = address;
         this.userid = userid;
         this.agent = agent;
         this.date = date;
+        this.tags = tags;
     }
 
     public ListItem() {
         // default constructor required for DataSnapshot
     }
-
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
     public String getid() {
         return id;
     }
@@ -60,6 +67,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     public int getDistance() {
         return distance;
     }
+    public String getTags(){return tags;}
 
     public void setDistance(int distance) {
         this.distance = distance;
@@ -78,6 +86,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         this.date = parcel.readString();
         this.id = parcel.readString();
         this.distance = parcel.readInt();
+        this.tags = parcel.readString();
     }
 
     @Override
@@ -95,6 +104,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         parcel.writeString(date);
         parcel.writeString(id);
         parcel.writeInt(distance);
+        parcel.writeString(tags);
     }
 
     @Exclude
@@ -106,6 +116,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         result.put("agent",agent);
         result.put("date",date);
         result.put("userid",userid);
+        result.put("tags",tags);
 
 
         return result;

@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +44,8 @@ import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
 import pem.de.heroes.model.ListItem;
 
+import android.widget.ImageButton;
+import android.widget.SearchView;
 
 public class HelpFragment extends Fragment {
 
@@ -57,7 +63,6 @@ public class HelpFragment extends Fragment {
     DatabaseReference ref;
     GeoFire geoFire;
     GeoLocation home;
-    private Set<String> itemWithListeners = new HashSet<>();
     private ValueEventListener itemValueListener;
     GeoQuery geoQuery;
     private int initialListSize;
@@ -74,6 +79,7 @@ public class HelpFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
@@ -97,9 +103,10 @@ public class HelpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_help, container, false);
+        View v = inflater.inflate(R.layout.fragment_help, container, false);
+        return v;
     }
+
 
 
 
@@ -301,6 +308,72 @@ public class HelpFragment extends Fragment {
         };
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        inflater.inflate(R.menu.menu_main, menu);
+        MenuItem item = menu.findItem(R.id.search);
+        SearchView searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, searchView);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                final List<ListItem> filteredModelList = filter(list, newText);
+                adapter.setFilter(filteredModelList);
+                return false;
+            }
+        });
+        MenuItemCompat.setOnActionExpandListener(item,
+                new MenuItemCompat.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        // Do something when collapsed
+                        adapter.setFilter(list);
+                        return true; // Return true to collapse action view
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
+                        // Do something when expanded
+                        return true; // Return true to expand action view
+                    }
+                });
+
+    }
+
+    private List<ListItem> filter(List<ListItem> models, String query) {
+        query = query.toLowerCase();
+        final List<ListItem> filteredModelList = new ArrayList<>();
+        for (ListItem model : models) {
+            if(!model.getTags().isEmpty()) {
+                final String text = model.getTags().toLowerCase();
+                if (text.contains(query)) {
+                    filteredModelList.add(model);
+                }
+            }
+        }
+        return filteredModelList;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle item selection
+        switch (item.getItemId()) {
+            case R.id.search:
+
+                //       onCall();   //your logic
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
     class RecyclerTouchListener implements RecyclerView.OnItemTouchListener{
         private GestureDetector mGestureDetector;
         private ClickListener mClickListener;
