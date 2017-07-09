@@ -335,6 +335,7 @@ public class HelpFragment extends Fragment {
         searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item, searchView);
+        searchView.setIconified(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
