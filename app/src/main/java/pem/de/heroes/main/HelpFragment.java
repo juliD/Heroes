@@ -3,9 +3,14 @@ package pem.de.heroes.main;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.CursorAdapter;
+import android.widget.SimpleCursorAdapter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -69,6 +74,10 @@ public class HelpFragment extends Fragment {
     private int iterationCount;
     private boolean fetchedItemIds;
     String userid;
+    private SimpleCursorAdapter suggestionadapter;
+    SearchView searchView;
+
+    private String[] SUGGESTIONS;
 
     public HelpFragment() {
         // Required empty public constructor
@@ -80,6 +89,7 @@ public class HelpFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
         if (getArguments() != null) {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
@@ -90,6 +100,14 @@ public class HelpFragment extends Fragment {
         geoFire = new GeoFire(georef);
         setupListeners();
 
+        final String[] from = new String[] {"tags"};
+        final int[] to = new int[] {android.R.id.text1};
+        suggestionadapter = new SimpleCursorAdapter(getActivity(),
+                android.R.layout.simple_list_item_1,
+                null,
+                from,
+                to,
+                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
     public static HelpFragment newInstance(String type) {
@@ -314,7 +332,7 @@ public class HelpFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.search);
-        SearchView searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
+        searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item, searchView);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -324,9 +342,26 @@ public class HelpFragment extends Fragment {
             }
             @Override
             public boolean onQueryTextChange(String newText) {
+                populateAdapter(newText);
                 final List<ListItem> filteredModelList = filter(list, newText);
                 adapter.setFilter(filteredModelList);
                 return false;
+            }
+        });
+        searchView.setQueryHint(getResources().getString(R.string.suggestion_hint));
+        searchView.setSuggestionsAdapter(suggestionadapter);
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionClick(int position) {
+                // Your code here
+                searchView.setQuery(SUGGESTIONS[position],false);
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                // Your code here
+                return true;
             }
         });
         MenuItemCompat.setOnActionExpandListener(item,
@@ -341,19 +376,51 @@ public class HelpFragment extends Fragment {
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // Do something when expanded
+                        populateAdapter();
                         return true; // Return true to expand action view
                     }
                 });
 
     }
 
+    private void populateAdapter() {
+        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "tags" });
+        for (int i=0; i<SUGGESTIONS.length; i++) {
+            c.addRow(new Object[] {i, SUGGESTIONS[i]});
+
+        }
+        suggestionadapter.changeCursor(c);
+    }
+
+    private void populateAdapter(String query) {
+        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "tags" });
+        for (int i=0; i<SUGGESTIONS.length; i++) {
+            if (SUGGESTIONS[i].toLowerCase().startsWith(query.toLowerCase()))
+                c.addRow(new Object[] {i, SUGGESTIONS[i]});
+        }
+        suggestionadapter.changeCursor(c);
+    }
+
     private List<ListItem> filter(List<ListItem> models, String query) {
+
         query = query.toLowerCase();
         final List<ListItem> filteredModelList = new ArrayList<>();
+
         for (ListItem model : models) {
             if(!model.getTags().isEmpty()) {
                 final String text = model.getTags().toLowerCase();
-                if (text.contains(query)) {
+                String[] hint = getResources().getString(R.string.suggestion_hint).split(",");
+                if(query.contains(hint[0])){
+                    if(model.getUserID().equals(userid)){
+                        filteredModelList.add(model);
+                    }
+                }
+                else if(query.contains(hint[1])){
+                    if(model.getAgent().equals(userid)){
+                        filteredModelList.add(model);
+                    }
+                }
+                else if (text.contains(query)) {
                     filteredModelList.add(model);
                 }
             }

@@ -12,4 +12,15 @@
     <string name="offers_created">Angebote erstellt</string>
     <string name="offers_used">Angebote genutzt</string>
     <string name="tags">Tags</string>
+    <string name="suggestion_hint">meine, angenommene</string>
+    <string-array name="suggestions">
+        <item>meine</item>
+        <item>angenommene</item>
+        <item>schwere Arbeit</item>
+        <item>Kochen</item>
+        <item>Einkaufen</item>
+        <item>Essen</item>
+        <item>Kochen</item>
+        <item>angenommen</item>
+    </string-array>
 </resources>
