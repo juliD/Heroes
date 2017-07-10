@@ -15,6 +15,11 @@
     <string name="spinner_title">Wähle eine Kategorie</string>
     <string name="suggestion_hint">meine, angenommene</string>
     <string name="send">Senden</string>
+    <string name="name">Name</string>
+    <string name="address">Adresse</string>
+    <string name="city">Stadt</string>
+    <string name="street">Straße und Hausnummer</string>
+    <string name="radius">Ich helfe im Umkreis von</string>
     <string-array name="suggestions">
         <item>meine</item>
         <item>angenommene</item>
