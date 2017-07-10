@@ -343,7 +343,7 @@ public class HelpFragment extends Fragment {
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                populateAdapter(newText);
+                populateAdapter();
                 final List<ListItem> filteredModelList = filter(list, newText);
                 adapter.setFilter(filteredModelList);
                 return false;

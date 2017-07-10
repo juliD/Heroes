@@ -11,17 +11,20 @@
     <string name="asks_done">Anfragen erfüllt</string>
     <string name="offers_created">Angebote erstellt</string>
     <string name="offers_done">Angebote ausgeführt</string>
-    <string name="tags">Tags</string>
+    <string name="tags">Kategorie</string>
+    <string name="spinner_title">Wähle eine Kategorie</string>
     <string name="suggestion_hint">meine, angenommene</string>
     <string name="send">Senden</string>
     <string-array name="suggestions">
         <item>meine</item>
         <item>angenommene</item>
-        <item>schwere Arbeit</item>
-        <item>Kochen</item>
         <item>Einkaufen</item>
-        <item>Essen</item>
         <item>Kochen</item>
-        <item>angenommen</item>
+        <item>Waschen</item>
+        <item>Putzen</item>
+        <item>Gartenarbeit</item>
+        <item>Installation</item>
+        <item>Reparatur</item>
+        <item>Sonstiges</item>
     </string-array>
 </resources>
