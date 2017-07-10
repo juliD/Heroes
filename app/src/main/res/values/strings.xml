@@ -8,11 +8,12 @@
     <string name="action_myprofile">Profil</string>
     <string name="successes">Erfolge</string>
     <string name="asks_created">Anfragen erstellt</string>
-    <string name="asks_fullfilled">Anfragen erfüllt</string>
+    <string name="asks_done">Anfragen erfüllt</string>
     <string name="offers_created">Angebote erstellt</string>
-    <string name="offers_used">Angebote genutzt</string>
+    <string name="offers_done">Angebote ausgeführt</string>
     <string name="tags">Tags</string>
     <string name="suggestion_hint">meine, angenommene</string>
+    <string name="send">Senden</string>
     <string-array name="suggestions">
         <item>meine</item>
         <item>angenommene</item>

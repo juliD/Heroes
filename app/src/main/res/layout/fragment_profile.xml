@@ -109,7 +109,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/asks_fullfilled"
+                    android:text="@string/asks_done"
                     android:gravity="center" />
 
                 <TextView
@@ -123,7 +123,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="@string/offers_used"
+                    android:text="@string/offers_done"
                     android:gravity="center" />
 
             </LinearLayout>

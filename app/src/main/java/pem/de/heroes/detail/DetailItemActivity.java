@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import pem.de.heroes.main.HelpFragment;
 import pem.de.heroes.shared.CounterTransactionHandler;
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
@@ -66,11 +65,15 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private SharedPreferences sharedPref;
 
     private String type = "offer";
-    private String itemID;
     private String preferenceUserID;
-    private String listUserID;
-    private String token;
+
     private ListItem listitem;
+    private String itemID;
+    private boolean mine;
+    private boolean accepted;
+    private boolean acceptedByMe;
+
+    private String token;
     private LatLng home;
 
     private CustomViewPager viewPager;
@@ -103,18 +106,25 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
 
         listitem = getIntent().getParcelableExtra("selected");
-        listUserID = listitem.getUserID();
+        String listUserID = listitem.getUserID();
+        String listAgentID = listitem.getAgent();
 
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
+        agentref = ref.child("users").child(listAgentID);
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
         token = sharedPref.getString("pushToken", "No token");
 
+        mine = listUserID.equals(preferenceUserID);
+        accepted = !listAgentID.equals("");
+        acceptedByMe = listAgentID.equals(preferenceUserID);
+
+
+        // layout
         viewPager = (CustomViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
-
 
         // layouts of all detail sliders
         layouts = new int[]{
@@ -123,7 +133,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         };
 
         viewPager.setAdapter(new DetailViewPagerAdapter());
-
 
         // adding bottom dots
         addBottomDots(0);
@@ -144,11 +153,62 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
 
         // enable swiping
-        if (listUserID.equals(preferenceUserID) || listitem.getAgent().equals(preferenceUserID)) {
+        if (mine || acceptedByMe) {
             showBottomDots();
         } else {
             hideBottomDots();
         }
+
+        // toolbar buttons
+        ImageButton backButton = (ImageButton) findViewById(R.id.back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        ImageButton deleteButton = (ImageButton) findViewById(R.id.delete);
+        if (mine) {
+            deleteButton.setVisibility(View.VISIBLE);
+        } else {
+            deleteButton.setVisibility(View.GONE);
+        }
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // owner gets -1 for his 'created' medal
+                ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
+
+                // item is deleted in geofire and in the list
+                ref.child("geofire").child(type).child(itemID).removeValue();
+                typeref.child(itemID).removeValue();
+
+                // finish activity and show toast
+                finish();
+                Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ImageButton undoButton = (ImageButton) findViewById(R.id.undo);
+        if (accepted) {
+            undoButton.setVisibility(View.VISIBLE);
+        } else {
+            undoButton.setVisibility(View.GONE);
+        }
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // agent is removed and push notifications for this item are disabled
+                typeref.child(itemID).child("agent").setValue("");
+                typeref.child(itemID).child("follower").child("agent").setValue("");
+                listitem.setAgent("");
+
+                hideBottomDots();
+
+                agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
+            }
+        });
     }
 
     private void showBottomDots() {
@@ -181,6 +241,30 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    private void showAgent() {
+        if (accepted) {
+            agentref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    agent = dataSnapshot.getValue(User.class);
+                    if (agent != null) {
+                        agent_textview.setText(agent.getUsername());
+                        agent.setUserid(listitem.getAgent());
+                    } else {
+                        agent_textview.setText("");
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // Getting agent failed, create log
+                    Log.w("on cancelled", "loadPost:onCancelled", databaseError.toException());
+                    Toast.makeText(DetailItemActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
     private void buildRequestPage(View view) {
         if (listitem != null) {
             final TextView title = (TextView) view.findViewById(R.id.detail_title);
@@ -189,81 +273,56 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             agent_textview = (TextView) view.findViewById(R.id.agent);
             final Button accept = (Button) view.findViewById(R.id.accept);
 
-            setTitle(listitem.getTitle());
             title.setText(listitem.getTitle());
             description.setText(listitem.getDescription());
             address.setText(listitem.getAddress());
-            showAddressOnMap();
+            if (mine || acceptedByMe) {
+                showAddressOnMap();
+            }
+            showAgent();
 
-            if (listUserID.equals(preferenceUserID)) {
-                if (listitem.getAgent().equals("")) {
-                    agent_textview.setText("Leider hat noch niemand deine Anfrage angenommen.");
-                    accept.setText("Anfrage löschen");
-                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.delete));
-                } else {
-                    accept.setText("Karma überweisen");
-                    accept.setBackgroundColor(ContextCompat.getColor(this, R.color.complete));
-                    agentref = ref.child("users").child(listitem.getAgent());
-                    setAgent();
-                }
-            } else {
-                if (listitem.getAgent().equals("")) {
-                    agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
-                } else if (listitem.getAgent().equals(preferenceUserID)) {
-                    agent_textview.setText("Du hast diese Anfrage angenommen!");
-                    accept.setText("Wieder abgeben");
-                } else {
-                    agent_textview.setText("Jemand anderes hat die Anfrage leider vor dir angenommen.");
-                }
+            if (!accepted) {
+                agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
+            }
+
+            accept.setVisibility(View.INVISIBLE);
+            if (type.equals("ask") && mine && accepted || type.equals("offer") && acceptedByMe) {
+                accept.setVisibility(View.VISIBLE);
+                accept.setText("Karma überweisen");
+            } else if (!mine && !accepted) {
+                accept.setVisibility(View.VISIBLE);
+                accept.setText("Annehmen");
             }
 
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (preferenceUserID.equals(listUserID)) {
-                        if (!(listitem.getAgent().equals(""))) {
-                            finish();
-                            // code after this should be run anyways even though we call finish
-                            Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
+                    if (type.equals("ask") && mine && accepted || type.equals("offer") && acceptedByMe) {
+                        // agent/owner gets karma and +1 for his 'done' medal
+                        DatabaseReference userref = type.equals("ask") ? agentref : ownerref;
+                        userref.child("karma").runTransaction(new CounterTransactionHandler(+100));
+                        userref.child("asksDone").runTransaction(new CounterTransactionHandler(+1));
 
-                            // agent gets karma and +1 for his 'done' medal
-                            agentref.child("karma").runTransaction(new CounterTransactionHandler(+100));
-                            agentref.child(type + "sDone").runTransaction(new CounterTransactionHandler(+1));
+                        // item is removed from geofire and the list
+                        ref.child("geofire").child(type).child(itemID).removeValue();
+                        typeref.child(itemID).removeValue();
 
-                            ref.child("geofire").child(type).child(itemID).removeValue();
-                            typeref.child(itemID).removeValue();
-
-                            finish();
-                        } else {
-                            finish();
-                            Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
-
-                            // owner gets -1 for his 'created' medal
-                            ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
-
-                            ref.child("geofire").child(type).child(itemID).removeValue();
-                            typeref.child(itemID).removeValue();
-
-                        }
-                    } else if (listitem.getAgent().equals("")) {
+                        // finish and show toast
+                        finish();
+                        Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
+                    } else if (!mine && !accepted) {
+                        // set agent and register user for push notifications
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         typeref.child(itemID).child("follower").child("agent").setValue(token);
                         listitem.setAgent(preferenceUserID);
 
+                        // show chat and address
                         showBottomDots();
                         showAddressOnMap();
 
+                        // set text and hide button
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
-                        accept.setText("Wieder abgeben");
-                    } else if (listitem.getAgent().equals(preferenceUserID)) {
-                        typeref.child(itemID).child("agent").setValue("");
-                        typeref.child(itemID).child("follower").child("agent").setValue("");
-                        listitem.setAgent("");
-
-                        hideBottomDots();
-
-                        agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
-                        accept.setText("Annehmen");
+                        accept.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -343,7 +402,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 usernamechat.setGravity(Gravity.END);
                 chatmessage.setGravity(Gravity.END);
             } else {
-                if (listUserID.equals(preferenceUserID)) {
+                if (mine) {
                     usernamechat.setText(agent.getUsername() != null ? agent.getUsername() : "Bearbeiter");
                 } else {
                     usernamechat.setText(owner != null ? owner.getUsername() : "Anfragensteller");
@@ -370,33 +429,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
 
-    }
-
-    private void setAgent() {
-        if (!listitem.getAgent().equals("")) {
-            ValueEventListener agentListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    //get database value
-
-                    agent = dataSnapshot.getValue(User.class);
-                    if (agent != null) {
-                        agent_textview.setText(agent.getUsername());
-                        agent.setUserid(listitem.getAgent());
-                    }
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting agent failed, create log
-                    Log.w("on cancelled", "loadPost:onCancelled", databaseError.toException());
-                    Toast.makeText(DetailItemActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
-                }
-            };
-            //firebase referenz auf den User, der im listitem steht.
-            agentref.addListenerForSingleValueEvent(agentListener);
-        }
     }
 
     private void messagesEventListener() {
