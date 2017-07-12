@@ -73,7 +73,7 @@ public class AddActivity extends AppCompatActivity {
         final TextView cityView = (TextView) findViewById(R.id.city);
         final EditText titleView = (EditText) findViewById(R.id.add_title);
         final EditText descView = (EditText) findViewById(R.id.add_description);
-        final Spinner spinner = (Spinner) findViewById(R.id.tags);
+        final Spinner spinner = (Spinner) findViewById(R.id.category);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -7,7 +7,6 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.widget.SimpleCursorAdapter;
@@ -29,7 +28,6 @@ import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.geofire.util.GeoUtils;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,17 +37,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import pem.de.heroes.detail.DetailItemActivity;
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
 import pem.de.heroes.model.ListItem;
 
-import android.widget.ImageButton;
 import android.widget.SearchView;
 
 public class HelpFragment extends Fragment {
@@ -408,8 +403,8 @@ public class HelpFragment extends Fragment {
         final List<ListItem> filteredModelList = new ArrayList<>();
 
         for (ListItem model : models) {
-            if(!model.getTags().isEmpty()) {
-                final String text = model.getTags().toLowerCase();
+            if(!model.getCategory().isEmpty()) {
+                final String text = model.getCategory().toLowerCase();
                 String[] hint = getResources().getString(R.string.suggestion_hint).split(",");
                 if(query.contains(hint[0])){
                     if(model.getUserID().equals(userid)){

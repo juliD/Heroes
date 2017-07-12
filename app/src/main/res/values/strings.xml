@@ -11,7 +11,7 @@
     <string name="asks_done">Anfragen erfüllt</string>
     <string name="offers_created">Angebote erstellt</string>
     <string name="offers_done">Angebote ausgeführt</string>
-    <string name="tags">Kategorie</string>
+    <string name="category">Kategorie</string>
     <string name="spinner_title">Wähle eine Kategorie</string>
     <string name="suggestion_hint">meine, angenommene</string>
     <string name="send">Senden</string>
@@ -20,6 +20,9 @@
     <string name="city">Stadt</string>
     <string name="street">Straße und Hausnummer</string>
     <string name="radius">Ich helfe im Umkreis von</string>
+    <string name="date">Datum</string>
+    <string name="agent">Bearbeiter</string>
+    <string name="owner">Ersteller</string>
     <string-array name="suggestions">
         <item>meine</item>
         <item>angenommene</item>

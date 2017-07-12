@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -40,6 +41,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -58,9 +62,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private static final String ITEM_ID = "item_id";
 
     private DatabaseReference ref;
-    private DatabaseReference agentref;
     private DatabaseReference typeref;
     private DatabaseReference ownerref;
+    private DatabaseReference agentref;
     private DatabaseReference messagesref;
     private SharedPreferences sharedPref;
 
@@ -111,7 +115,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
+        ownerref = ref.child("users").child(listUserID);
         agentref = ref.child("users").child(listAgentID);
+        messagesref = typeref.child(itemID).child("messages");
 
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
@@ -241,45 +247,58 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void showAgent() {
-        if (accepted) {
-            agentref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    agent = dataSnapshot.getValue(User.class);
-                    if (agent != null) {
-                        agent_textview.setText(agent.getUsername());
-                        agent.setUserid(listitem.getAgent());
-                    } else {
-                        agent_textview.setText("");
-                    }
+    private void showUsername(final TextView view, DatabaseReference ref) {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    view.setText(user.getUsername());
+                } else {
+                    view.setText("nicht verfügbar");
                 }
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    // Getting agent failed, create log
-                    Log.w("on cancelled", "loadPost:onCancelled", databaseError.toException());
-                    Toast.makeText(DetailItemActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void buildRequestPage(View view) {
         if (listitem != null) {
-            final TextView title = (TextView) view.findViewById(R.id.detail_title);
-            final TextView description = (TextView) view.findViewById(R.id.detail_description);
-            final TextView address = (TextView) view.findViewById(R.id.show_address);
+            final TextView title = (TextView) view.findViewById(R.id.title);
+            final TextView description = (TextView) view.findViewById(R.id.description);
+            final TextView address = (TextView) view.findViewById(R.id.address);
+            final TextView date = (TextView) view.findViewById(R.id.date);
+            final TextView category = (TextView) view.findViewById(R.id.category);
+            final TextView agent = (TextView) view.findViewById(R.id.agent);
+            final TextView user = (TextView) view.findViewById(R.id.user);
+            final TextView showDetails = (TextView) view.findViewById(R.id.show_details);
+            final GridLayout details = (GridLayout) view.findViewById(R.id.details);
             agent_textview = (TextView) view.findViewById(R.id.agent);
             final Button accept = (Button) view.findViewById(R.id.accept);
 
             title.setText(listitem.getTitle());
             description.setText(listitem.getDescription());
             address.setText(listitem.getAddress());
+            category.setText(listitem.getCategory());
+
+            SimpleDateFormat from = new SimpleDateFormat("yyyyMMddHHmm");
+            SimpleDateFormat to = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+            try {
+                Date value = from.parse(listitem.getDate());
+                date.setText(to.format(value));
+            } catch (ParseException e) {
+                date.setText("nicht verfügbar");
+            }
+
             if (mine || acceptedByMe) {
                 showAddressOnMap();
             }
-            showAgent();
+            showUsername(user, ownerref);
+            showUsername(agent, agentref);
 
             if (!accepted) {
                 agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
@@ -326,6 +345,20 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     }
                 }
             });
+
+            details.setVisibility(View.GONE);
+            showDetails.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (details.getVisibility() == View.VISIBLE) {
+                        showDetails.setText("Details anzeigen");
+                        details.setVisibility(View.GONE);
+                    } else {
+                        showDetails.setText("Details ausblenden");
+                        details.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         }
     }
 
@@ -334,10 +367,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             owner_username_textview = (TextView) view.findViewById(R.id.username);
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
-            ownerref = ref.child("users").child(listitem.getUserID());
-            messagesref = typeref.child(itemID).child("messages");
-
-            setUsername();
+            showUsername(owner_username_textview, ownerref);
+            messagesEventListener();
 
             final ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
             final EditText messagefield = (EditText) view.findViewById(R.id.messagefield);
@@ -421,14 +452,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         }
 
-        //makes sure that chat is scrolled to the bottom and the latest message is displayed.
+        // makes sure that chat is scrolled to the bottom and the latest message is displayed.
         scrollview.post(new Runnable() {
             @Override
             public void run() {
                 scrollview.fullScroll(ScrollView.FOCUS_DOWN);
             }
         });
-
     }
 
     private void messagesEventListener() {
@@ -456,32 +486,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
         });
     }
-
-    private void setUsername() {
-        ValueEventListener ownerListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //get database value
-                owner = dataSnapshot.getValue(User.class);
-                if (owner != null) {
-                    owner_username_textview.setText(owner.getUsername());
-                    owner.setUserid(listitem.getUserID());
-                    messagesEventListener();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Getting agent failed, create log
-                Log.w("on cancelled", "loadPost:onCancelled", databaseError.toException());
-                Toast.makeText(DetailItemActivity.this, "Failed to load post.", Toast.LENGTH_SHORT).show();
-            }
-        };
-        //firebase referenz auf den User, der im listitem steht.
-        ownerref.addListenerForSingleValueEvent(ownerListener);
-    }
-
 
     private void addBottomDots(int currentPage) {
         TextView[] dots = new TextView[layouts.length];
