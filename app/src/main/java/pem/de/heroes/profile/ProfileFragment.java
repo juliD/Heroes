@@ -9,10 +9,10 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,11 +24,11 @@ import pem.de.heroes.R;
 public class ProfileFragment extends Fragment {
 
     private final Hero[] heroes = {
-            new Hero("Wannabe Hero", 100),
-            new Hero("Amateur Hero", 1000),
-            new Hero("Advanced Hero", 10000),
-            new Hero("Master Hero", 100000),
-            new Hero("Local Hero", 1000000)
+            new Hero("Wannabe Hero", 100, R.drawable.hero1),
+            new Hero("Amateur Hero", 1000, R.drawable.hero2),
+            new Hero("Advanced Hero", 10000, R.drawable.hero3),
+            new Hero("Master Hero", 100000, R.drawable.hero4),
+            new Hero("Local Hero", 1000000, R.drawable.hero5)
     };
 
     public ProfileFragment() {
@@ -46,13 +46,14 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         final TextView username = (TextView) view.findViewById(R.id.username);
+        final ImageView heroImage = (ImageView) view.findViewById(R.id.heroImage);
         final View hero = view.findViewById(R.id.hero);
         final View medal1 = view.findViewById(R.id.medal1);
         final View medal2 = view.findViewById(R.id.medal2);
         final View medal3 = view.findViewById(R.id.medal3);
         final View medal4 = view.findViewById(R.id.medal4);
 
-        setHero(hero, 0);
+        setHero(hero, heroImage, 0);
         setMedal(medal1, 0);
         setMedal(medal2, 0);
         setMedal(medal3, 0);
@@ -72,7 +73,7 @@ public class ProfileFragment extends Fragment {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 switch (dataSnapshot.getKey()) {
                     case "karma":
-                        setHero(hero, dataSnapshot.getValue(Integer.class));
+                        setHero(hero, heroImage, dataSnapshot.getValue(Integer.class));
                         break;
                     case "asksCreated":
                         setMedal(medal1, dataSnapshot.getValue(Integer.class));
@@ -111,7 +112,7 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private void setHero(View heroView, int karma) {
+    private void setHero(View heroView, ImageView heroImage, int karma) {
         Hero hero = null;
         int progress = karma;
         for (Hero h : heroes) {
@@ -130,6 +131,9 @@ public class ProfileFragment extends Fragment {
 
         TextView heroTitle = (TextView) heroView.findViewById(R.id.heroTitle);
         heroTitle.setText(hero.getName());
+
+        Drawable drawable = ResourcesCompat.getDrawable(getResources(), hero.getResource(), null);
+        heroImage.setImageDrawable(drawable);
 
         TextView karmaText = (TextView) heroView.findViewById(R.id.karmaText);
         karmaText.setText(progress + " / " + hero.getRequiredKarmaTillNextLevel() + " Karma");
