@@ -9,7 +9,7 @@ android:background="@color/bg_screen2">
     <ImageView
         android:layout_width="@dimen/img_width_height"
         android:layout_height="@dimen/img_width_height"
-        android:src="@drawable/captain_a"
+        android:src="@drawable/hero5"
         android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginRight="16dp"
