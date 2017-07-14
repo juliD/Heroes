@@ -84,9 +84,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private TextView agent_textview;
     private TextView owner_username_textview;
 
-    private User agent;
-    private User owner;
-
     private LinearLayout dotsLayout;
     private int[] layouts;
 
@@ -159,7 +156,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
 
         // enable swiping
-        if (mine || acceptedByMe) {
+        if (mine && accepted || acceptedByMe) {
             showBottomDots();
         } else {
             hideBottomDots();
@@ -377,7 +374,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             btn_send.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //creates a node in messages that will later contain the message and userid
+                    // creates a node in messages that will later contain the message and userid
                     if (messagefield.getText().length() > 0) {
                         Map<String, Object> messagemap = new HashMap<String, Object>();
                         String messagekey = messagesref.push().getKey();
@@ -401,7 +398,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private void seeChatMessages(DataSnapshot dataSnapshot) {
         LayoutInflater inflator = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        //iterates through all the children of messages. Takes the values and creates a new textview with them.
+        // iterates through all the children of messages. Takes the values and creates a new TextView with them.
         Iterator i = dataSnapshot.getChildren().iterator();
         while (i.hasNext()) {
             chat_message = (String) ((DataSnapshot) i.next()).getValue();
@@ -433,11 +430,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 usernamechat.setGravity(Gravity.END);
                 chatmessage.setGravity(Gravity.END);
             } else {
-                if (mine) {
-                    usernamechat.setText(agent.getUsername() != null ? agent.getUsername() : "Bearbeiter");
-                } else {
-                    usernamechat.setText(owner != null ? owner.getUsername() : "Anfragensteller");
-                }
+                showUsername(usernamechat, mine ? agentref : ownerref);
                 linearlayout2.setGravity(Gravity.START);
                 containermessage.setBackgroundResource(R.drawable.roundedrectangle);
                 GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();

@@ -102,18 +102,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent i = new Intent(MainActivity.this, AddActivity.class);
-
-                if(viewPager.getCurrentItem()==1){
-                    i.putExtra(ARG_TYPE,"ask");
-                }
-
-                startActivity(i);
-            }
-        });
+                                   @Override
+                                   public void onClick(View view) {
+                                       Intent i = new Intent(MainActivity.this, AddActivity.class);
+                                       i.putExtra(ARG_TYPE, viewPager.getCurrentItem() == 1 ? "ask" : "offer");
+                                       startActivity(i);
+                                   }
+                               });
 
         ImageButton edit =(ImageButton)findViewById(R.id.edit);
         edit.setOnClickListener(new View.OnClickListener() {
