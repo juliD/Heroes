@@ -9,6 +9,8 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.SimpleCursorAdapter;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +37,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +49,7 @@ import pem.de.heroes.R;
 import pem.de.heroes.model.ListItem;
 
 import android.widget.SearchView;
+import android.widget.Spinner;
 
 public class HelpFragment extends Fragment {
 
@@ -70,7 +74,7 @@ public class HelpFragment extends Fragment {
     private boolean fetchedItemIds;
     String userid;
     private SimpleCursorAdapter suggestionadapter;
-    SearchView searchView;
+    Spinner searchView;
 
     private String[] SUGGESTIONS;
 
@@ -266,6 +270,20 @@ public class HelpFragment extends Fragment {
                 listItem.setid(dataSnapshot.getKey());
                 listItem.setDistance(itemToDistance.get(dataSnapshot.getKey()));
 
+
+                int imageResource=0;
+                if(listItem.getCategory().equals(SUGGESTIONS[2])) imageResource=R.drawable.shopping;
+                else if(listItem.getCategory().equals(SUGGESTIONS[3])) imageResource=R.drawable.cook;
+                else if(listItem.getCategory().equals(SUGGESTIONS[4])) imageResource=R.drawable.wash;
+                else if(listItem.getCategory().equals(SUGGESTIONS[5])) imageResource=R.drawable.clean;
+                else if(listItem.getCategory().equals(SUGGESTIONS[6])) imageResource=R.drawable.transport;
+                else if(listItem.getCategory().equals(SUGGESTIONS[7])) imageResource=R.drawable.garden;
+                else if(listItem.getCategory().equals(SUGGESTIONS[8])) imageResource=R.drawable.tech;
+                else if(listItem.getCategory().equals(SUGGESTIONS[9])) imageResource=R.drawable.repair;
+                else if(listItem.getCategory().equals(SUGGESTIONS[10])) imageResource=R.drawable.something_else;
+
+                listItem.setImage(imageResource);
+
                 if(itemToDistance.containsKey(dataSnapshot.getKey())){
                     if(keys.contains(dataSnapshot.getKey())){
                         if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)&&!listItem.getUserID().equals(userid)){
@@ -327,39 +345,29 @@ public class HelpFragment extends Fragment {
         menu.clear();
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.search);
-        searchView = new SearchView(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
+
+        searchView = new Spinner(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item, searchView);
-        searchView.setIconified(false);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+        List<String> categories = new ArrayList<String>(Arrays.asList(SUGGESTIONS));
+        final ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,categories);
+        searchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        searchView.setAdapter(searchAdapter);
+        searchView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                populateAdapter();
-                final List<ListItem> filteredModelList = filter(list, newText);
-                adapter.setFilter(filteredModelList);
-                return false;
-            }
-        });
-        searchView.setQueryHint(getResources().getString(R.string.suggestion_hint));
-        searchView.setSuggestionsAdapter(suggestionadapter);
-        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
-            @Override
-            public boolean onSuggestionClick(int position) {
-                // Your code here
-                searchView.setQuery(SUGGESTIONS[position],false);
-                return true;
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG,"item string: "+searchAdapter.getItem(position));
+                adapter.setFilter(filter(list, searchAdapter.getItem(position)));
             }
 
             @Override
-            public boolean onSuggestionSelect(int position) {
-                // Your code here
-                return true;
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
+
         MenuItemCompat.setOnActionExpandListener(item,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
@@ -368,34 +376,16 @@ public class HelpFragment extends Fragment {
                         adapter.setFilter(list);
                         return true; // Return true to collapse action view
                     }
-
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // Do something when expanded
-                        populateAdapter();
+
                         return true; // Return true to expand action view
                     }
                 });
 
     }
 
-    private void populateAdapter() {
-        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "tags" });
-        for (int i=0; i<SUGGESTIONS.length; i++) {
-            c.addRow(new Object[] {i, SUGGESTIONS[i]});
-
-        }
-        suggestionadapter.changeCursor(c);
-    }
-
-    private void populateAdapter(String query) {
-        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "tags" });
-        for (int i=0; i<SUGGESTIONS.length; i++) {
-            if (SUGGESTIONS[i].toLowerCase().startsWith(query.toLowerCase()))
-                c.addRow(new Object[] {i, SUGGESTIONS[i]});
-        }
-        suggestionadapter.changeCursor(c);
-    }
 
     private List<ListItem> filter(List<ListItem> models, String query) {
 
@@ -403,20 +393,22 @@ public class HelpFragment extends Fragment {
         final List<ListItem> filteredModelList = new ArrayList<>();
 
         for (ListItem model : models) {
+            Log.d(TAG,model.getAgent()+ "   "+userid);
             if(!model.getCategory().isEmpty()) {
                 final String text = model.getCategory().toLowerCase();
-                String[] hint = getResources().getString(R.string.suggestion_hint).split(",");
-                if(query.contains(hint[0])){
+                String[] hint = getResources().getString(R.string.suggestion_hint).split(", ");
+                if(query.equals(hint[0])){
                     if(model.getUserID().equals(userid)){
                         filteredModelList.add(model);
                     }
                 }
-                else if(query.contains(hint[1])){
+                else if(query.equals(hint[1])){
+                    Log.d(TAG,"in angenommen");
                     if(model.getAgent().equals(userid)){
                         filteredModelList.add(model);
                     }
                 }
-                else if (text.contains(query)) {
+                else if (query.equals(text)) {
                     filteredModelList.add(model);
                 }
             }

@@ -5,5 +5,5 @@
         android:title="Search"
         android:icon="@drawable/ic_search_white_24dp"
         app:showAsAction="collapseActionView|ifRoom"
-        android:actionViewClass="android.widget.SearchView" />
+        android:actionViewClass="android.widget.Spinner" />
 </menu>
