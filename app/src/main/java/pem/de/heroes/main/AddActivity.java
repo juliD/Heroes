@@ -85,7 +85,7 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
-        List<String> categories = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(SUGGESTIONS,2,SUGGESTIONS.length-1)));
+        List<String> categories = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(SUGGESTIONS,2,SUGGESTIONS.length)));
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);

@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import pem.de.heroes.R;
@@ -32,6 +34,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, info, dist, status;
+        public ImageView category;
 
         public MyViewHolder(View view) {
             super(view);
@@ -39,6 +42,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             info = (TextView) view.findViewById(R.id.item_description);
             dist = (TextView) view.findViewById(R.id.distance);
             status = (TextView) view.findViewById(R.id.status);
+            category = (ImageView) view.findViewById(R.id.category_view);
         }
 
 
@@ -74,6 +78,8 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         }else{
             holder.dist.setText(item.getDistance()+"m");
         }
+        holder.category.setImageResource(item.getImage());
+
 
         //check if I am agent or if it is my offer and set background color depending on that
         if(item.getAgent().equals(userid)){
