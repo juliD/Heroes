@@ -50,6 +50,7 @@ import pem.de.heroes.model.ListItem;
 
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class HelpFragment extends Fragment {
 
@@ -360,6 +361,9 @@ public class HelpFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG,"item string: "+searchAdapter.getItem(position));
                 adapter.setFilter(filter(list, searchAdapter.getItem(position)));
+
+                //sets the color of the currently shown item in the actionbar to white
+                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
             }
 
             @Override
@@ -421,9 +425,6 @@ public class HelpFragment extends Fragment {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.search:
-
-                //       onCall();   //your logic
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
