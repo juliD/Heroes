@@ -23,6 +23,7 @@
     <string name="date">Datum</string>
     <string name="agent">Bearbeiter</string>
     <string name="owner">Ersteller</string>
+    <string name="empty">Leider gibt es nichts Neues in deiner Umgebung.</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

@@ -77,6 +77,7 @@ public class HelpFragment extends Fragment {
     String userid;
     private SimpleCursorAdapter suggestionadapter;
     Spinner searchView;
+    TextView empty;
 
     private String[] SUGGESTIONS;
 
@@ -149,6 +150,13 @@ public class HelpFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        empty = (TextView) getView().findViewById(R.id.tv_no_data);
+
+        //show empty textview message
+        empty.setVisibility(View.VISIBLE);
+
+
+
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
             @Override
@@ -265,8 +273,13 @@ public class HelpFragment extends Fragment {
                 Log.d("Fragment", "datasnapshot Key: "+ dataSnapshot.getKey());
                 final ListItem listItem = dataSnapshot.getValue(ListItem.class);
                 if(listItem==null){
+                    empty.setVisibility(View.VISIBLE);
                     return;
+
                 }
+
+                //hides message that no items are available
+                empty.setVisibility(View.INVISIBLE);
 
                 Log.d("Fragment", "Item Title: "+listItem.getTitle());
                 listItem.setid(dataSnapshot.getKey());

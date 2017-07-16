@@ -82,7 +82,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     private CustomViewPager viewPager;
     private TextView agent_textview;
-    private TextView owner_username_textview;
+    private TextView chat_partner_textview;
 
     private LinearLayout dotsLayout;
     private int[] layouts;
@@ -361,10 +361,15 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     private void buildChatPage(View view) {
         if (listitem != null) {
-            owner_username_textview = (TextView) view.findViewById(R.id.username);
+            chat_partner_textview = (TextView) view.findViewById(R.id.username);
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
-            showUsername(owner_username_textview, ownerref);
+            if(mine){
+                showUsername(chat_partner_textview, agentref);
+            }else{
+                showUsername(chat_partner_textview, ownerref);
+            }
+
             messagesEventListener();
 
             final ImageButton btn_send = (ImageButton) view.findViewById(R.id.send);
