@@ -4,15 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,21 +27,31 @@ import pem.de.heroes.R;
 
 public class EditSettingsActivity extends AppCompatActivity {
 
+    private DatabaseReference userRef;
+    private SharedPreferences sharedPref;
+
+    private EditText usernameEdit;
+    private EditText streetEdit;
+    private EditText cityEdit;
+    private TextView radiusText;
+    private SeekBar radiusBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_settings);
+        setTitle(getString(R.string.edit_profile));
 
-        final EditText usernameEdit = (EditText) findViewById(R.id.username);
-        final EditText streetEdit = (EditText) findViewById(R.id.street);
-        final EditText cityEdit = (EditText) findViewById(R.id.city);
-        final TextView radiusText = (TextView) findViewById(R.id.radiusText);
-        final SeekBar radiusBar = (SeekBar) findViewById(R.id.radius);
+        usernameEdit = (EditText) findViewById(R.id.username);
+        streetEdit = (EditText) findViewById(R.id.street);
+        cityEdit = (EditText) findViewById(R.id.city);
+        radiusText = (TextView) findViewById(R.id.radiusText);
+        radiusBar = (SeekBar) findViewById(R.id.radius);
 
-        final SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
 
-        String userId = sharedPref.getString("userid","");
-        final DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
+        String userId = sharedPref.getString("userid", "");
+        userRef = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -81,32 +91,30 @@ public class EditSettingsActivity extends AppCompatActivity {
                 // do nothing
             }
         });
+    }
 
-        ImageButton cancelButton = (ImageButton) findViewById(R.id.cancel);
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_edit_settings, menu);
 
-        ImageButton saveButton = (ImageButton) findViewById(R.id.save);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        MenuItem save = menu.findItem(R.id.save);
+        save.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onMenuItemClick(MenuItem item) {
                 final String username = usernameEdit.getText().toString();
                 final String city = cityEdit.getText().toString();
                 final String street = streetEdit.getText().toString();
                 final int radius = getRadius(radiusBar.getProgress());
-                if (username.isEmpty() || city.isEmpty() || street.isEmpty()) {
+                    if (username.isEmpty() || city.isEmpty() || street.isEmpty()) {
                     Toast.makeText(getApplicationContext(), "Fülle bitte alle Felder aus ...", Toast.LENGTH_SHORT).show();
-                    return;
+                    return true;
                 }
 
                 LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
-                if (newLoc == null) {
+                    if (newLoc == null) {
                     Toast.makeText(getApplicationContext(), "Adresse konnte nicht gefunden werden ...", Toast.LENGTH_SHORT).show();
-                    return;
+                    return true;
                 }
                 final double homelat = newLoc.latitude;
                 final double homelong = newLoc.longitude;
@@ -140,8 +148,11 @@ public class EditSettingsActivity extends AppCompatActivity {
                 });
 
                 finish();
+                return true;
             }
         });
+
+        return true;
     }
 
     private int getRadius(int progress) {

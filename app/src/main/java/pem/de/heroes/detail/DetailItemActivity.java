@@ -100,6 +100,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_item);
+        setTitle(""); // title is shown in extra header
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -190,7 +191,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 // finish activity and show toast
                 finish();
                 Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
-                return false;
+                return true;
             }
         });
 

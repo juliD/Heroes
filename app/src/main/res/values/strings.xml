@@ -26,6 +26,9 @@
     <string name="empty">Leider gibt es nichts Neues in deiner Umgebung.</string>
     <string name="chatpartner">Chatpartner</string>
     <string name="reset">Zurücksetzen</string>
+    <string name="save">Speichern</string>
+    <string name="delete">Löschen</string>
+    <string name="edit_profile">Profil bearbeiten</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>
