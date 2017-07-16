@@ -110,14 +110,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                                    }
                                });
 
-        ImageButton edit =(ImageButton)findViewById(R.id.edit);
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, EditSettingsActivity.class);
-                startActivity(i);
-            }
-        });
+
 
 
         //Select the tab in the middle
@@ -232,8 +225,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             karma.setVisibility(View.GONE);
 
-            ImageButton edit =(ImageButton)findViewById(R.id.edit);
-            edit.setVisibility(View.VISIBLE);
             //params.setScrollFlags(0);
 
         }
@@ -244,8 +235,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             karma.setText(sharedPref.getInt("karma",0)+" Karma");
             karma.setVisibility(View.VISIBLE);
 
-            ImageButton edit =(ImageButton)findViewById(R.id.edit);
-            edit.setVisibility(View.GONE);
         }
 
 

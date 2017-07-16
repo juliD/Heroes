@@ -18,20 +18,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:titleTextColor="@color/white"
-            app:subtitleTextColor="@color/white"
+            android:theme="@style/ActionBarTheme"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:theme="@style/ActionBarTheme">
-
-           <ImageButton
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="16dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_mode_edit_white_24dp" />
-
+            app:subtitleTextColor="@color/white"
+            app:titleTextColor="@color/white">
 
 
             <TextView
@@ -43,7 +33,6 @@
                 android:text="120 Karma"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
-
 
 
         </android.support.v7.widget.Toolbar>
@@ -73,6 +62,6 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>

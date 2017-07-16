@@ -1,12 +1,16 @@
 package pem.de.heroes.profile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -38,6 +42,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -180,5 +185,29 @@ public class ProfileFragment extends Fragment {
             medalProgressBar.setMax(max);
             medalProgressBar.setProgress(progress); // maximum
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+
+        //inflate menu and get edit item
+        inflater.inflate(R.menu.menu_profile, menu);
+        MenuItem edit = menu.findItem(R.id.edit);
+
+
+        //listener for when edit icon will be pressed
+        edit.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent i = new Intent(getContext(), EditSettingsActivity.class);
+                startActivity(i);
+                return true;
+            }
+        });
+
+
+
     }
 }
