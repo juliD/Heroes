@@ -15,6 +15,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -161,25 +164,22 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         } else {
             hideBottomDots();
         }
+    }
 
-        // toolbar buttons
-        ImageButton backButton = (ImageButton) findViewById(R.id.back);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_detail_item, menu);
 
-        ImageButton deleteButton = (ImageButton) findViewById(R.id.delete);
+        MenuItem delete = menu.findItem(R.id.delete);
         if (mine) {
-            deleteButton.setVisibility(View.VISIBLE);
+            delete.setVisible(true);
         } else {
-            deleteButton.setVisibility(View.GONE);
+            delete.setVisible(false);
         }
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        delete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public boolean onMenuItemClick(MenuItem item) {
                 // owner gets -1 for his 'created' medal
                 ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
 
@@ -190,28 +190,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 // finish activity and show toast
                 finish();
                 Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
+                return false;
             }
         });
 
-        ImageButton undoButton = (ImageButton) findViewById(R.id.undo);
-        if (accepted) {
-            undoButton.setVisibility(View.VISIBLE);
-        } else {
-            undoButton.setVisibility(View.GONE);
-        }
-        undoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // agent is removed and push notifications for this item are disabled
-                typeref.child(itemID).child("agent").setValue("");
-                typeref.child(itemID).child("follower").child("agent").setValue("");
-                listitem.setAgent("");
-
-                hideBottomDots();
-
-                agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
-            }
-        });
+        return true;
     }
 
     private void showBottomDots() {
@@ -276,6 +259,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             final GridLayout details = (GridLayout) view.findViewById(R.id.details);
             agent_textview = (TextView) view.findViewById(R.id.agent);
             final Button accept = (Button) view.findViewById(R.id.accept);
+            final Button reset = (Button) view.findViewById(R.id.reset);
 
             title.setText(listitem.getTitle());
             description.setText(listitem.getDescription());
@@ -340,6 +324,25 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         agent_textview.setText("Du hast diese Anfrage angenommen!");
                         accept.setVisibility(View.INVISIBLE);
                     }
+                }
+            });
+
+            if (accepted) {
+                reset.setVisibility(View.VISIBLE);
+            } else {
+                reset.setVisibility(View.GONE);
+            }
+            reset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // agent is removed and push notifications for this item are disabled
+                    typeref.child(itemID).child("agent").setValue("");
+                    typeref.child(itemID).child("follower").child("agent").setValue("");
+                    listitem.setAgent("");
+
+                    hideBottomDots();
+
+                    agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
                 }
             });
 

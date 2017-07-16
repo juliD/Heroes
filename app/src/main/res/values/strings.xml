@@ -25,6 +25,7 @@
     <string name="owner">Ersteller</string>
     <string name="empty">Leider gibt es nichts Neues in deiner Umgebung.</string>
     <string name="chatpartner">Chatpartner</string>
+    <string name="reset">Zurücksetzen</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

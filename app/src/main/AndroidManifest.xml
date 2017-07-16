@@ -40,7 +40,6 @@
 
         <activity
             android:name=".detail.DetailItemActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:launchMode="singleInstance"
             android:parentActivityName=".main.MainActivity"
             android:screenOrientation="portrait">
