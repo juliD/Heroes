@@ -84,14 +84,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
 
         //check if I am agent or if it is my offer and set background color depending on that
         if(item.getAgent().equals(userid)){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.i_help));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.agentIndicator));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setText("Ich helfe!");
         }else if(item.getUserID().equals(userid)){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.ownerIndicator));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));

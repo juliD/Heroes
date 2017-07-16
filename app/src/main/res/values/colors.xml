@@ -14,7 +14,8 @@
     <color name="open">#dbe9ee</color>
     <color name="text_grey">#808080</color>
 
-
+    <color name="ownerIndicator">#30627c</color>
+    <color name="agentIndicator">#b0364c</color>
 
     <color name="gold">#d4af37</color>
     <color name="silver">#c0c0c0</color>
