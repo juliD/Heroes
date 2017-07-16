@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -85,6 +87,20 @@ public class AddActivity extends AppCompatActivity {
 
             }
         });
+
+        //When someone taps the spinner the keyboard will be closed
+        spinner.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                InputMethodManager in = (InputMethodManager) v.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(v.getApplicationWindowToken(),
+                        InputMethodManager.HIDE_NOT_ALWAYS);
+                return false;
+            }
+        }) ;
+
         List<String> categories = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(SUGGESTIONS,2,SUGGESTIONS.length)));
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

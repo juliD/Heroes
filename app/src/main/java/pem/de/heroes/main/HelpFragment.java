@@ -355,6 +355,8 @@ public class HelpFragment extends Fragment {
         final ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,categories);
         searchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
+
+
         searchView.setAdapter(searchAdapter);
         searchView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
