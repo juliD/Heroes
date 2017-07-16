@@ -330,6 +330,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
             if (accepted) {
                 reset.setVisibility(View.VISIBLE);
+                reset.setText(acceptedByMe ? "Abgeben" : "Zurücksetzen" );
             } else {
                 reset.setVisibility(View.GONE);
             }
