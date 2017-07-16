@@ -286,7 +286,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
             }
 
-            accept.setVisibility(View.INVISIBLE);
+            accept.setVisibility(View.GONE);
             if (type.equals("ask") && mine && accepted || type.equals("offer") && acceptedByMe) {
                 accept.setVisibility(View.VISIBLE);
                 accept.setText("Karma überweisen");
