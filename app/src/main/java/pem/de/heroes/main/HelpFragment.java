@@ -7,6 +7,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.widget.AdapterView;
@@ -355,8 +356,6 @@ public class HelpFragment extends Fragment {
         final ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,categories);
         searchAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-
-
         searchView.setAdapter(searchAdapter);
         searchView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -365,7 +364,7 @@ public class HelpFragment extends Fragment {
                 adapter.setFilter(filter(list, searchAdapter.getItem(position)));
 
                 //sets the color of the currently shown item in the actionbar to white
-                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.white));
+                ((TextView) parent.getChildAt(0)).setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.white));
             }
 
             @Override

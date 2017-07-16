@@ -57,8 +57,9 @@ public class AddActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
+                //Title der Activity wird geändert mit bezug was erstellt wird.
                 type = extras.getString(ARG_TYPE);
-                setTitle(type.equals("ask") ? "Anfrage erstellen" : "Angebot aufgeben");
+                setTitle(type.equals("ask") ? "Anfrage erstellen" : "Angebot erstellen");
             }
         }
 

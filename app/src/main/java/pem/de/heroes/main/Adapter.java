@@ -78,6 +78,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         }else{
             holder.dist.setText(item.getDistance()+"m");
         }
+
         holder.category.setImageResource(item.getImage());
 
 
@@ -98,6 +99,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             holder.status.setText("Meins!");
         }else{
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.open));
+            holder.title.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
+            holder.info.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
+            holder.dist.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
+            holder.status.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
         }
 
 

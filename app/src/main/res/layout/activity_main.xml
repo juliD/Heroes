@@ -20,7 +20,8 @@
             android:background="?attr/colorPrimary"
             app:titleTextColor="@color/white"
             app:subtitleTextColor="@color/white"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:theme="@style/ActionBarTheme">
 
            <ImageButton
                 android:id="@+id/edit"
