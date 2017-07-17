@@ -23,12 +23,12 @@
     <string name="date">Datum</string>
     <string name="agent">Bearbeiter</string>
     <string name="owner">Ersteller</string>
-    <string name="empty">Leider gibt es nichts Neues in deiner Umgebung.</string>
+    <string name="empty">Leider gibt es nichts Neues in Deiner Umgebung. Erstelle einen Vorgang!</string>
     <string name="chatpartner">Chatpartner</string>
     <string name="save">Speichern</string>
     <string name="delete">Löschen</string>
     <string name="edit_profile">Profil bearbeiten</string>
-    <string name="hint_for_address">Die Adresse und Karte wird dir erst angezeigt wenn du den Vorgang angenommen hast.</string>
+    <string name="hint_for_address">Die Adresse und Karte wird Dir erst angezeigt wenn du den Vorgang angenommen hast.</string>
     <string name="not_available">nicht verfügbar</string>
     <string name="give_karma">Karma überweisen</string>
     <string name="accept">Annehmen</string>
@@ -39,12 +39,12 @@
     <string name="ask_was_deleted">Anfrage wurde gelöscht</string>
     <string name="offer_was_deleted">Angebot wurde gelöscht</string>
     <string name="karma_was_credited">100 Karma wurde vergeben!</string>
-    <string name="message_is_too_short">Die Nachricht ist zu kurz</string>
+    <string name="message_is_too_short">Die Nachricht ist zu kurz.</string>
     <string name="you">Du</string>
     <string name="no_agent_yet">Noch niemand hat den Vorgang angenommen. Schnapp\' ihn dir!</string>
-    <string name="no_agent_yet_mine">Leider hat noch niemand deinen Vorgang angenommen.</string>
-    <string name="delete_message">Bist du Dir wirklich sicher, dass du diesen Vorgang löschen willst?</string>
-    <string name="delete_title">Wirklich löschen?</string>
+    <string name="no_agent_yet_mine">Leider hat noch niemand Deinen Vorgang angenommen.</string>
+    <string name="delete_message">Bist Du Dir wirklich sicher, dass du diesen Vorgang löschen willst?</string>
+    <string name="delete_title">Anfrage löschen</string>
     <string name="cancel">Abbrechen</string>
     <string-array name="suggestions">
         <item>Meine</item>
