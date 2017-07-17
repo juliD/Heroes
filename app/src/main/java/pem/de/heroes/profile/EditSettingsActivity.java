@@ -134,6 +134,7 @@ public class EditSettingsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
                         SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt("radius", radius);
                         Helper.putDouble(editor, "homelat", homelat);
                         Helper.putDouble(editor, "homelong", homelong);
                         editor.apply();
