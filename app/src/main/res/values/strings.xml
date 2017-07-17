@@ -42,6 +42,7 @@
     <string name="message_is_too_short">Die Nachricht ist zu kurz</string>
     <string name="you">Du</string>
     <string name="no_agent_yet">Noch niemand hat den Vorgang angenommen. Schnapp\' ihn dir!</string>
+    <string name="no_agent_yet_mine">Leider hat noch niemand deinen Vorgang angenommen.</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

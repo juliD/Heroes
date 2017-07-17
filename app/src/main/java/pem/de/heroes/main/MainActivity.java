@@ -109,19 +109,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                                    }
                                });
 
-
-        //Button to edit profile
-        ImageButton edit =(ImageButton)findViewById(R.id.edit);
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, EditSettingsActivity.class);
-                startActivity(i);
-            }
-        });
-
-
-
         //Select the tab in the middle
         TabLayout.Tab tab = tabLayout.getTabAt(1);
         tab.select();

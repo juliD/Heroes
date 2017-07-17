@@ -351,15 +351,17 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private void refreshRequestPage() {
         // user and agent
         loadUsername(user, listitem.getUserID(), R.string.not_available);
-        loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet);
+
 
         // address
         if (mine || acceptedByMe) {
             address.setText(listitem.getAddress());
             SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
             mapFragment.getMapAsync(this);
+            loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet_mine);
         } else {
             address.setText(R.string.hint_for_address);
+            loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet);
         }
 
         // accept button
@@ -370,13 +372,23 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         } else if (!mine && !accepted) {
             accept.setVisibility(View.VISIBLE);
             accept.setText(R.string.accept);
+        }else if(mine && !accepted){
+            accept.setVisibility(View.VISIBLE);
+            accept.setText(R.string.give_karma);
+            accept.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
+            accept.setEnabled(false);
         }
 
         // reset button
         if (accepted) {
             reset.setVisibility(View.VISIBLE);
             reset.setText(acceptedByMe ? R.string.reset_accept : R.string.reset_agent);
-        } else {
+        } else if(!accepted && mine){
+            reset.setVisibility(View.VISIBLE);
+            reset.setText(R.string.reset_agent);
+            reset.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
+            reset.setEnabled(false);
+        }else{
             reset.setVisibility(View.GONE);
         }
     }
