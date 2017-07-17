@@ -127,19 +127,13 @@ public class EditSettingsActivity extends AppCompatActivity {
                         me.setCity(city);
                         me.setStreet(street);
                         me.setRadius(radius);
-                        me.setHomelat(homelat);
-                        me.setHomelong(homelong);
                         mutableData.setValue(me);
                         return Transaction.success(mutableData);
                     }
 
                     @Override
                     public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                        // is this really necessary?
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString("username", username);
-                        editor.putString("city", city);
-                        editor.putString("street", street);
                         editor.putInt("radius", radius);
                         Helper.putDouble(editor, "homelat", homelat);
                         Helper.putDouble(editor, "homelong", homelong);

@@ -360,6 +360,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                     // agent is removed and push notifications for this item are disabled
                     typeref.child(itemID).child("agent").setValue("");
                     typeref.child(itemID).child("follower").child("agent").setValue("");
+                    messagesref.setValue("");
                     listitem.setAgent("");
 
                     // refresh UI
