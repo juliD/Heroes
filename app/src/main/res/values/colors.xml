@@ -10,9 +10,15 @@
     <color name="delete">#ff0000</color>
     <color name="accepted">#831403</color>
     <color name="white">#ffffff</color>
+    <color name="i_help">#20d2bb</color>
+    <color name="text_grey">#808080</color>
 
+    <!-- used shaded and tinted versions of color primary and color accent -->
+    <color name="ownItem">#2c5a72</color>
+    <color name="acceptedItem">#a53347</color>
+    <color name="openItem">#d5e6ef</color>
 
-
+    <!-- for medals -->
     <color name="gold">#d4af37</color>
     <color name="silver">#c0c0c0</color>
     <color name="bronze">#cd7f32</color>

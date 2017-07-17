@@ -7,6 +7,7 @@ import android.database.MatrixCursor;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.CursorAdapter;
 import android.widget.AdapterView;
@@ -50,6 +51,7 @@ import pem.de.heroes.model.ListItem;
 
 import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 public class HelpFragment extends Fragment {
 
@@ -74,6 +76,7 @@ public class HelpFragment extends Fragment {
     private boolean fetchedItemIds;
     String userid;
     Spinner searchView;
+    TextView empty;
 
     private String[] SUGGESTIONS;
 
@@ -148,6 +151,13 @@ public class HelpFragment extends Fragment {
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        empty = (TextView) getView().findViewById(R.id.tv_no_data);
+
+        //show empty textview message
+        empty.setVisibility(View.VISIBLE);
+
+
+
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
             @Override
@@ -273,8 +283,13 @@ public class HelpFragment extends Fragment {
                 Log.d("Fragment", "datasnapshot Key: "+ dataSnapshot.getKey());
                 final ListItem listItem = dataSnapshot.getValue(ListItem.class);
                 if(listItem==null){
+                    empty.setVisibility(View.VISIBLE);
                     return;
+
                 }
+
+                //hides message that no items are available
+                empty.setVisibility(View.INVISIBLE);
 
                 Log.d("Fragment", "Item Title: "+listItem.getTitle());
                 listItem.setid(dataSnapshot.getKey());
@@ -373,6 +388,9 @@ public class HelpFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG,"item string: "+searchAdapter.getItem(position));
                 adapter.setFilter(filter(list, searchAdapter.getItem(position)));
+
+                //sets the color of the currently shown item in the actionbar to white
+                ((TextView) parent.getChildAt(0)).setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.white));
             }
 
             @Override

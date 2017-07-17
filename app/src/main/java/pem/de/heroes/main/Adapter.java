@@ -78,25 +78,31 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
         }else{
             holder.dist.setText(item.getDistance()+"m");
         }
+
         holder.category.setImageResource(item.getImage());
 
 
         //check if I am agent or if it is my offer and set background color depending on that
         if(item.getAgent().equals(userid)){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.bg_screen2));
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.acceptedItem));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setText("Ich helfe!");
-        }
-        if(item.getUserID().equals(userid)){
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.colorPrimary));
+        }else if(item.getUserID().equals(userid)){
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.ownItem));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setText("Meins!");
+        }else{
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.openItem));
+            holder.title.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
+            holder.info.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
+            holder.dist.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
+            holder.status.setTextColor(ContextCompat.getColor(context,R.color.text_grey));
         }
 
 

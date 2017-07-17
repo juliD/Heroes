@@ -13,12 +13,16 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <!-- Overlay for the actionbar. It will colour objects in white -->
+        <item name="colorControlNormal">@color/white</item>
+    </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">#0000FF</item>
+        <item name="tabIndicatorColor">@color/colorAccent</item>
     </style>
 
 </resources>

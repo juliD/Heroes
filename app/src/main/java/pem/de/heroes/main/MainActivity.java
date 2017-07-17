@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                                    }
                                });
 
+
         //Button to edit profile
         ImageButton edit =(ImageButton)findViewById(R.id.edit);
         edit.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 startActivity(i);
             }
         });
+
 
 
         //Select the tab in the middle
@@ -234,8 +236,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             karma.setVisibility(View.GONE);
 
-            ImageButton edit =(ImageButton)findViewById(R.id.edit);
-            edit.setVisibility(View.VISIBLE);
             //params.setScrollFlags(0);
 
         }
@@ -246,8 +246,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             karma.setText(sharedPref.getInt("karma",0)+" Karma");
             karma.setVisibility(View.VISIBLE);
 
-            ImageButton edit =(ImageButton)findViewById(R.id.edit);
-            edit.setVisibility(View.GONE);
         }
 
 
