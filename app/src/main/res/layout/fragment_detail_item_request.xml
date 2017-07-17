@@ -41,8 +41,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/colorPrimary"
-                    android:text="Details anzeigen" />
+                    android:text="@string/show_details"
+                    android:textColor="@color/colorPrimary" />
 
                 <GridLayout
                     android:id="@+id/details"

@@ -29,7 +29,7 @@
     <string name="delete">Löschen</string>
     <string name="edit_profile">Profil bearbeiten</string>
     <string name="hint_for_address">Die Adresse und Karte wird Dir erst angezeigt wenn du den Vorgang angenommen hast.</string>
-    <string name="not_available">nicht verfügbar</string>
+    <string name="not_available">Nicht verfügbar</string>
     <string name="give_karma">Karma überweisen</string>
     <string name="accept">Annehmen</string>
     <string name="reset_accept">Abgeben</string>
@@ -46,7 +46,27 @@
     <string name="delete_message">Bist Du Dir wirklich sicher, dass du diesen Vorgang löschen willst?</string>
     <string name="delete_title">Anfrage löschen</string>
     <string name="cancel">Abbrechen</string>
+    <string name="your_home">Dein Zuhause</string>
+    <string name="create_ask">Anfrage erstellen</string>
+    <string name="create_offer">Angebot erstellen</string>
+    <string name="filter">Filtern</string>
+    <string name="i_help">Ich helfe</string>
+    <string name="own">Meins</string>
+    <string name="message_prompt">Nimm\' Kontakt auf!</string>
     <string-array name="suggestions">
+        <item>Meine</item>
+        <item>Angenommene</item>
+        <item>Einkaufen</item>
+        <item>Kochen</item>
+        <item>Waschen</item>
+        <item>Putzen</item>
+        <item>Transport</item>
+        <item>Gartenarbeit</item>
+        <item>Installation</item>
+        <item>Reparatur</item>
+        <item>Sonstiges</item>
+    </string-array>
+    <string-array name="image_comparison">
         <item>Meine</item>
         <item>Angenommene</item>
         <item>Einkaufen</item>

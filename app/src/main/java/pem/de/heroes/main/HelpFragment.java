@@ -78,6 +78,7 @@ public class HelpFragment extends Fragment {
     Spinner searchView;
     TextView empty;
 
+    private String[] IMAGECOMPARISONS;
     private String[] SUGGESTIONS;
 
     public HelpFragment() {
@@ -94,6 +95,7 @@ public class HelpFragment extends Fragment {
         setHasOptionsMenu(true);
 
         //Categories for filtering
+        IMAGECOMPARISONS = getResources().getStringArray(R.array.image_comparison);
         SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
 
         //Set fragment type
@@ -297,15 +299,15 @@ public class HelpFragment extends Fragment {
 
                 //change icon according to category
                 int imageResource=0;
-                if(listItem.getCategory().equals(SUGGESTIONS[2])) imageResource=R.drawable.shopping;
-                else if(listItem.getCategory().equals(SUGGESTIONS[3])) imageResource=R.drawable.cook;
-                else if(listItem.getCategory().equals(SUGGESTIONS[4])) imageResource=R.drawable.wash;
-                else if(listItem.getCategory().equals(SUGGESTIONS[5])) imageResource=R.drawable.clean;
-                else if(listItem.getCategory().equals(SUGGESTIONS[6])) imageResource=R.drawable.transport;
-                else if(listItem.getCategory().equals(SUGGESTIONS[7])) imageResource=R.drawable.garden;
-                else if(listItem.getCategory().equals(SUGGESTIONS[8])) imageResource=R.drawable.tech;
-                else if(listItem.getCategory().equals(SUGGESTIONS[9])) imageResource=R.drawable.repair;
-                else if(listItem.getCategory().equals(SUGGESTIONS[10])) imageResource=R.drawable.something_else;
+                if(listItem.getCategory().equals(IMAGECOMPARISONS[2])) imageResource=R.drawable.shopping;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[3])) imageResource=R.drawable.cook;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[4])) imageResource=R.drawable.wash;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[5])) imageResource=R.drawable.clean;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[6])) imageResource=R.drawable.transport;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[7])) imageResource=R.drawable.garden;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[8])) imageResource=R.drawable.tech;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[9])) imageResource=R.drawable.repair;
+                else if(listItem.getCategory().equals(IMAGECOMPARISONS[10])) imageResource=R.drawable.something_else;
 
                 listItem.setImage(imageResource);
 

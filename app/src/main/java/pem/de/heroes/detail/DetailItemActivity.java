@@ -104,6 +104,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private LinearLayout linear;
     private ScrollView scrollview;
 
+    private String[] IMAGECOMPARISONS;
+    private String[] SUGGESTIONS;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -122,6 +125,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         listitem = getIntent().getParcelableExtra("selected");
         String listUserID = listitem.getUserID();
         String listAgentID = listitem.getAgent();
+
+        IMAGECOMPARISONS = getResources().getStringArray(R.array.image_comparison);
+        SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
 
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
@@ -234,7 +240,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         Bitmap b = bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, dimen, dimen, false);
         map.addMarker(new MarkerOptions().position(othersLocation).title(othersAddress).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        map.addMarker(new MarkerOptions().position(home).title("Dein Zuhause").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+        map.addMarker(new MarkerOptions().position(home).title(getResources().getString(R.string.your_home)).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(othersLocation).zoom(15f).build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -298,7 +304,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             // static texts
             title.setText(listitem.getTitle());
             description.setText(listitem.getDescription());
-            category.setText(listitem.getCategory());
+            category.setText(getCategory(listitem.getCategory()));
 
             SimpleDateFormat from = new SimpleDateFormat("yyyyMMddHHmm");
             SimpleDateFormat to = new SimpleDateFormat("dd.MM.yyyy HH:mm");
@@ -555,6 +561,16 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+    }
+
+    //Translate category if necessary
+    private String getCategory(String listitemCategory){
+        for (int i= 0; i<IMAGECOMPARISONS.length; i++){
+            if(listitemCategory.equals(IMAGECOMPARISONS[i])){
+                return SUGGESTIONS[i];
+            }
+        }
+        return getResources().getString(R.string.not_available);
     }
 
     private void addBottomDots(int currentPage) {

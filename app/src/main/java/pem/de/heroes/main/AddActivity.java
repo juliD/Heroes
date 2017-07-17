@@ -59,7 +59,7 @@ public class AddActivity extends AppCompatActivity {
             if (extras != null) {
                 //Title der Activity wird geändert mit bezug was erstellt wird.
                 type = extras.getString(ARG_TYPE);
-                setTitle(type.equals("ask") ? "Anfrage erstellen" : "Angebot erstellen");
+                setTitle(type.equals("ask") ? R.string.create_ask : R.string.create_offer);
             }
         }
 

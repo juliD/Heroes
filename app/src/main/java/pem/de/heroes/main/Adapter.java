@@ -89,14 +89,14 @@ public class Adapter extends RecyclerView.Adapter<Adapter.MyViewHolder> {
             holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
-            holder.status.setText("Ich helfe!");
+            holder.status.setText(R.string.i_help);
         }else if(item.getUserID().equals(userid)){
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.ownItem));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.info.setTextColor(ContextCompat.getColor(context,R.color.white));
             holder.dist.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
             holder.status.setTextColor(ContextCompat.getColor(context,R.color.lightgray));
-            holder.status.setText("Meins!");
+            holder.status.setText(R.string.own);
         }else{
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context,R.color.openItem));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.text_grey));

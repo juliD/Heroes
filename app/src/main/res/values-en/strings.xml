@@ -11,14 +11,14 @@
     <string name="address">Address</string>
     <string name="agent">Agent</string>
     <string name="ask_was_deleted">Request has been deleted</string>
-    <string name="asks_created">Request created</string>
-    <string name="asks_done">Request completed</string>
+    <string name="asks_created">Requests created</string>
+    <string name="asks_done">Requests completed</string>
     <string name="cancel">Cancel</string>
     <string name="category">Category</string>
     <string name="chatpartner">Chatting partner</string>
     <string name="city">City</string>
     <string name="date">Date</string>
-    <string name="delete">Delte</string>
+    <string name="delete">Delete</string>
     <string name="delete_message">Are you sure you want to delete this event?</string>
     <string name="delete_title">Delete event</string>
     <string name="edit_profile">Edit profile</string>
@@ -27,17 +27,17 @@
     <string name="hide_details">Hide details</string>
     <string name="hint_for_address">The address and the map will only be shown when you accept an event.</string>
     <string name="karma_was_credited">100 Karma has been awarded!</string>
-    <string name="message_is_too_short">This message is too short. Type more!</string>
+    <string name="message_is_too_short">This message is too short.</string>
     <string name="name">Name</string>
-    <string name="no_agent_yet">Noone has taken this event. Snatch it up!</string>
-    <string name="no_agent_yet_mine">Unfortunately noone has sofar taken your event.</string>
-    <string name="not_available">not available</string>
+    <string name="no_agent_yet">No one has taken this event. Snatch it up!</string>
+    <string name="no_agent_yet_mine">Unfortunately, no one has so far taken your event.</string>
+    <string name="not_available">Not available</string>
     <string name="offer_was_deleted">Offer has been deleted</string>
-    <string name="offers_created">Offer has been created</string>
-    <string name="offers_done">Offers done</string>
+    <string name="offers_created">Offers created</string>
+    <string name="offers_done">Offers completed</string>
     <string name="owner">Creator</string>
     <string name="radius">I want to help in the radius of</string>
-    <string name="reset_accept">Hand over</string>
+    <string name="reset_accept">Relinquish</string>
     <string name="reset_agent">Reset</string>
     <string name="save">Save</string>
     <string name="send">Send</string>
@@ -47,4 +47,24 @@
     <string name="successes">Achievements</string>
     <string name="suggestion_hint">own, taken</string>
     <string name="you">You</string>
+    <string name="your_home">Your home</string>
+    <string name="create_ask">Create request</string>
+    <string name="create_offer">Create offer</string>
+    <string name="filter">Filter</string>
+    <string name="i_help">I\'m helping</string>
+    <string name="own">Mine!</string>
+    <string name="message_prompt">Get in touch!</string>
+    <string-array name="suggestions">
+        <item>Own</item>
+        <item>Taken</item>
+        <item>Shopping</item>
+        <item>Cooking</item>
+        <item>Washing</item>
+        <item>Cleaning</item>
+        <item>Transport</item>
+        <item>Garden work</item>
+        <item>Installation</item>
+        <item>Repair</item>
+        <item>Other</item>
+    </string-array>
 </resources>
