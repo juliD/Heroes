@@ -18,7 +18,6 @@ import java.util.Map;
 public class ListItem implements Parcelable,Comparable<ListItem> {
     private String description;
     private String title;
-    private String address;
     private String userid;
     private String agent;
     private String date;
@@ -35,10 +34,9 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         this.image = image;
     }
 
-    public ListItem(String title, String description, String address, String userid, String agent, String date, String category) {
+    public ListItem(String title, String description, String userid, String agent, String date, String category) {
         this.description = description;
         this.title = title;
-        this.address = address;
         this.userid = userid;
         this.agent = agent;
         this.date = date;
@@ -65,9 +63,6 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     public String getDescription() {
         return description;
     }
-    public String getAddress() {
-        return address;
-    }
     public String getAgent() {return agent;}
     public String getDate(){return date;}
     public int getDistance() {
@@ -86,7 +81,6 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     public ListItem(Parcel parcel){
         this.title = parcel.readString();
         this.description = parcel.readString();
-        this.address = parcel.readString();
         this.userid = parcel.readString();
         this.agent = parcel.readString();
         this.date = parcel.readString();
@@ -104,7 +98,6 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     public void writeToParcel(Parcel parcel, int flags){
         parcel.writeString(title);
         parcel.writeString(description);
-        parcel.writeString(address);
         parcel.writeString(userid);
         parcel.writeString(agent);
         parcel.writeString(date);
@@ -118,7 +111,6 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title",title);
         result.put("description",description);
-        result.put("address",address);
         result.put("agent",agent);
         result.put("date",date);
         result.put("userid",userid);
