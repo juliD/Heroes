@@ -30,7 +30,7 @@
     <string name="edit_profile">Profil bearbeiten</string>
     <string name="hint_for_address">Die Adresse und Karte wird Dir erst angezeigt wenn du den Vorgang angenommen hast.</string>
     <string name="not_available">Nicht verfügbar</string>
-    <string name="give_karma">Karma überweisen</string>
+    <string name="give_karma">Karma vergeben</string>
     <string name="accept">Annehmen</string>
     <string name="reset_accept">Abgeben</string>
     <string name="reset_agent">Zurücksetzen</string>
@@ -53,6 +53,12 @@
     <string name="i_help">Ich helfe</string>
     <string name="own">Meins</string>
     <string name="message_prompt">Nimm\' Kontakt auf!</string>
+    <string name="karma_award_title">Karma vergeben?</string>
+    <string name="karma_award_message">Wenn Du Karma vergibst, ist dieser Vorgang erledigt und wird gelöscht.</string>
+    <string name="reset_message">Wenn Du den Bearbeiter zurücksetzt, ist die Anfrage wieder offen für andere User.</string>
+    <string name="reset_title">Bearbeiter zurücksetzen?</string>
+    <string name="reset_title_agent">Wirklich abgeben?</string>
+    <string name="reset_message_agent">Wenn Du diesen Vorgang abgibst ist er wieder offen für andere User.</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

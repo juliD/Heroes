@@ -54,6 +54,12 @@
     <string name="i_help">I\'m helping</string>
     <string name="own">Mine!</string>
     <string name="message_prompt">Get in touch!</string>
+    <string name="karma_award_title">Award Karma?</string>
+    <string name="karma_award_message">After you have awarded the other user Karma this event will be marked as complete and deleted.</string>
+    <string name="reset_message">By resetting the agent your event will be open to others again.</string>
+    <string name="reset_title">Reset agent?</string>
+    <string name="reset_title_agent">Relinquish?</string>
+    <string name="reset_message_agent">By relinquishing this event it will be open to others again.</string>
     <string-array name="suggestions">
         <item>Own</item>
         <item>Taken</item>

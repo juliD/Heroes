@@ -320,18 +320,41 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 @Override
                 public void onClick(View v) {
                     if (type.equals("ask") && mine && accepted || type.equals("offer") && acceptedByMe) {
-                        // agent/owner gets karma and +1 for his 'done' medal
-                        DatabaseReference userref = type.equals("ask") ? agentref : ownerref;
-                        userref.child("karma").runTransaction(new CounterTransactionHandler(+100));
-                        userref.child("asksDone").runTransaction(new CounterTransactionHandler(+1));
 
-                        // item is removed from geofire and the list
-                        ref.child("geofire").child(type).child(itemID).removeValue();
-                        typeref.child(itemID).removeValue();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
-                        // finish and show toast
-                        finish();
-                        Toast.makeText(DetailItemActivity.this, R.string.karma_was_credited, Toast.LENGTH_SHORT).show();
+                        //  build Alert dialog
+                        builder.setMessage(R.string.karma_award_message)
+                                .setTitle(R.string.karma_award_title)
+                                .setPositiveButton(R.string.give_karma, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // agent/owner gets karma and +1 for his 'done' medal
+                                        DatabaseReference userref = type.equals("ask") ? agentref : ownerref;
+                                        userref.child("karma").runTransaction(new CounterTransactionHandler(+100));
+                                        userref.child("asksDone").runTransaction(new CounterTransactionHandler(+1));
+
+                                        // item is removed from geofire and the list
+                                        ref.child("geofire").child(type).child(itemID).removeValue();
+                                        typeref.child(itemID).removeValue();
+
+                                        // finish and show toast
+                                        finish();
+                                        Toast.makeText(DetailItemActivity.this, R.string.karma_was_credited, Toast.LENGTH_SHORT).show();
+
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+
+                        // Create alert dialog and show it
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+
                     } else if (!mine && !accepted) {
                         // refresh booleans
                         accepted = true;
@@ -353,19 +376,77 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             reset.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // refresh booleans
-                    accepted = false;
-                    acceptedByMe = false;
 
-                    // agent is removed and push notifications for this item are disabled
-                    typeref.child(itemID).child("agent").setValue("");
-                    typeref.child(itemID).child("follower").child("agent").setValue("");
-                    messagesref.setValue("");
-                    listitem.setAgent("");
+                    if(mine) {
 
-                    // refresh UI
-                    showChat();
-                    refreshRequestPage();
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
+
+                        //  build Alert dialog
+                        builder.setMessage(R.string.reset_message)
+                                .setTitle(R.string.reset_title)
+                                .setPositiveButton(R.string.reset_agent, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // refresh booleans
+                                        accepted = false;
+                                        acceptedByMe = false;
+
+                                        // agent is removed and push notifications for this item are disabled
+                                        typeref.child(itemID).child("agent").setValue("");
+                                        typeref.child(itemID).child("follower").child("agent").setValue("");
+                                        messagesref.setValue("");
+                                        listitem.setAgent("");
+
+                                        // refresh UI
+                                        showChat();
+                                        refreshRequestPage();
+
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+
+                        // Create alert dialog and show it
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }else{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
+
+                        //  build Alert dialog
+                        builder.setMessage(R.string.reset_message_agent)
+                                .setTitle(R.string.reset_title_agent)
+                                .setPositiveButton(R.string.reset_accept, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        // refresh booleans
+                                        accepted = false;
+                                        acceptedByMe = false;
+
+                                        // agent is removed and push notifications for this item are disabled
+                                        typeref.child(itemID).child("agent").setValue("");
+                                        typeref.child(itemID).child("follower").child("agent").setValue("");
+                                        messagesref.setValue("");
+                                        listitem.setAgent("");
+
+                                        // refresh UI
+                                        showChat();
+                                        refreshRequestPage();
+
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+
+                        // Create alert dialog and show it
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
                 }
             });
 
