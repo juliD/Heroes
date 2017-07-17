@@ -12,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -64,35 +63,40 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private static final String ARG_TYPE = "fragment_type";
     private static final String ITEM_ID = "item_id";
 
+    private String type = "offer";
+    private ListItem listitem;
+    private String itemID;
+
     private DatabaseReference ref;
     private DatabaseReference typeref;
+    private DatabaseReference userref;
     private DatabaseReference ownerref;
     private DatabaseReference agentref;
     private DatabaseReference messagesref;
     private SharedPreferences sharedPref;
 
-    private String type = "offer";
     private String preferenceUserID;
-
-    private ListItem listitem;
-    private String itemID;
     private boolean mine;
     private boolean accepted;
     private boolean acceptedByMe;
-
     private String token;
-    private LatLng home;
+
+    private TextView title;
+    private TextView description;
+    private TextView address;
+    private TextView date;
+    private TextView category;
+    private TextView agent;
+    private TextView user;
+    private TextView showDetails;
+    private GridLayout details;
+    private Button accept;
+    private Button reset;
 
     private CustomViewPager viewPager;
-    private TextView agent_textview;
-    private TextView chat_partner_textview;
-
     private LinearLayout dotsLayout;
     private int[] layouts;
-
     private LinearLayout linear;
-    private String chat_userid;
-    private String chat_message;
     private ScrollView scrollview;
 
 
@@ -116,6 +120,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
+        userref = ref.child("users");
         ownerref = ref.child("users").child(listUserID);
         agentref = ref.child("users").child(listAgentID);
         messagesref = typeref.child(itemID).child("messages");
@@ -160,11 +165,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
 
         // enable swiping
-        if (mine && accepted || acceptedByMe) {
-            showBottomDots();
-        } else {
-            hideBottomDots();
-        }
+        showChat();
     }
 
     @Override
@@ -190,28 +191,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                 // finish activity and show toast
                 finish();
-                Toast.makeText(DetailItemActivity.this, "Anfrage wurde gelöscht", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailItemActivity.this, type.equals("ask") ? R.string.ask_was_deleted : R.string.offer_was_deleted, Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
 
         return true;
-    }
-
-    private void showBottomDots() {
-        viewPager.setPagingEnabled(true);
-        dotsLayout.setVisibility(View.VISIBLE);
-    }
-
-    private void hideBottomDots() {
-        viewPager.setPagingEnabled(false);
-        dotsLayout.setVisibility(View.INVISIBLE);
-    }
-
-    private void showAddressOnMap() {
-        home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
-        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -221,6 +206,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         Bitmap b = bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, dimen, dimen, false);
         LatLng pos = Helper.getLocationFromAddress(listitem.getAddress(), this);
+        LatLng home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
         map.addMarker(new MarkerOptions().position(pos).title(listitem.getTitle()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         map.addMarker(new MarkerOptions().position(home).title("Dein Zuhause").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -228,43 +214,56 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    private void showUsername(final TextView view, DatabaseReference ref) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User user = dataSnapshot.getValue(User.class);
-                if (user != null) {
-                    view.setText(user.getUsername());
-                } else {
-                    view.setText("nicht verfügbar");
+    private void showChat() {
+        if (mine && accepted || acceptedByMe) {
+            viewPager.setPagingEnabled(true);
+            dotsLayout.setVisibility(View.VISIBLE);
+        } else {
+            viewPager.setPagingEnabled(false);
+            dotsLayout.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void loadUsername(final TextView view, String userID, int defaultTextRes) {
+        if (userID.equals(preferenceUserID)) {
+            view.setText(R.string.you);
+        } else if (userID.equals("")) {
+            view.setText(defaultTextRes);
+        } else {
+            userref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    User user = dataSnapshot.getValue(User.class);
+                    if (user != null) {
+                        view.setText(user.getUsername());
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     private void buildRequestPage(View view) {
         if (listitem != null) {
-            final TextView title = (TextView) view.findViewById(R.id.title);
-            final TextView description = (TextView) view.findViewById(R.id.description);
-            final TextView address = (TextView) view.findViewById(R.id.address);
-            final TextView date = (TextView) view.findViewById(R.id.date);
-            final TextView category = (TextView) view.findViewById(R.id.category);
-            final TextView agent = (TextView) view.findViewById(R.id.agent);
-            final TextView user = (TextView) view.findViewById(R.id.user);
-            final TextView showDetails = (TextView) view.findViewById(R.id.show_details);
-            final GridLayout details = (GridLayout) view.findViewById(R.id.details);
-            agent_textview = (TextView) view.findViewById(R.id.agent);
-            final Button accept = (Button) view.findViewById(R.id.accept);
-            final Button reset = (Button) view.findViewById(R.id.reset);
+            title = (TextView) view.findViewById(R.id.title);
+            description = (TextView) view.findViewById(R.id.description);
+            address = (TextView) view.findViewById(R.id.address);
+            date = (TextView) view.findViewById(R.id.date);
+            category = (TextView) view.findViewById(R.id.category);
+            agent = (TextView) view.findViewById(R.id.agent);
+            user = (TextView) view.findViewById(R.id.user);
+            showDetails = (TextView) view.findViewById(R.id.show_details);
+            details = (GridLayout) view.findViewById(R.id.details);
+            accept = (Button) view.findViewById(R.id.accept);
+            reset = (Button) view.findViewById(R.id.reset);
 
+            // static texts
             title.setText(listitem.getTitle());
             description.setText(listitem.getDescription());
-            address.setText(listitem.getAddress());
             category.setText(listitem.getCategory());
 
             SimpleDateFormat from = new SimpleDateFormat("yyyyMMddHHmm");
@@ -273,28 +272,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 Date value = from.parse(listitem.getDate());
                 date.setText(to.format(value));
             } catch (ParseException e) {
-                date.setText("nicht verfügbar");
+                date.setText(R.string.not_available);
             }
 
-            if (mine || acceptedByMe) {
-                showAddressOnMap();
-            }
-            showUsername(user, ownerref);
-            showUsername(agent, agentref);
-
-            if (!accepted) {
-                agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
-            }
-
-            accept.setVisibility(View.GONE);
-            if (type.equals("ask") && mine && accepted || type.equals("offer") && acceptedByMe) {
-                accept.setVisibility(View.VISIBLE);
-                accept.setText("Karma überweisen");
-            } else if (!mine && !accepted) {
-                accept.setVisibility(View.VISIBLE);
-                accept.setText("Annehmen");
-            }
-
+            // accept button for transfering karma and accepting
             accept.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -310,69 +291,105 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                         // finish and show toast
                         finish();
-                        Toast.makeText(DetailItemActivity.this, "100 Karma wurde vergeben!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailItemActivity.this, R.string.karma_was_credited, Toast.LENGTH_SHORT).show();
                     } else if (!mine && !accepted) {
+                        // refresh booleans
+                        accepted = true;
+                        acceptedByMe = true;
+
                         // set agent and register user for push notifications
                         typeref.child(itemID).child("agent").setValue(preferenceUserID);
                         typeref.child(itemID).child("follower").child("agent").setValue(token);
                         listitem.setAgent(preferenceUserID);
 
-                        // show chat and address
-                        showBottomDots();
-                        showAddressOnMap();
-
-                        // set text and hide button
-                        agent_textview.setText("Du hast diese Anfrage angenommen!");
-                        accept.setVisibility(View.INVISIBLE);
+                        // refresh UI
+                        showChat();
+                        refreshRequestPage();
                     }
                 }
             });
 
-            if (accepted) {
-                reset.setVisibility(View.VISIBLE);
-                reset.setText(acceptedByMe ? "Abgeben" : "Zurücksetzen" );
-            } else {
-                reset.setVisibility(View.GONE);
-            }
+            // reset button
             reset.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // refresh booleans
+                    accepted = false;
+                    acceptedByMe = false;
+
                     // agent is removed and push notifications for this item are disabled
                     typeref.child(itemID).child("agent").setValue("");
                     typeref.child(itemID).child("follower").child("agent").setValue("");
                     listitem.setAgent("");
 
-                    hideBottomDots();
-
-                    agent_textview.setText("Noch niemand hat den Vorgang angenommen. Schnapp' ihn dir!");
+                    // refresh UI
+                    showChat();
+                    refreshRequestPage();
                 }
             });
 
+            // show and hide details
             details.setVisibility(View.GONE);
             showDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (details.getVisibility() == View.VISIBLE) {
-                        showDetails.setText("Details anzeigen");
+                        showDetails.setText(R.string.show_details);
                         details.setVisibility(View.GONE);
                     } else {
-                        showDetails.setText("Details ausblenden");
+                        showDetails.setText(R.string.hide_details);
                         details.setVisibility(View.VISIBLE);
                     }
                 }
             });
+
+            // everything else
+            refreshRequestPage();
+        }
+    }
+
+    private void refreshRequestPage() {
+        // user and agent
+        loadUsername(user, listitem.getUserID(), R.string.not_available);
+        loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet);
+
+        // address
+        if (mine || acceptedByMe) {
+            address.setText(listitem.getAddress());
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
+            mapFragment.getMapAsync(this);
+        } else {
+            address.setText(R.string.hint_for_address);
+        }
+
+        // accept button
+        accept.setVisibility(View.GONE);
+        if (type.equals("ask") && mine && accepted || type.equals("offer") && acceptedByMe) {
+            accept.setVisibility(View.VISIBLE);
+            accept.setText(R.string.give_karma);
+        } else if (!mine && !accepted) {
+            accept.setVisibility(View.VISIBLE);
+            accept.setText(R.string.accept);
+        }
+
+        // reset button
+        if (accepted) {
+            reset.setVisibility(View.VISIBLE);
+            reset.setText(acceptedByMe ? R.string.reset_accept : R.string.reset_agent);
+        } else {
+            reset.setVisibility(View.GONE);
         }
     }
 
     private void buildChatPage(View view) {
         if (listitem != null) {
-            chat_partner_textview = (TextView) view.findViewById(R.id.username);
+            final TextView chat_partner_textview = (TextView) view.findViewById(R.id.username);
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
             if(mine){
-                showUsername(chat_partner_textview, agentref);
+                loadUsername(chat_partner_textview, listitem.getAgent(), R.string.not_available);
             }else{
-                showUsername(chat_partner_textview, ownerref);
+                loadUsername(chat_partner_textview, listitem.getUserID(), R.string.not_available);
             }
 
             messagesEventListener();
@@ -398,7 +415,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                         messagefield.setText("");
                     } else {
-                        Toast.makeText(DetailItemActivity.this, "Message too short", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailItemActivity.this, R.string.message_is_too_short, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -411,8 +428,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         // iterates through all the children of messages. Takes the values and creates a new TextView with them.
         Iterator i = dataSnapshot.getChildren().iterator();
         while (i.hasNext()) {
-            chat_message = (String) ((DataSnapshot) i.next()).getValue();
-            chat_userid = (String) ((DataSnapshot) i.next()).getValue();
+            String chat_message = (String) ((DataSnapshot) i.next()).getValue();
+            String chat_userid = (String) ((DataSnapshot) i.next()).getValue();
 
             View item = inflator.inflate(R.layout.fragment_message_layout, null);
 
@@ -429,7 +446,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             chatmessage.setText(chat_message);
 
             if (chat_userid.equals(preferenceUserID)) {
-                usernamechat.setText("Du");
+                usernamechat.setText(R.string.you);
                 linearlayout2.setGravity(Gravity.END);
                 containermessage.setBackgroundResource(R.drawable.roundedrectangle);
                 GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();
@@ -440,7 +457,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 usernamechat.setGravity(Gravity.END);
                 chatmessage.setGravity(Gravity.END);
             } else {
-                showUsername(usernamechat, mine ? agentref : ownerref);
+                loadUsername(usernamechat, chat_userid, R.string.not_available);
                 linearlayout2.setGravity(Gravity.START);
                 containermessage.setBackgroundResource(R.drawable.roundedrectangle);
                 GradientDrawable gd = (GradientDrawable) containermessage.getBackground().getCurrent();

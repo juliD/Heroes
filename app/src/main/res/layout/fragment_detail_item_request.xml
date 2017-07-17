@@ -120,8 +120,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
-                        android:layout_marginTop="8dp"
-                        android:text="Die Adresse und Karte wird dir erst angezeigt wenn du den Vorgang angenommen hast." />
+                        android:layout_marginTop="8dp" />
 
                 </GridLayout>
 
