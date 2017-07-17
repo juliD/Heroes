@@ -43,6 +43,9 @@
     <string name="you">Du</string>
     <string name="no_agent_yet">Noch niemand hat den Vorgang angenommen. Schnapp\' ihn dir!</string>
     <string name="no_agent_yet_mine">Leider hat noch niemand deinen Vorgang angenommen.</string>
+    <string name="delete_message">Bist du Dir wirklich sicher, dass du diesen Vorgang löschen willst?</string>
+    <string name="delete_title">Wirklich löschen?</string>
+    <string name="cancel">Abbrechen</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

@@ -1,6 +1,8 @@
 package pem.de.heroes.detail;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -183,15 +185,37 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 // owner gets -1 for his 'created' medal
-                ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
 
-                // item is deleted in geofire and in the list
-                ref.child("geofire").child(type).child(itemID).removeValue();
-                typeref.child(itemID).removeValue();
+                AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
-                // finish activity and show toast
-                finish();
-                Toast.makeText(DetailItemActivity.this, type.equals("ask") ? R.string.ask_was_deleted : R.string.offer_was_deleted, Toast.LENGTH_SHORT).show();
+                //  build Alert dialog
+                builder.setMessage(R.string.delete_message)
+                        .setTitle(R.string.delete_title)
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
+
+                                // item is deleted in geofire and in the list
+                                ref.child("geofire").child(type).child(itemID).removeValue();
+                                typeref.child(itemID).removeValue();
+
+                                // finish activity and show toast
+                                finish();
+                                Toast.makeText(DetailItemActivity.this, type.equals("ask") ? R.string.ask_was_deleted : R.string.offer_was_deleted, Toast.LENGTH_SHORT).show();
+
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+
+                // Create alert dialog and show it
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 return true;
             }
         });
@@ -372,7 +396,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         } else if (!mine && !accepted) {
             accept.setVisibility(View.VISIBLE);
             accept.setText(R.string.accept);
-        }else if(mine && !accepted){
+        } else if (mine && !accepted && !type.equals("offer")) {
             accept.setVisibility(View.VISIBLE);
             accept.setText(R.string.give_karma);
             accept.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
@@ -383,12 +407,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         if (accepted) {
             reset.setVisibility(View.VISIBLE);
             reset.setText(acceptedByMe ? R.string.reset_accept : R.string.reset_agent);
-        } else if(!accepted && mine){
+        } else if (!accepted && mine) {
             reset.setVisibility(View.VISIBLE);
             reset.setText(R.string.reset_agent);
             reset.setBackgroundColor(ContextCompat.getColor(this, R.color.gray));
             reset.setEnabled(false);
-        }else{
+        } else {
             reset.setVisibility(View.GONE);
         }
     }
@@ -398,9 +422,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             final TextView chat_partner_textview = (TextView) view.findViewById(R.id.username);
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
-            if(mine){
+            if (mine) {
                 loadUsername(chat_partner_textview, listitem.getAgent(), R.string.not_available);
-            }else{
+            } else {
                 loadUsername(chat_partner_textview, listitem.getUserID(), R.string.not_available);
             }
 
