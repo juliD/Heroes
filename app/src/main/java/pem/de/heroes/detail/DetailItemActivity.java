@@ -83,9 +83,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private boolean acceptedByMe;
     private String token;
 
+    private LatLng home;
+    private LatLng othersLocation;
+    private String othersAddress;
+
     private TextView title;
     private TextView description;
-    private TextView address;
     private TextView date;
     private TextView category;
     private TextView agent;
@@ -130,6 +133,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
         token = sharedPref.getString("pushToken", "No token");
+        home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
 
         mine = listUserID.equals(preferenceUserID);
         accepted = !listAgentID.equals("");
@@ -229,12 +233,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         BitmapDrawable bitmapdraw = (BitmapDrawable) ResourcesCompat.getDrawable(getResources(), R.drawable.ic_home_black_24dp, null);
         Bitmap b = bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, dimen, dimen, false);
-        LatLng pos = Helper.getLocationFromAddress(listitem.getAddress(), this);
-        LatLng home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
-        map.addMarker(new MarkerOptions().position(pos).title(listitem.getTitle()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+        map.addMarker(new MarkerOptions().position(othersLocation).title(othersAddress).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
         map.addMarker(new MarkerOptions().position(home).title("Dein Zuhause").icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(pos).zoom(15f).build();
+                .target(othersLocation).zoom(15f).build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
@@ -248,24 +250,33 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    private void loadUser(String userID, final UserLoadedEventListener listener) {
+        userref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    listener.onUserLoaded(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void loadUsername(final TextView view, String userID, int defaultTextRes) {
         if (userID.equals(preferenceUserID)) {
             view.setText(R.string.you);
         } else if (userID.equals("")) {
             view.setText(defaultTextRes);
         } else {
-            userref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            loadUser(userID, new UserLoadedEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    User user = dataSnapshot.getValue(User.class);
-                    if (user != null) {
-                        view.setText(user.getUsername());
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
+                public void onUserLoaded(User user) {
+                    view.setText(user.getUsername());
                 }
             });
         }
@@ -275,7 +286,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         if (listitem != null) {
             title = (TextView) view.findViewById(R.id.title);
             description = (TextView) view.findViewById(R.id.description);
-            address = (TextView) view.findViewById(R.id.address);
             date = (TextView) view.findViewById(R.id.date);
             category = (TextView) view.findViewById(R.id.category);
             agent = (TextView) view.findViewById(R.id.agent);
@@ -375,17 +385,21 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private void refreshRequestPage() {
         // user and agent
         loadUsername(user, listitem.getUserID(), R.string.not_available);
-
+        loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet_mine);
 
         // address
-        if (mine || acceptedByMe) {
-            address.setText(listitem.getAddress());
-            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
-            mapFragment.getMapAsync(this);
-            loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet_mine);
-        } else {
-            address.setText(R.string.hint_for_address);
-            loadUsername(agent, listitem.getAgent(), R.string.no_agent_yet);
+        if (mine && accepted || acceptedByMe) {
+            String userID = mine ? listitem.getAgent() : listitem.getUserID();
+            final DetailItemActivity activity = this;
+            loadUser(userID, new UserLoadedEventListener() {
+                @Override
+                public void onUserLoaded(User user) {
+                    othersAddress = user.getStreet() + ", " + user.getCity();
+                    othersLocation = Helper.getLocationFromAddress(othersAddress, activity);
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
+                    mapFragment.getMapAsync(activity);
+                }
+            });
         }
 
         // accept button
