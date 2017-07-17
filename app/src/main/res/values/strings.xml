@@ -1,5 +1,18 @@
 <resources>
     <string name="app_name">Local Hero</string>
+    <string name="next">Weiter</string>
+    <string name="slide1_title">Sei der Held Deiner Nachbarschaft!</string>
+    <string name="slide1_explanation">Mit LocalHero siehst Du Anfragen oder Angebote in Deiner Umgebung.</string>
+    <string name="slide1_slogan">Hilf anderen und auch Dir wird geholfen!</string>
+    <string name="slide2_title">Anfragenablauf</string>
+    <string name="slide2_accept">Nimm Anfragen an und tausch Dich mit dem Hilfesuchenden aus.</string>
+    <string name="slide2_karma">Wenn Du fertig bist wird Dir der Anfragensteller Karma geben.</string>
+    <string name="slide2_hero">Sammle Karma und werde zum Held der Nachbarschaft!</string>
+    <string name="slide3_title">Standort festlegen</string>
+    <string name="slide3_explanation">Bitte gib Deinen Wohnort und Deine Straße ein. Deine genaue Adresse wird anderen erst angezeigt, wenn sie einen Auftrag von Dir annehmen.</string>
+    <string name="slide3_street_number">Straße und Hausnummer</string>
+    <string name="slide4_title">Fast geschafft</string>
+    <string name="slide4_explanation">Damit andere in der App wissen, wem sie den Auftrag erfüllen musst Du hier einem Namen angeben. Dieser wird anderen erst gezeigt, wenn sie einen Auftrag von Dir annehmen.</string>
     <string name="action_settings">Einstellungen</string>
     <string name="add_title">Titel</string>
     <string name="add_discription">Beschreibung</string>
@@ -59,6 +72,8 @@
     <string name="reset_title">Bearbeiter zurücksetzen?</string>
     <string name="reset_title_agent">Wirklich abgeben?</string>
     <string name="reset_message_agent">Wenn Du diesen Vorgang abgibst ist er wieder offen für andere User.</string>
+    <string name="fill_in">Bitte fülle alle Felder aus.</string>
+    <string name="address_error">Diese Adresse konnte leider nicht gefunden werden.</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

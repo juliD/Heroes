@@ -21,9 +21,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import pem.de.heroes.main.MainActivity;
 import pem.de.heroes.R;
 import pem.de.heroes.shared.CustomViewPager;
+import pem.de.heroes.shared.Helper;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -53,7 +56,7 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
 
-        // Making notification bar transparent
+        // make notification bar transparent
         if (Build.VERSION.SDK_INT >= 21) {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         }
@@ -72,10 +75,10 @@ public class WelcomeActivity extends AppCompatActivity {
                 R.layout.welcome_slide3,
                 R.layout.welcome_slide4};
 
-        // adding bottom dots
+        // add bottom dots
         addBottomDots(0);
 
-        // making notification bar transparent
+        // make notification bar transparent
         changeStatusBarColor();
 
         myViewPagerAdapter = new MyViewPagerAdapter();
@@ -83,6 +86,7 @@ public class WelcomeActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
 
+        //set actions of next button depending on page
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +116,7 @@ public class WelcomeActivity extends AppCompatActivity {
         });
     }
 
+    //add dots at the bottom of the pages.
     private void addBottomDots(int currentPage) {
         dots = new TextView[layouts.length];
 
@@ -131,23 +136,28 @@ public class WelcomeActivity extends AppCompatActivity {
             dots[currentPage].setTextColor(colorsActive[currentPage]);
     }
 
+    //get current page
     private int getItem(int i) {
         return viewPager.getCurrentItem() + i;
     }
 
+
+    //go to MainActivity
     private void launchHomeScreen() {
         startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
         finish();
     }
 
+    //write address to shared memory and check if it was a valid input
     private boolean writeAddress() {
         EditText stadt_edit = (EditText) findViewById(R.id.city);
         String city = stadt_edit.getText().toString();
         EditText street_edit = (EditText) findViewById(R.id.street);
         String street = street_edit.getText().toString();
 
-        if (city.equals("") || street.equals("")) {
-            Toast.makeText(this, "Bitte gib deine Stadt und Straße ein", Toast.LENGTH_SHORT).show();
+        LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
+        if (newLoc == null) {
+            Toast.makeText(getApplicationContext(), R.string.address_error, Toast.LENGTH_SHORT).show();
             return false;
         } else {
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -159,11 +169,13 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
+    //write username to sharedmemory and check if it was a valid input
     private boolean writeUsername() {
         EditText editText = (EditText) findViewById(R.id.username);
         String username = editText.getText().toString();
-        if (username.equals("")) {
-            Toast.makeText(this, "Bitte gib deinen Namen ein", Toast.LENGTH_SHORT).show();
+        //When username is only whitespace or not filled in he is not allowed to continue
+        if (username.trim().length() == 0) {
+            Toast.makeText(this, R.string.fill_in, Toast.LENGTH_SHORT).show();
             return false;
         } else {
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -179,20 +191,13 @@ public class WelcomeActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
+            //color the dots depending on the page.
             addBottomDots(position);
 
-            // changing the next button text "weiter" or "Start"
-            if (position == layouts.length - 1) {
-                // last page. make button text to Start
-                btnNext.setText("Start");
-            }
             if (position == 2 && !statusaddress) {
+                //disable pagination for page 2 until something was written to the text field.
                 viewPager.setPagingEnabled(false);
-            } else {
-                // Pages are still left to be seen
-                btnNext.setText("Weiter");
             }
-
         }
 
         @Override

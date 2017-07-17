@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Local Hero</string>
+    <string name="next">Next</string>
     <string name="accept">Take</string>
     <string name="action_askforhelp">Requests</string>
     <string name="action_myprofile">Profile</string>
@@ -60,6 +61,9 @@
     <string name="reset_title">Reset agent?</string>
     <string name="reset_title_agent">Relinquish?</string>
     <string name="reset_message_agent">By relinquishing this event it will be open to others again.</string>
+    <string name="fill_in">Please fill in all the blanks</string>
+    <string name="address_error">This address could not be found.</string>
+
     <string-array name="suggestions">
         <item>Own</item>
         <item>Taken</item>
@@ -73,4 +77,16 @@
         <item>Repair</item>
         <item>Other</item>
     </string-array>
+    <string name="slide1_explanation">With LocalHero you can see requests and offers in your neighbourhood</string>
+    <string name="slide1_slogan">Help others and you too will be helped!</string>
+    <string name="slide1_title">Be the hero of your neighbourhood!</string>
+    <string name="slide2_accept">Take requests and get in touch with the person seeking help.</string>
+    <string name="slide2_hero">Collect Karma and become the Hero of the beighbourhood</string>
+    <string name="slide2_karma">When you\'re finished the person seeking help will award you Karma Points.</string>
+    <string name="slide2_title">Request process</string>
+    <string name="slide3_explanation">Please enter your city and your street. Your exact address will only be shown to others when they take a request from you.</string>
+    <string name="slide3_street_number">Street and house number</string>
+    <string name="slide3_title">Set location</string>
+    <string name="slide4_explanation">So that other people on the platform know whom they will help it is necessary for you to enter your name. Your name will only be shown to others once they\'ve taken one of your requests.</string>
+    <string name="slide4_title">Almost done</string>
 </resources>

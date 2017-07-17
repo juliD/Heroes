@@ -107,13 +107,13 @@ public class EditSettingsActivity extends AppCompatActivity {
                 final String street = streetEdit.getText().toString();
                 final int radius = getRadius(radiusBar.getProgress());
                     if (username.isEmpty() || city.isEmpty() || street.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Fülle bitte alle Felder aus ...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.fill_in, Toast.LENGTH_SHORT).show();
                     return true;
                 }
 
                 LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
                     if (newLoc == null) {
-                    Toast.makeText(getApplicationContext(), "Adresse konnte nicht gefunden werden ...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.address_error, Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 final double homelat = newLoc.latitude;

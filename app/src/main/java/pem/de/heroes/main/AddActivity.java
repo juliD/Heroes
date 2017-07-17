@@ -122,7 +122,7 @@ public class AddActivity extends AppCompatActivity {
                 }
 
                 if (title.isEmpty() || description.isEmpty() || street.isEmpty() || city.isEmpty()) {
-                    Toast.makeText(getApplicationContext(), "Fülle bitte alle Felder aus ...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.fill_in, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
