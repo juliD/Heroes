@@ -73,7 +73,6 @@ public class HelpFragment extends Fragment {
     private int iterationCount;
     private boolean fetchedItemIds;
     String userid;
-    private SimpleCursorAdapter suggestionadapter;
     Spinner searchView;
 
     private String[] SUGGESTIONS;
@@ -84,31 +83,34 @@ public class HelpFragment extends Fragment {
 
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //add optionsmenu only in offer and ask fragment
         setHasOptionsMenu(true);
+
+        //Categories for filtering
         SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
+
+        //Set fragment type
         if (getArguments() != null) {
             fragment_type = getArguments().getString(ARG_TYPE);
         }
-        ref = FirebaseDatabase.getInstance().getReference(fragment_type);
 
-        ref.orderByChild("date");
+        //get Database instances
+        ref = FirebaseDatabase.getInstance().getReference(fragment_type);
         DatabaseReference georef = FirebaseDatabase.getInstance().getReference("geofire/"+fragment_type);
         geoFire = new GeoFire(georef);
+
+        //add Event Listeners
         setupListeners();
 
-        final String[] from = new String[] {"tags"};
-        final int[] to = new int[] {android.R.id.text1};
-        suggestionadapter = new SimpleCursorAdapter(getActivity(),
-                android.R.layout.simple_list_item_1,
-                null,
-                from,
-                to,
-                CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
     }
 
+    /*
+    Create an instance of this fragment with specific type
+     */
     public static HelpFragment newInstance(String type) {
         HelpFragment fragment = new HelpFragment();
         Bundle args = new Bundle();
@@ -136,7 +138,6 @@ public class HelpFragment extends Fragment {
         home = new GeoLocation(Helper.getDouble(sharedPref,"homelat",0),Helper.getDouble(sharedPref,"homelong",0));
         userid = sharedPref.getString("userid","No UserID");
         final int radius = sharedPref.getInt("radius", 500);
-
 
 
         //Set up recyclerView
@@ -170,10 +171,14 @@ public class HelpFragment extends Fragment {
             }
         }));
 
+        //add listitems within specified radius
         fetchListItems(radius);
 
     }
 
+    /*
+    get position by key
+     */
     private int getUserPosition(String id) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getid().equals(id)) {
@@ -242,9 +247,11 @@ public class HelpFragment extends Fragment {
                 Log.e("Fragment", "onGeoQueryError: ", error.toException());
             }
         });
-
-
     }
+
+    /*
+    get position by id
+     */
     private int getIndexOfNewItem(ListItem u) {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getid().equals(u.getid())) {
@@ -255,6 +262,9 @@ public class HelpFragment extends Fragment {
         throw new RuntimeException();
     }
 
+    /*
+    create all Event Listeners
+     */
     private void setupListeners(){
 
         itemValueListener = new ValueEventListener() {
@@ -270,7 +280,7 @@ public class HelpFragment extends Fragment {
                 listItem.setid(dataSnapshot.getKey());
                 listItem.setDistance(itemToDistance.get(dataSnapshot.getKey()));
 
-
+                //change icon according to category
                 int imageResource=0;
                 if(listItem.getCategory().equals(SUGGESTIONS[2])) imageResource=R.drawable.shopping;
                 else if(listItem.getCategory().equals(SUGGESTIONS[3])) imageResource=R.drawable.cook;
@@ -284,8 +294,12 @@ public class HelpFragment extends Fragment {
 
                 listItem.setImage(imageResource);
 
+
                 if(itemToDistance.containsKey(dataSnapshot.getKey())){
+
                     if(keys.contains(dataSnapshot.getKey())){
+
+                        //remove item if someone else than me took the offer, otherwise update listitem
                         if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)&&!listItem.getUserID().equals(userid)){
                             Log.d(TAG,"removing item");
                             list.remove(getUserPosition(dataSnapshot.getKey()));
@@ -295,7 +309,6 @@ public class HelpFragment extends Fragment {
                         }
 
                     }else{
-
                         if(listItem.getAgent().equals("")||listItem.getAgent().equals(userid)||listItem.getUserID().equals(userid)){
                             newItem(listItem);
                         }
@@ -305,6 +318,7 @@ public class HelpFragment extends Fragment {
 
             }
 
+            //create new List Item
             private void newItem(ListItem listitem){
                 iterationCount++;
                 list.add(0,listitem);
@@ -317,11 +331,9 @@ public class HelpFragment extends Fragment {
                     Collections.sort(list);
                     adapter.notifyItemInserted(getIndexOfNewItem(listitem));
                 }
-
-
-
             }
 
+            //update List Item
             private void itemUpdated(ListItem listItem){
                 int position = getUserPosition(listItem.getid());
                 list.set(position,listItem);
@@ -346,6 +358,7 @@ public class HelpFragment extends Fragment {
         inflater.inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.search);
 
+        //set up Spinner for filtering
         searchView = new Spinner(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item, searchView);
@@ -386,7 +399,12 @@ public class HelpFragment extends Fragment {
 
     }
 
-
+    /**
+     * Filter list after category
+     * @param models current list items
+     * @param query selected category
+     * @return filtered List
+     */
     private List<ListItem> filter(List<ListItem> models, String query) {
 
         query = query.toLowerCase();
@@ -421,9 +439,6 @@ public class HelpFragment extends Fragment {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.search:
-
-                //       onCall();   //your logic
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

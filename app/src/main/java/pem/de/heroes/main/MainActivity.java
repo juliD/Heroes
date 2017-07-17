@@ -61,22 +61,21 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //set up shared preferences
         sharedPref=this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         sharedPref.registerOnSharedPreferenceChangeListener(this);
 
 
-
-
-        Log.d("Main","onCreate");
         //Check if user is already logged in
         auth = FirebaseAuth.getInstance();
 
         Log.d("Main","Firebase: "+auth);
         if (auth.getCurrentUser() != null) {
             // already signed in
-            update(auth.getCurrentUser());
+            userid = auth.getCurrentUser().getUid();
         } else {
-            Log.d("Main","Firebase: signing in now");
+            //sign in for the first time
             signInAnonymoulsy();
         }
 
@@ -85,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //set up tabs
         viewPager = (ViewPager) findViewById(R.id.pager);
         TabsPagerAdapter tabsAdapter = new TabsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(tabsAdapter);
@@ -95,11 +95,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.getTabAt(1).setText(getResources().getString(R.string.action_askforhelp));
         tabLayout.getTabAt(2).setText(getResources().getString(R.string.action_offerhelp));
 
-
         tabLayout.addOnTabSelectedListener(this);
 
 
-
+        //add Button
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
                                    @Override
@@ -110,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                                    }
                                });
 
+        //Button to edit profile
         ImageButton edit =(ImageButton)findViewById(R.id.edit);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     }
 
+    /*
+    signing in once
+     */
     public void signInAnonymoulsy(){
         auth.signInAnonymously()
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -136,20 +139,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                             Log.d(TAG, "signInAnonymously:success");
                             FirebaseUser user = auth.getCurrentUser();
                             addUserToDatabase(user);
-                            update(user);
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInAnonymously:failure", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            update(null);
+
                         }
 
                     }
                 });
     }
 
+    /*
+    add the User to the Firebase Database once
+    and set shared preferences
+     */
     private void addUserToDatabase(FirebaseUser user) {
+        userid = user.getUid();
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
         users.child(user.getUid()).child("username").setValue(sharedPref.getString("username","Anonym"));
         users.child(user.getUid()).child("karma").setValue(0);
@@ -160,14 +168,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         users.child(user.getUid()).child("city").setValue(sharedPref.getString("city","München"));
         users.child(user.getUid()).child("street").setValue(sharedPref.getString("street","Marienplatz 1"));
         users.child(user.getUid()).child("radius").setValue(500);
-    }
-
-    public void update(FirebaseUser currentUser){
-        fuser=auth.getCurrentUser();
-        userid = currentUser.getUid();
-        SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid",Context.MODE_PRIVATE);
-
-
 
         if(!sharedPref.contains("userid")){
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -179,11 +179,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             Helper.putDouble(editor,"homelat",home.latitude);
             Helper.putDouble(editor,"homelong",home.longitude);
             editor.apply();
-
-
         }
     }
 
+
+    /*
+    set Karma Event Listener
+     */
     public void getKarma() {
         // firebase reference on the user
         DatabaseReference userref = FirebaseDatabase.getInstance().getReference("users/"+sharedPref.getString("userid","No User ID"));
