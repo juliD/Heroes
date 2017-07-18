@@ -223,7 +223,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
             karma.setVisibility(View.GONE);
 
-            //params.setScrollFlags(0);
+            //disable scrolling on the profile page
+            params.setScrollFlags(0);
 
         }
         else{
