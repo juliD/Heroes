@@ -62,6 +62,7 @@
     <string name="reset_message_agent">By relinquishing this event it will be open to others again.</string>
     <string name="fill_in">Please fill in all the blanks</string>
     <string name="address_error">This address could not be found.</string>
+    <string name="meter">meter</string>
     <string-array name="suggestions">
         <item>Own</item>
         <item>Taken</item>

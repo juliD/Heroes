@@ -73,6 +73,7 @@
     <string name="reset_message_agent">Wenn Du diesen Vorgang abgibst ist er wieder offen für andere User.</string>
     <string name="fill_in">Bitte fülle alle Felder aus.</string>
     <string name="address_error">Diese Adresse konnte leider nicht gefunden werden.</string>
+    <string name="meter">Meter</string>
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

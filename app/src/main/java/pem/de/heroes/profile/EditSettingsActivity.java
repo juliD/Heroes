@@ -78,7 +78,7 @@ public class EditSettingsActivity extends AppCompatActivity {
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                radiusText.setText(getRadius(progress) + " Meter");
+                radiusText.setText(getRadius(progress) + " " + getString(R.string.meter));
             }
 
             @Override
@@ -112,7 +112,7 @@ public class EditSettingsActivity extends AppCompatActivity {
                 }
 
                 LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
-                    if (newLoc == null) {
+                if (newLoc == null) {
                     Toast.makeText(getApplicationContext(), R.string.address_error, Toast.LENGTH_SHORT).show();
                     return true;
                 }
