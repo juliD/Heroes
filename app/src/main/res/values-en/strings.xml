@@ -46,7 +46,6 @@
     <string name="spinner_title">Choose a category</string>
     <string name="street">Street and house number</string>
     <string name="successes">Achievements</string>
-    <string name="suggestion_hint">own, taken</string>
     <string name="you">You</string>
     <string name="your_home">Your home</string>
     <string name="create_ask">Create request</string>
@@ -63,7 +62,6 @@
     <string name="reset_message_agent">By relinquishing this event it will be open to others again.</string>
     <string name="fill_in">Please fill in all the blanks</string>
     <string name="address_error">This address could not be found.</string>
-
     <string-array name="suggestions">
         <item>Own</item>
         <item>Taken</item>

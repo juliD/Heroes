@@ -435,13 +435,14 @@ public class HelpFragment extends Fragment {
             Log.d(TAG,model.getAgent()+ "   "+userid);
             if(!model.getCategory().isEmpty()) {
                 final String text = model.getCategory().toLowerCase();
-                String[] hint = getResources().getString(R.string.suggestion_hint).split(", ");
-                if(query.equals(hint[0])){
+                //filter whether it is your own event or an taken event.
+                Log.d("iamgecomparison", IMAGECOMPARISONS[0]);
+                if(query.equals(IMAGECOMPARISONS[0].toLowerCase())){
                     if(model.getUserID().equals(userid)){
                         filteredModelList.add(model);
                     }
                 }
-                else if(query.equals(hint[1])){
+                else if(query.equals(IMAGECOMPARISONS[1].toLowerCase())){
                     Log.d(TAG,"in angenommen");
                     if(model.getAgent().equals(userid)){
                         filteredModelList.add(model);
