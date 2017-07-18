@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -54,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private FirebaseAuth auth;
     private String userid;
     SharedPreferences sharedPref;
-    FirebaseUser fuser;
+    MenuItem search;
+
 
 
     @Override
@@ -172,6 +174,13 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     }
 
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        search = menu.findItem(R.id.search);
+        return true;
+    }
+
     /*
     set Karma Event Listener
      */
@@ -208,6 +217,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
+        Log.d(TAG,"search is null!!");
+        if(search!=null) {
+            Log.d(TAG,"search not null!!");
+            if (search.isActionViewExpanded()) {
+                Log.d(TAG,"Expanded!!");
+                MenuItemCompat.collapseActionView(search);
+            }
+        }
         viewPager.setCurrentItem(tab.getPosition());
         Toolbar t = (Toolbar) findViewById(R.id.toolbar);
 

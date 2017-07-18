@@ -76,6 +76,7 @@ public class HelpFragment extends Fragment {
     private boolean fetchedItemIds;
     String userid;
     Spinner searchView;
+    MenuItem search;
     TextView empty;
 
     private String[] IMAGECOMPARISONS;
@@ -128,8 +129,10 @@ public class HelpFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_help, container, false);
+
         return v;
     }
+
 
 
 
@@ -188,6 +191,15 @@ public class HelpFragment extends Fragment {
 
     }
 
+    public void onPause() {
+        super.onPause();
+        getActivity().invalidateOptionsMenu();
+        if(search !=null) {
+            if (search.isActionViewExpanded()) {
+                MenuItemCompat.collapseActionView(search);
+            }
+        }
+    }
     /*
     get position by key
      */
@@ -373,12 +385,12 @@ public class HelpFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.search);
+        search = menu.findItem(R.id.search);
 
         //set up Spinner for filtering
         searchView = new Spinner(((MainActivity) getContext()).getSupportActionBar().getThemedContext());
-        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-        MenuItemCompat.setActionView(item, searchView);
+        MenuItemCompat.setShowAsAction(search, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(search, searchView);
 
         List<String> categories = new ArrayList<String>(Arrays.asList(SUGGESTIONS));
         final ArrayAdapter<String> searchAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,categories);
@@ -402,7 +414,7 @@ public class HelpFragment extends Fragment {
             }
         });
 
-        MenuItemCompat.setOnActionExpandListener(item,
+        MenuItemCompat.setOnActionExpandListener(search,
                 new MenuItemCompat.OnActionExpandListener() {
                     @Override
                     public boolean onMenuItemActionCollapse(MenuItem item) {
@@ -461,6 +473,9 @@ public class HelpFragment extends Fragment {
         // handle item selection
         switch (item.getItemId()) {
             case R.id.search:
+                search = item;
+                MainActivity ma = (MainActivity)getActivity();
+                ma.search = item;
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
