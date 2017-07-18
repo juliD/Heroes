@@ -388,8 +388,9 @@ public class HelpFragment extends Fragment {
         searchView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG,"item string: "+searchAdapter.getItem(position));
-                adapter.setFilter(filter(list, searchAdapter.getItem(position)));
+                Log.d(TAG,"item string: "+IMAGECOMPARISONS[position]);
+                //adapter filters list with the categories that are given by the spinner position
+                adapter.setFilter(filter(list, IMAGECOMPARISONS[position]));
 
                 //sets the color of the currently shown item in the actionbar to white
                 ((TextView) parent.getChildAt(0)).setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.white));
