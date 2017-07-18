@@ -46,6 +46,7 @@ public class AddActivity extends AppCompatActivity {
     private String token;
     private String userid;
     private String[] SUGGESTIONS;
+    private String[] IMAGECOMPARISON;
     private String categorie;
 
     @Override
@@ -53,6 +54,7 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
+        IMAGECOMPARISON = getResources().getStringArray(R.array.image_comparison);
 
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
@@ -80,7 +82,7 @@ public class AddActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                categorie = parent.getItemAtPosition(position).toString();
+                categorie = IMAGECOMPARISON[position+2];
             }
 
             @Override
@@ -117,9 +119,6 @@ public class AddActivity extends AppCompatActivity {
                 String title = titleView.getText().toString();
                 String description = descView.getText().toString();
                 String address = street + ", " + city;
-                if(categorie==null){
-                    categorie="Sonstige";
-                }
 
                 if (title.isEmpty() || description.isEmpty() || street.isEmpty() || city.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.fill_in, Toast.LENGTH_SHORT).show();
