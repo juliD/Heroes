@@ -147,28 +147,28 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
      */
     private void addUserToDatabase(FirebaseUser user) {
         userid = user.getUid();
-        DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
-        users.child(user.getUid()).child("username").setValue(sharedPref.getString("username","Anonym"));
-        users.child(user.getUid()).child("karma").setValue(0);
-        users.child(user.getUid()).child("asksCreated").setValue(0);
-        users.child(user.getUid()).child("asksDone").setValue(0);
-        users.child(user.getUid()).child("offersCreated").setValue(0);
-        users.child(user.getUid()).child("offersDone").setValue(0);
-        users.child(user.getUid()).child("city").setValue(sharedPref.getString("city","München"));
-        users.child(user.getUid()).child("street").setValue(sharedPref.getString("street","Marienplatz 1"));
-        users.child(user.getUid()).child("radius").setValue(500);
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("users").child(userid);
+        users.child("username").setValue(sharedPref.getString("username","Anonym"));
+        users.child("karma").setValue(0);
+        users.child("asksCreated").setValue(0);
+        users.child("asksDone").setValue(0);
+        users.child("offersCreated").setValue(0);
+        users.child("offersDone").setValue(0);
+        users.child("city").setValue(sharedPref.getString("city","München"));
+        users.child("street").setValue(sharedPref.getString("street","Marienplatz 1"));
+        users.child("radius").setValue(500);
 
-        if(!sharedPref.contains("userid")){
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("userid", userid);
-            editor.putInt("radius", 500);
-            LatLng home = Helper.getLocationFromAddress(sharedPref.getString("street","Marienplatz 1") +", " + sharedPref.getString("city","München"),this);
 
-            editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
-            Helper.putDouble(editor,"homelat",home.latitude);
-            Helper.putDouble(editor,"homelong",home.longitude);
-            editor.apply();
-        }
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("userid", userid);
+        editor.putInt("radius", 500);
+        LatLng home = Helper.getLocationFromAddress(sharedPref.getString("street","Marienplatz 1") +", " + sharedPref.getString("city","München"),this);
+
+        editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
+        Helper.putDouble(editor,"homelat",home.latitude);
+        Helper.putDouble(editor,"homelong",home.longitude);
+        editor.apply();
+
     }
 
 
