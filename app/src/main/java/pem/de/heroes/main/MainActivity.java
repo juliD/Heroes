@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -41,6 +42,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Locale;
+
 import pem.de.heroes.shared.Helper;
 import pem.de.heroes.R;
 import pem.de.heroes.model.User;
@@ -76,10 +79,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (auth.getCurrentUser() != null) {
             // already signed in
             userid = auth.getCurrentUser().getUid();
+
+            //needed for custom language for notifications when app not running
+            //needs to be checked every time in case user changes language
+
+            Locale locale;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                locale = getApplicationContext().getResources().getConfiguration().getLocales().get(0);
+            } else {
+                locale = getApplicationContext().getResources().getConfiguration().locale;
+            }
+
+            DatabaseReference users = FirebaseDatabase.getInstance().getReference("users").child(userid);
+            users.child("locale").setValue(locale.getDisplayLanguage());
         } else {
             //sign in for the first time
             signInAnonymoulsy();
         }
+
+
 
         getKarma();
 
@@ -159,6 +177,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         users.child("city").setValue(sharedPref.getString("city","München"));
         users.child("street").setValue(sharedPref.getString("street","Marienplatz 1"));
         users.child("radius").setValue(500);
+
+        //needed for custom language for notifications when app not running
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = getApplicationContext().getResources().getConfiguration().getLocales().get(0);
+        } else {
+            locale = getApplicationContext().getResources().getConfiguration().locale;
+        }
+
+        users.child("locale").setValue(locale.getDisplayLanguage());
 
 
         SharedPreferences.Editor editor = sharedPref.edit();

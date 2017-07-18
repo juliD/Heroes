@@ -38,6 +38,19 @@ public class MessagingService extends FirebaseMessagingService {
     public void sendNotification(String title, String body){
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.hero_bw);
 
+        if(title.equals("Neue Nachricht")){
+            title = getApplication().getResources().getString(R.string.notification_message);
+        }
+        else {
+            String[] body_parts = body.split(" ");
+            if(body_parts[1].equals("offer")){
+                body = getApplication().getResources().getString(R.string.notification_offer);
+            }else{
+                body = getApplication().getResources().getString(R.string.notification_ask);
+            }
+            body = body_parts[0] +" "+body;
+        }
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.notification)

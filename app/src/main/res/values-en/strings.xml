@@ -87,4 +87,7 @@
     <string name="slide3_title">Set location</string>
     <string name="slide4_explanation">So that other people on the platform know whom they will help it is necessary for you to enter your name. Your name will only be shown to others once they\'ve taken one of your requests.</string>
     <string name="slide4_title">Almost done</string>
+    <string name="notification_ask">has accepted your request!</string>
+    <string name="notification_message">New Message</string>
+    <string name="notification_offer">has accepted your offer!</string>
 </resources>
