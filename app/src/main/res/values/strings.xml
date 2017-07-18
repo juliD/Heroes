@@ -75,7 +75,8 @@
     <string name="address_error">Diese Adresse konnte leider nicht gefunden werden.</string>
     <string name="notification_offer">hat dein Angebot angenommen!</string>
     <string name="notification_ask">hat deine Anfrage angenommen!</string>
-    <string name="notification_message">Neue Nachricht</string>
+    <string name="notification_message">Neue Nachricht</string>    <string name="meter">Meter</string>
+
     <string-array name="suggestions">
         <item>Meine</item>
         <item>Angenommene</item>

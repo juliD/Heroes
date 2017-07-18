@@ -192,12 +192,11 @@ public class ProfileFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
 
-        //inflate menu and get edit item
+        // inflate menu and get edit item
         inflater.inflate(R.menu.menu_profile, menu);
         MenuItem edit = menu.findItem(R.id.edit);
 
-
-        //listener for when edit icon will be pressed
+        // listener for when edit icon will be pressed
         edit.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -206,8 +205,5 @@ public class ProfileFragment extends Fragment {
                 return true;
             }
         });
-
-
-
     }
 }

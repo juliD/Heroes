@@ -93,6 +93,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private TextView category;
     private TextView agent;
     private TextView user;
+    private TextView address;
     private TextView showDetails;
     private GridLayout details;
     private Button accept;
@@ -296,6 +297,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             category = (TextView) view.findViewById(R.id.category);
             agent = (TextView) view.findViewById(R.id.agent);
             user = (TextView) view.findViewById(R.id.user);
+            address = (TextView) view.findViewById(R.id.address);
             showDetails = (TextView) view.findViewById(R.id.show_details);
             details = (GridLayout) view.findViewById(R.id.details);
             accept = (Button) view.findViewById(R.id.accept);
@@ -484,10 +486,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 public void onUserLoaded(User user) {
                     othersAddress = user.getStreet() + ", " + user.getCity();
                     othersLocation = Helper.getLocationFromAddress(othersAddress, activity);
+                    address.setText(othersAddress);
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.maps);
                     mapFragment.getMapAsync(activity);
                 }
             });
+        } else {
+            address.setText(R.string.hint_for_address);
         }
 
         // accept button
