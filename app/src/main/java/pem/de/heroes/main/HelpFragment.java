@@ -81,7 +81,7 @@ public class HelpFragment extends Fragment {
 
     private String[] IMAGECOMPARISONS;
     private String[] SUGGESTIONS;
-
+    String lastcategory;
     public HelpFragment() {
         // Required empty public constructor
     }
@@ -98,6 +98,7 @@ public class HelpFragment extends Fragment {
         //Categories for filtering
         IMAGECOMPARISONS = getResources().getStringArray(R.array.image_comparison);
         SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
+        lastcategory = IMAGECOMPARISONS[0];
 
         //Set fragment type
         if (getArguments() != null) {
@@ -403,6 +404,7 @@ public class HelpFragment extends Fragment {
                 Log.d(TAG,"item string: "+IMAGECOMPARISONS[position]);
                 //adapter filters list with the categories that are given by the spinner position
                 adapter.setFilter(filter(list, IMAGECOMPARISONS[position]));
+                lastcategory = IMAGECOMPARISONS[position];
 
                 //sets the color of the currently shown item in the actionbar to white
                 ((TextView) parent.getChildAt(0)).setTextColor(ContextCompat.getColor(getActivity().getApplicationContext(), R.color.white));
@@ -425,7 +427,8 @@ public class HelpFragment extends Fragment {
                     @Override
                     public boolean onMenuItemActionExpand(MenuItem item) {
                         // Do something when expanded
-
+                        // sets the filter to the last chosen category
+                        adapter.setFilter(filter(list, lastcategory));
                         return true; // Return true to expand action view
                     }
                 });
