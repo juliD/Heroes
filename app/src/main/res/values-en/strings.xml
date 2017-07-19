@@ -26,7 +26,8 @@
     <string name="empty">Nothing new in town. Create an event!</string>
     <string name="give_karma">Award karma</string>
     <string name="hide_details">Hide details</string>
-    <string name="hint_for_address">The address and the map will only be shown when you accept an event.</string>
+    <string name="hint_for_address">The address of the creator will only be shown when you accept an event.</string>
+    <string name="hint_for_address_mine">The address of the agent will only be shown when you accept an event.</string>
     <string name="karma_was_credited">100 Karma has been awarded!</string>
     <string name="message_is_too_short">This message is too short.</string>
     <string name="name">Name</string>

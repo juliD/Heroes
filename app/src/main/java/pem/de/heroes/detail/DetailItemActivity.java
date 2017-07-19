@@ -492,7 +492,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 }
             });
         } else {
-            address.setText(R.string.hint_for_address);
+            if(mine){
+                address.setText(R.string.hint_for_address_mine);
+            }else{
+                address.setText(R.string.hint_for_address);
+            }
         }
 
         // accept button

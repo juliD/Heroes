@@ -40,7 +40,8 @@
     <string name="save">Speichern</string>
     <string name="delete">Löschen</string>
     <string name="edit_profile">Profil bearbeiten</string>
-    <string name="hint_for_address">Die Adresse und Karte wird Dir erst angezeigt wenn du den Vorgang angenommen hast.</string>
+    <string name="hint_for_address">Die Adresse des Erstellers wird Dir erst angezeigt wenn Du den Vorgang angenommen hast.</string>
+    <string name="hint_for_address_mine">Die Adresse des Bearbeiters wird Dir erst angezeigt wenn jemand Deinen Vorgang angenommen hat.</string>
     <string name="not_available">Nicht verfügbar</string>
     <string name="give_karma">Karma vergeben</string>
     <string name="accept">Annehmen</string>

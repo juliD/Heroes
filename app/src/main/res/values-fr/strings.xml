@@ -30,7 +30,8 @@
     <string name="filter">Filtrer</string>
     <string name="give_karma">Attribuer  Karma</string>
     <string name="hide_details">Cacher détails</string>
-    <string name="hint_for_address">L\'adresse et le plan sera affiché dès que tu as accepté cet événement.</string>
+    <string name="hint_for_address">L\'adresse due créateur sera affiché dès que tu as accepté cet événement.</string>
+    <string name="hint_for_address_mine">L\'adresse de l\'adapteur sera affichée dès que tu as accepté cet événement.</string>
     <string name="i_help">J\'aide</string>
     <string name="karma_award_message">Quand tu attribus Karma cet événement sera marqué comme finis et supprimé.</string>
     <string name="karma_award_title">Attribuer Karma?</string>
@@ -68,10 +69,10 @@
     <string name="slide2_hero">Collecter Karma et deviens l\'héro de ton voisinage!</string>
     <string name="slide2_karma">Quand tu finis ton travail le créateur de demande te donnera Karma.</string>
     <string name="slide2_title">Cours d\'un événement</string>
-    <string name="slide3_explanation">S\'il te plaît saisis ton adresse. Ton adresse sera seulement affiché à les autre dès que ils ont accepté ton événement.</string>
+    <string name="slide3_explanation">S\'il te plaît saisis ton adresse. Ton adresse sera seulement affichée à les autre dès que ils ont accepté ton événement.</string>
     <string name="slide3_street_number">Rue et nombre</string>
     <string name="slide3_title">Chosir implantation</string>
-    <string name="slide4_explanation">Pour que les autres sachent quelle personne ils aident tu dois sasir ici ton nom. Il sera seulement affiché dès que ils ont accepté un événement de toi.</string>
+    <string name="slide4_explanation">Pour que les autres sachent quelle personne ils aident tu dois sasir ici ton nom. Il sera seulement affiché dès qu\'ils ont accepté un événement de toi.</string>
     <string name="slide4_title">Presque fini</string>
     <string name="spinner_title">Chosis une catégorie</string>
     <string name="street">Rue et nombre</string>
