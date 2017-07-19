@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Local Hero</string>
     <string name="next">Next</string>
-    <string name="accept">Take</string>
+    <string name="accept">Accept</string>
     <string name="action_askforhelp">Requests</string>
     <string name="action_myprofile">Profile</string>
     <string name="action_offerhelp">Offers</string>
@@ -30,7 +30,7 @@
     <string name="karma_was_credited">100 Karma has been awarded!</string>
     <string name="message_is_too_short">This message is too short.</string>
     <string name="name">Name</string>
-    <string name="no_agent_yet">No one has taken this event. Snatch it up!</string>
+    <string name="no_agent_yet">No one has accepted this event. Snatch it up!</string>
     <string name="no_agent_yet_mine">Unfortunately, no one has so far taken your event.</string>
     <string name="not_available">Not available</string>
     <string name="offer_was_deleted">Offer has been deleted</string>
@@ -52,7 +52,7 @@
     <string name="create_offer">Create offer</string>
     <string name="filter">Filter</string>
     <string name="i_help">I\'m helping</string>
-    <string name="own">Mine!</string>
+    <string name="own">Mine</string>
     <string name="message_prompt">Get in touch!</string>
     <string name="karma_award_title">Award Karma?</string>
     <string name="karma_award_message">After you have awarded the other user Karma this event will be marked as complete and deleted.</string>
@@ -65,7 +65,7 @@
     <string name="meter">meter</string>
     <string-array name="suggestions">
         <item>Own</item>
-        <item>Taken</item>
+        <item>Accepted</item>
         <item>Shopping</item>
         <item>Cooking</item>
         <item>Washing</item>
@@ -79,14 +79,14 @@
     <string name="slide1_explanation">With LocalHero you can see requests and offers in your neighbourhood</string>
     <string name="slide1_slogan">Help others and you too will be helped!</string>
     <string name="slide1_title">Be the hero of your neighbourhood!</string>
-    <string name="slide2_accept">Take requests and get in touch with the person seeking help.</string>
+    <string name="slide2_accept">Accept requests and get in touch with the person seeking help.</string>
     <string name="slide2_hero">Collect Karma and become the Hero of the beighbourhood</string>
     <string name="slide2_karma">When you\'re finished the person seeking help will award you Karma Points.</string>
     <string name="slide2_title">Request process</string>
-    <string name="slide3_explanation">Please enter your city and your street. Your exact address will only be shown to others when they take a request from you.</string>
+    <string name="slide3_explanation">Please enter your city and your street. Your exact address will only be shown to others when they accept a request from you.</string>
     <string name="slide3_street_number">Street and house number</string>
     <string name="slide3_title">Set location</string>
-    <string name="slide4_explanation">So that other people on the platform know whom they will help it is necessary for you to enter your name. Your name will only be shown to others once they\'ve taken one of your requests.</string>
+    <string name="slide4_explanation">So that other people on the platform know whom they will help it is necessary for you to enter your name. Your name will only be shown to others once they\'ve accepted one of your requests.</string>
     <string name="slide4_title">Almost done</string>
     <string name="notification_ask">has accepted your request!</string>
     <string name="notification_message">New Message</string>

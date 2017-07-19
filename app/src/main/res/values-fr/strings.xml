@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Local Hero</string>
+    <string name="accept">Accepter</string>
+    <string name="action_askforhelp">Demandes</string>
+    <string name="action_myprofile">Profile</string>
+    <string name="action_offerhelp">Offres</string>
+    <string name="action_settings">Réglage</string>
+    <string name="add_discription">Description</string>
+    <string name="add_title">Titre</string>
+    <string name="address">Adresse</string>
+    <string name="address_error">Nous n\'avons pas trouvé ton adress.</string>
+    <string name="agent">Adapteur</string>
+    <string name="ask_was_deleted">Demande supprimé</string>
+    <string name="asks_created">Demande crées</string>
+    <string name="asks_done">Demande finis</string>
+    <string name="cancel">Annuler</string>
+    <string name="category">Catégorie</string>
+    <string name="chatpartner">Partenaire de chat</string>
+    <string name="city">Ville</string>
+    <string name="create_ask">Créer demande</string>
+    <string name="create_offer">Créer offre</string>
+    <string name="date">Date</string>
+    <string name="delete">Supprimer</string>
+    <string name="delete_message">Es-tu sûr que tu veux supprimer cet événement?</string>
+    <string name="delete_title">Supprimer événement</string>
+    <string name="edit_profile">Éditer profile</string>
+    <string name="empty">Aucuns événements autour de toi. Créer en!</string>
+    <string name="fill_in">S\'il-te plaît remplis tous les lacunes.</string>
+    <string name="filter">Filtrer</string>
+    <string name="give_karma">Attribuer  Karma</string>
+    <string name="hide_details">Cacher détails</string>
+    <string name="hint_for_address">L\'adresse et le plan sera affiché dès que tu as accepté cet événement.</string>
+    <string name="i_help">J\'aide</string>
+    <string name="karma_award_message">Quand tu attribus Karma cet événement sera marqué comme finis et supprimé.</string>
+    <string name="karma_award_title">Attribuer Karma?</string>
+    <string name="karma_was_credited">100 Karma a été attribué!</string>
+    <string name="message_is_too_short">Ce message est trop court.</string>
+    <string name="message_prompt">Prendre contact!</string>
+    <string name="meter">mètres</string>
+    <string name="name">Nom</string>
+    <string name="next">Prochain</string>
+    <string name="no_agent_yet">Ne personne a accepté cet événement. Vite prends-le!</string>
+    <string name="no_agent_yet_mine">Malheureusement ne personne a encore accepté ton événement.</string>
+    <string name="not_available">Non disponible</string>
+    <string name="notification_ask">a accepté ta demande!</string>
+    <string name="notification_message">Nouveau message</string>
+    <string name="notification_offer">a accepté ton offre</string>
+    <string name="offer_was_deleted">Offre a été supprimé</string>
+    <string name="offers_created">Offres crées</string>
+    <string name="offers_done">Offrés finis</string>
+    <string name="own">Le mien</string>
+    <string name="owner">Créateur</string>
+    <string name="radius">Je voudrais aider dans ce radius:</string>
+    <string name="reset_accept">Dégager</string>
+    <string name="reset_agent">Réinitialiser</string>
+    <string name="reset_message">Quand tu réinitialises l\'adapteur l\'événement sera encore ouvert pour les autres</string>
+    <string name="reset_message_agent">Quand tu dégages cet événement, il sera encore ouvert pour les autres.</string>
+    <string name="reset_title">Réinitialiser l\'adaptuer?</string>
+    <string name="reset_title_agent">Vraiment dégager?</string>
+    <string name="save">Enregistrer</string>
+    <string name="send">Enovyer</string>
+    <string name="show_details">Afficher détails</string>
+    <string name="slide1_explanation">Avec LocalHero tu peux voir tous les demandes et offres à coté de toi.</string>
+    <string name="slide1_slogan">Aide les autres et ils t\'aideront!</string>
+    <string name="slide1_title">Soi l\'héro de ton voisinage!</string>
+    <string name="slide2_accept">Accepte les demandes et chatte avec le créateur.</string>
+    <string name="slide2_hero">Collecter Karma et deviens l\'héro de ton voisinage!</string>
+    <string name="slide2_karma">Quand tu finis ton travail le créateur de demande te donnera Karma.</string>
+    <string name="slide2_title">Cours d\'un événement</string>
+    <string name="slide3_explanation">S\'il te plaît saisis ton adresse. Ton adresse sera seulement affiché à les autre dès que ils ont accepté ton événement.</string>
+    <string name="slide3_street_number">Rue et nombre</string>
+    <string name="slide3_title">Chosir implantation</string>
+    <string name="slide4_explanation">Pour que les autres sachent quelle personne ils aident tu dois sasir ici ton nom. Il sera seulement affiché dès que ils ont accepté un événement de toi.</string>
+    <string name="slide4_title">Presque fini</string>
+    <string name="spinner_title">Chosis une catégorie</string>
+    <string name="street">Rue et nombre</string>
+    <string name="successes">Accomplissements</string>
+    <string name="you">Toi</string>
+    <string name="your_home">Ta maison</string>
+    <string-array name="suggestions">
+        <item>Le mien</item>
+        <item>Accepté</item>
+        <item>Shopping</item>
+        <item>Cuisiner</item>
+        <item>Lavage</item>
+        <item>Nettoyage</item>
+        <item>Transport</item>
+        <item>Jardinage</item>
+        <item>Installation</item>
+        <item>Réparation</item>
+        <item>Autres</item>
+    </string-array>
+</resources>

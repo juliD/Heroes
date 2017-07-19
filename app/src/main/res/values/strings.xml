@@ -48,7 +48,7 @@
     <string name="reset_agent">Zurücksetzen</string>
     <string name="show_details">Details anzeigen</string>
     <string name="hide_details">Details ausblenden</string>
-    <string name="ask_was_deleted">Anfrage wurde gelöscht</string>
+    <string name="ask_was_deleted">Anfrage gelöscht</string>
     <string name="offer_was_deleted">Angebot wurde gelöscht</string>
     <string name="karma_was_credited">100 Karma wurde vergeben!</string>
     <string name="message_is_too_short">Die Nachricht ist zu kurz.</string>
