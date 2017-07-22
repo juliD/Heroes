@@ -279,7 +279,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             view.setText(R.string.you);
         } else if (userID.equals("")) {
             view.setText(defaultTextRes);
-        } else {
+        } else if (!acceptedByMe){
+            view.setText(R.string.username_hint);
+        }else{
             loadUser(userID, new UserLoadedEventListener() {
                 @Override
                 public void onUserLoaded(User user) {

@@ -64,6 +64,7 @@
     <string name="fill_in">Please fill in all the blanks</string>
     <string name="address_error">This address could not be found.</string>
     <string name="meter">meter</string>
+    <string name="loading">Loading...</string>
     <string-array name="suggestions">
         <item>Own</item>
         <item>Accepted</item>
@@ -92,4 +93,6 @@
     <string name="notification_ask">has accepted your request!</string>
     <string name="notification_message">New Message</string>
     <string name="notification_offer">has accepted your offer!</string>
+    <string name="username_hint">The creator\'s name will be shown once you\'ve accepted this event.</string>
+
 </resources>

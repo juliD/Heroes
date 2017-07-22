@@ -42,6 +42,7 @@
     <string name="edit_profile">Profil bearbeiten</string>
     <string name="hint_for_address">Die Adresse des Erstellers wird Dir erst angezeigt wenn Du den Vorgang angenommen hast.</string>
     <string name="hint_for_address_mine">Die Adresse des Bearbeiters wird Dir erst angezeigt wenn jemand Deinen Vorgang angenommen hat.</string>
+    <string name="username_hint">Der Name des Erstellers wird Dir erst angezeigt, wenn Du den Vorgang annimmst.</string>
     <string name="not_available">Nicht verfügbar</string>
     <string name="give_karma">Karma vergeben</string>
     <string name="accept">Annehmen</string>
@@ -76,7 +77,9 @@
     <string name="address_error">Diese Adresse konnte leider nicht gefunden werden.</string>
     <string name="notification_offer">hat dein Angebot angenommen!</string>
     <string name="notification_ask">hat deine Anfrage angenommen!</string>
-    <string name="notification_message">Neue Nachricht</string>    <string name="meter">Meter</string>
+    <string name="notification_message">Neue Nachricht</string>
+    <string name="meter">Meter</string>
+    <string name="loading">Lädt...</string>
 
     <string-array name="suggestions">
         <item>Meine</item>

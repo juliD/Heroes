@@ -79,6 +79,9 @@
     <string name="successes">Accomplissements</string>
     <string name="you">Toi</string>
     <string name="your_home">Ta maison</string>
+    <string name="loading">Télécharger...</string>
+    <string name="username_hint">Le nom du créateur sera affiché dès que tu as accepté cet événement.</string>
+
     <string-array name="suggestions">
         <item>Le mien</item>
         <item>Accepté</item>

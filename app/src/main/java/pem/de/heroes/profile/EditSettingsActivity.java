@@ -48,6 +48,11 @@ public class EditSettingsActivity extends AppCompatActivity {
         radiusText = (TextView) findViewById(R.id.radiusText);
         radiusBar = (SeekBar) findViewById(R.id.radius);
 
+        usernameEdit.setText(R.string.loading);
+        streetEdit.setText(R.string.loading);
+        cityEdit.setText(R.string.loading);
+        radiusText.setText(R.string.loading);
+
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
 
         String userId = sharedPref.getString("userid", "");
@@ -137,6 +142,8 @@ public class EditSettingsActivity extends AppCompatActivity {
                         editor.putInt("radius", radius);
                         Helper.putDouble(editor, "homelat", homelat);
                         Helper.putDouble(editor, "homelong", homelong);
+                        editor.putString("street", street);
+                        editor.putString("city", city);
                         editor.apply();
                     }
                 });
