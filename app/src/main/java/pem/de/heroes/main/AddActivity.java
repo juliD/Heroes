@@ -130,7 +130,7 @@ public class AddActivity extends AppCompatActivity {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
                 String currentDateAndTime = sdf.format(Calendar.getInstance().getTime());
-                ListItem listItem = new ListItem(title, description, userid, "", currentDateAndTime, categorie);
+                ListItem listItem = new ListItem(title, description, userid, "", currentDateAndTime, categorie, "open");
                 String key = typeref.push().getKey();
                 Log.d("AddActivity", "added key: " + key);
                 Map<String, Object> post = listItem.toMap();

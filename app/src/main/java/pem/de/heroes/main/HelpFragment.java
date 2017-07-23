@@ -300,7 +300,14 @@ public class HelpFragment extends Fragment {
                 if(listItem==null){
                     empty.setVisibility(View.VISIBLE);
                     return;
-
+                }
+                if(listItem.getStatus().equals("removed")){
+                    empty.setVisibility(View.VISIBLE);
+                    if(getUserPosition(dataSnapshot.getKey())!=-1) {
+                        list.remove(getUserPosition(dataSnapshot.getKey()));
+                        adapter.notifyDataSetChanged();
+                    }
+                    return;
                 }
 
                 //hides message that no items are available
@@ -328,19 +335,31 @@ public class HelpFragment extends Fragment {
                 if(itemToDistance.containsKey(dataSnapshot.getKey())){
 
                     if(keys.contains(dataSnapshot.getKey())){
+                        //finished items
+                        if(listItem.getStatus().equals("removed")){
+                            if(getUserPosition(dataSnapshot.getKey())!=-1) {
+                                list.remove(getUserPosition(dataSnapshot.getKey()));
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+                        else {
 
-                        //remove item if someone else than me took the offer, otherwise update listitem
-                        if(!listItem.getAgent().equals("")&&!listItem.getAgent().equals(userid)&&!listItem.getUserID().equals(userid)){
-                            Log.d(TAG,"removing item");
-                            list.remove(getUserPosition(dataSnapshot.getKey()));
-                            adapter.notifyDataSetChanged();
-                        }else{
-                            itemUpdated(listItem);
+                            //remove item if someone else than me took the offer, otherwise update listitem
+                            if (!listItem.getAgent().equals("") && !listItem.getAgent().equals(userid) && !listItem.getUserID().equals(userid)) {
+                                Log.d(TAG, "removing item");
+                                list.remove(getUserPosition(dataSnapshot.getKey()));
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                itemUpdated(listItem);
+                            }
                         }
 
                     }else{
                         if(listItem.getAgent().equals("")||listItem.getAgent().equals(userid)||listItem.getUserID().equals(userid)){
-                            newItem(listItem);
+                            if(!listItem.getStatus().equals("removed")){
+                                newItem(listItem);
+                            }
+
                         }
 
                     }

@@ -24,6 +24,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
     private String id;
     private int distance;
     private String category;
+    private String status;
     private int image;
 
     public int getImage() {
@@ -34,13 +35,14 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         this.image = image;
     }
 
-    public ListItem(String title, String description, String userid, String agent, String date, String category) {
+    public ListItem(String title, String description, String userid, String agent, String date, String category,String status) {
         this.description = description;
         this.title = title;
         this.userid = userid;
         this.agent = agent;
         this.date = date;
         this.category = category;
+        this.status = status;
     }
 
     public ListItem() {
@@ -69,6 +71,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         return distance;
     }
     public String getCategory(){return category;}
+    public String getStatus(){return status;}
 
     public void setDistance(int distance) {
         this.distance = distance;
@@ -87,6 +90,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         this.id = parcel.readString();
         this.distance = parcel.readInt();
         this.category = parcel.readString();
+        this.status = parcel.readString();
     }
 
     @Override
@@ -104,6 +108,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         parcel.writeString(id);
         parcel.writeInt(distance);
         parcel.writeString(category);
+        parcel.writeString(status);
     }
 
     @Exclude
@@ -115,6 +120,7 @@ public class ListItem implements Parcelable,Comparable<ListItem> {
         result.put("date",date);
         result.put("userid",userid);
         result.put("category", category);
+        result.put("status",status);
 
 
         return result;

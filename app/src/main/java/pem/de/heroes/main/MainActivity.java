@@ -178,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         users.child("street").setValue(sharedPref.getString("street","Marienplatz 1"));
         users.child("radius").setValue(500);
 
+
         //needed for custom language for notifications when app not running
         Locale locale;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

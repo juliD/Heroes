@@ -206,9 +206,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                             public void onClick(DialogInterface dialog, int id) {
                                 ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
 
+                                //set item as removed
+                                typeref.child(itemID).child("status").setValue("removed");
+
                                 // item is deleted in geofire and in the list
-                                ref.child("geofire").child(type).child(itemID).removeValue();
-                                typeref.child(itemID).removeValue();
+                                //ref.child("geofire").child(type).child(itemID).removeValue();
+                                //typeref.child(itemID).removeValue();
 
                                 // finish activity and show toast
                                 finish();
@@ -337,9 +340,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                                         userref.child("karma").runTransaction(new CounterTransactionHandler(+100));
                                         userref.child("asksDone").runTransaction(new CounterTransactionHandler(+1));
 
+                                        //set item as removed
+                                        typeref.child(itemID).child("status").setValue("removed");
+
                                         // item is removed from geofire and the list
-                                        ref.child("geofire").child(type).child(itemID).removeValue();
-                                        typeref.child(itemID).removeValue();
+                                        //ref.child("geofire").child(type).child(itemID).removeValue();
+                                        //typeref.child(itemID).removeValue();
 
                                         // finish and show toast
                                         finish();
