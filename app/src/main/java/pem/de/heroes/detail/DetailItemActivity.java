@@ -65,10 +65,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private static final String ARG_TYPE = "fragment_type";
     private static final String ITEM_ID = "item_id";
 
+    // current item with type and id
     private String type = "offer";
     private ListItem listitem;
     private String itemID;
 
+    // references to different firebase paths
     private DatabaseReference ref;
     private DatabaseReference typeref;
     private DatabaseReference userref;
@@ -77,16 +79,19 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private DatabaseReference messagesref;
     private SharedPreferences sharedPref;
 
-    private String preferenceUserID;
-    private boolean mine;
-    private boolean accepted;
-    private boolean acceptedByMe;
-    private String token;
+    // user related values
+    private String preferenceUserID; // current user id
+    private String token; // for notifications
+
+    private boolean mine; // shortcut if the current item was created by the current user
+    private boolean accepted; // shortcut if the current item was accepted by someone
+    private boolean acceptedByMe; // shortcut if the current item was accepted by the current user
 
     private LatLng home;
     private LatLng othersLocation;
     private String othersAddress;
 
+    // all views for the information page of details
     private TextView title;
     private TextView description;
     private TextView date;
@@ -123,6 +128,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
         }
 
+        // load the current item
         listitem = getIntent().getParcelableExtra("selected");
         String listUserID = listitem.getUserID();
         String listAgentID = listitem.getAgent();
@@ -130,6 +136,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         IMAGECOMPARISONS = getResources().getStringArray(R.array.image_comparison);
         SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
 
+        // create firebase references
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
         userref = ref.child("users");
@@ -137,11 +144,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         agentref = ref.child("users").child(listAgentID);
         messagesref = typeref.child(itemID).child("messages");
 
+        // load user related values from shared preferences
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
         token = sharedPref.getString("pushToken", "No token");
         home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
 
+        // determine the shortcuts which are used multiple times e.g. to show different buttons
         mine = listUserID.equals(preferenceUserID);
         accepted = !listAgentID.equals("");
         acceptedByMe = listAgentID.equals(preferenceUserID);
@@ -188,15 +197,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         MenuItem delete = menu.findItem(R.id.delete);
         if (mine) {
-            delete.setVisible(true);
+            delete.setVisible(true); // only the creator can delete an item
         } else {
             delete.setVisible(false);
         }
         delete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                // owner gets -1 for his 'created' medal
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
                 //  build Alert dialog
@@ -204,14 +211,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         .setTitle(R.string.delete_title)
                         .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                // owner gets -1 for his 'created' medal
                                 ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
 
-                                //set item as removed
+                                // set item as removed
                                 typeref.child(itemID).child("status").setValue("removed");
-
-                                // item is deleted in geofire and in the list
-                                //ref.child("geofire").child(type).child(itemID).removeValue();
-                                //typeref.child(itemID).removeValue();
 
                                 // finish activity and show toast
                                 finish();
@@ -225,7 +229,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                             }
                         });
 
-
                 // Create alert dialog and show it
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -237,6 +240,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     }
 
+    /**
+     * displays two locations on a google maps fragment
+     * @param map GoogleMap
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         int dimen = 50;
@@ -250,6 +257,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    /**
+     * shows chat if there are two persons and if one of these persons is me
+     */
     private void showChat() {
         if (mine && accepted || acceptedByMe) {
             viewPager.setPagingEnabled(true);
@@ -260,6 +270,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    /**
+     * asynchronous loading of a user
+     * @param userID id of the user in firebase
+     * @param listener callback
+     */
     private void loadUser(String userID, final UserLoadedEventListener listener) {
         userref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -277,6 +292,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    /**
+     * displays the name of a user in view
+     * @param view TextView where the username is shown
+     * @param userID id of the user in firebase
+     * @param defaultTextRes value which is used if there is no user id
+     */
     private void loadUsername(final TextView view, String userID, int defaultTextRes) {
         if (userID.equals(preferenceUserID)) {
             view.setText(R.string.you);
@@ -294,6 +315,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    /**
+     * initializes the static part of the request page where the general information is shown
+     * @param view view of the requeset page
+     */
     private void buildRequestPage(View view) {
         if (listitem != null) {
             title = (TextView) view.findViewById(R.id.title);
@@ -480,6 +505,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    /**
+     * refreshes the content of the request page, especially the usernames, the addresses and the buttons
+     */
     private void refreshRequestPage() {
         // user and agent
         loadUsername(user, listitem.getUserID(), R.string.not_available);

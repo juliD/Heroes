@@ -69,6 +69,7 @@ public class EditSettingsActivity extends AppCompatActivity {
                 String city = me.getCity();
                 int radius = me.getRadius();
 
+                // set user values when data is loaded
                 usernameEdit.setText(username);
                 streetEdit.setText(street);
                 cityEdit.setText(city);
@@ -86,6 +87,7 @@ public class EditSettingsActivity extends AppCompatActivity {
             }
         });
 
+        // just for updating the label
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -109,53 +111,52 @@ public class EditSettingsActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_edit_settings, menu);
 
-
         MenuItem save = menu.findItem(R.id.save);
-        if(loaded) {
-            save.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-
-                    final String username = usernameEdit.getText().toString();
-                    final String city = cityEdit.getText().toString();
-                    final String street = streetEdit.getText().toString();
-                    final int radius = getRadius(radiusBar.getProgress());
+        save.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                final String username = usernameEdit.getText().toString();
+                final String city = cityEdit.getText().toString();
+                final String street = streetEdit.getText().toString();
+                final int radius = getRadius(radiusBar.getProgress());
                     if (username.isEmpty() || city.isEmpty() || street.isEmpty()) {
-                        Toast.makeText(getApplicationContext(), R.string.fill_in, Toast.LENGTH_SHORT).show();
-                        return true;
+                    Toast.makeText(getApplicationContext(), R.string.fill_in, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
+                if (newLoc == null) {
+                    Toast.makeText(getApplicationContext(), R.string.address_error, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                final double homelat = newLoc.latitude;
+                final double homelong = newLoc.longitude;
+
+                userRef.runTransaction(new Transaction.Handler() {
+                    @Override
+                    public Transaction.Result doTransaction(MutableData mutableData) {
+                        // save values to firebase
+                        User me = mutableData.getValue(User.class);
+                        me.setUsername(username);
+                        me.setCity(city);
+                        me.setStreet(street);
+                        me.setRadius(radius);
+                        mutableData.setValue(me);
+                        return Transaction.success(mutableData);
                     }
 
-                    LatLng newLoc = Helper.getLocationFromAddress(street + ", " + city, getApplicationContext());
-                    if (newLoc == null) {
-                        Toast.makeText(getApplicationContext(), R.string.address_error, Toast.LENGTH_SHORT).show();
-                        return true;
+                    @Override
+                    public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                        // some values like the radius and the home coordinates can be kept in shared preferences
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putInt("radius", radius);
+                        Helper.putDouble(editor, "homelat", homelat);
+                        Helper.putDouble(editor, "homelong", homelong);
+                        editor.putString("street", street);
+                        editor.putString("city", city);
+                        editor.apply();
                     }
-                    final double homelat = newLoc.latitude;
-                    final double homelong = newLoc.longitude;
-
-                    userRef.runTransaction(new Transaction.Handler() {
-                        @Override
-                        public Transaction.Result doTransaction(MutableData mutableData) {
-                            User me = mutableData.getValue(User.class);
-                            me.setUsername(username);
-                            me.setCity(city);
-                            me.setStreet(street);
-                            me.setRadius(radius);
-                            mutableData.setValue(me);
-                            return Transaction.success(mutableData);
-                        }
-
-                        @Override
-                        public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.putInt("radius", radius);
-                            Helper.putDouble(editor, "homelat", homelat);
-                            Helper.putDouble(editor, "homelong", homelong);
-                            editor.putString("street", street);
-                            editor.putString("city", city);
-                            editor.apply();
-                        }
-                    });
+                });
 
                     finish();
                     return true;

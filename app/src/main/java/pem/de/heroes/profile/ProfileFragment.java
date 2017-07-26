@@ -27,6 +27,7 @@ import pem.de.heroes.R;
 
 public class ProfileFragment extends Fragment {
 
+    // predefined levels a user can achieve with name, karma and hero image
     private final Hero[] heroes = {
             new Hero("Wannabe Hero", 100, R.drawable.hero1),
             new Hero("Amateur Hero", 1000, R.drawable.hero2),
@@ -58,14 +59,15 @@ public class ProfileFragment extends Fragment {
         final View medal3 = view.findViewById(R.id.medal3);
         final View medal4 = view.findViewById(R.id.medal4);
 
+        // reset all views
         setHero(hero, heroImage, 0);
         setMedal(medal1, 0);
         setMedal(medal2, 0);
         setMedal(medal3, 0);
         setMedal(medal4, 0);
 
-        SharedPreferences sharedPref=getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-        String userId = sharedPref.getString("userid","");
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+        String userId = sharedPref.getString("userid", "");
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
 
         ref.addChildEventListener(new ChildEventListener() {
@@ -117,6 +119,12 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Updates all information concerning the current hero (depending on the karma count)
+     * @param heroView the view where the hero title, the karma progress bar and the karma label is shown
+     * @param heroImage the view where the hero image is shown
+     * @param karma current karma count of the user
+     */
     private void setHero(View heroView, ImageView heroImage, int karma) {
         Hero hero = null;
         int progress = karma;
@@ -147,6 +155,11 @@ public class ProfileFragment extends Fragment {
         karmaProgress.setProgress(100 * progress / hero.getRequiredKarmaTillNextLevel()); // percentage
     }
 
+    /**
+     * Updates all information concerning one medal
+     * @param medalView the view where the medal is shown
+     * @param progress current count of successes of the user (of different types, e.g. created offers)
+     */
     private void setMedal(View medalView, int progress) {
         ProgressBar medalProgressBar = (ProgressBar) medalView.findViewById(R.id.progressBar);
         TextView medalNumber = (TextView) medalView.findViewById(R.id.number);
@@ -159,18 +172,22 @@ public class ProfileFragment extends Fragment {
         Drawable progressDrawable = null;
 
         if (progress < MIN_COUNT_BRONZE) {
+            // medal with blue color, set min bronze count as next step
             color = ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null);
             progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_normal, null);
             max = MIN_COUNT_BRONZE;
         } else if (progress < MIN_COUNT_SILVER) {
+            // medal with bronze color, set min silver count as next step
             color = ResourcesCompat.getColor(getResources(), R.color.bronze, null);
             progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_bronze, null);
             max = MIN_COUNT_SILVER;
         } else if (progress < MIN_COUNT_GOLD) {
+            // medal with silver color, set min gold count as next step
             color = ResourcesCompat.getColor(getResources(), R.color.silver, null);
             progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_silver, null);
             max = MIN_COUNT_GOLD;
         } else {
+            // medal with gold color, set max to min gold count, we are done
             color = ResourcesCompat.getColor(getResources(), R.color.gold, null);
             progressDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.progress_gold, null);
             max = MIN_COUNT_GOLD;
@@ -179,7 +196,7 @@ public class ProfileFragment extends Fragment {
         medalNumber.setTextColor(color);
         medalNumber.setText(progress + "");
 
-        progress = progress < MIN_COUNT_GOLD ? progress: MIN_COUNT_GOLD;
+        progress = progress < MIN_COUNT_GOLD ? progress: MIN_COUNT_GOLD; // maximum
         if (medalProgressBar.getProgress() != progress || progress == 0) {
             medalProgressBar.setProgressDrawable(progressDrawable);
             medalProgressBar.setMax(max);
