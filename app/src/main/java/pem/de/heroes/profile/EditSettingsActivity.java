@@ -111,6 +111,7 @@ public class EditSettingsActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_edit_settings, menu);
 
+        if(loaded){
         MenuItem save = menu.findItem(R.id.save);
         save.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
