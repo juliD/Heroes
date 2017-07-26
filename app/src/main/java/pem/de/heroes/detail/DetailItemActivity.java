@@ -190,6 +190,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         showChat();
     }
 
+    //option menu for delete button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -242,6 +243,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     /**
      * displays two locations on a google maps fragment
+     *
      * @param map GoogleMap
      */
     @Override
@@ -272,7 +274,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     /**
      * asynchronous loading of a user
-     * @param userID id of the user in firebase
+     *
+     * @param userID   id of the user in firebase
      * @param listener callback
      */
     private void loadUser(String userID, final UserLoadedEventListener listener) {
@@ -294,8 +297,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     /**
      * displays the name of a user in view
-     * @param view TextView where the username is shown
-     * @param userID id of the user in firebase
+     *
+     * @param view           TextView where the username is shown
+     * @param userID         id of the user in firebase
      * @param defaultTextRes value which is used if there is no user id
      */
     private void loadUsername(final TextView view, String userID, int defaultTextRes) {
@@ -303,9 +307,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             view.setText(R.string.you);
         } else if (userID.equals("")) {
             view.setText(defaultTextRes);
-        } else if (!acceptedByMe){
+        } else if (!acceptedByMe) {
             view.setText(R.string.username_hint);
-        }else{
+        } else {
             loadUser(userID, new UserLoadedEventListener() {
                 @Override
                 public void onUserLoaded(User user) {
@@ -317,6 +321,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
     /**
      * initializes the static part of the request page where the general information is shown
+     *
      * @param view view of the requeset page
      */
     private void buildRequestPage(View view) {
@@ -338,6 +343,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             description.setText(listitem.getDescription());
             category.setText(getCategory(listitem.getCategory()));
 
+            //display date
             SimpleDateFormat from = new SimpleDateFormat("yyyyMMddHHmm");
             SimpleDateFormat to = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             try {
@@ -412,7 +418,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 @Override
                 public void onClick(View v) {
 
-                    if(mine) {
+                    if (mine) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
@@ -447,7 +453,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         // Create alert dialog and show it
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                    }else{
+                    } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
                         //  build Alert dialog
@@ -528,9 +534,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 }
             });
         } else {
-            if(mine){
+            if (mine) {
                 address.setText(R.string.hint_for_address_mine);
-            }else{
+            } else {
                 address.setText(R.string.hint_for_address);
             }
         }
@@ -564,6 +570,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    //sets up chat page
     private void buildChatPage(View view) {
         if (listitem != null) {
             final TextView chat_partner_textview = (TextView) view.findViewById(R.id.username);
@@ -605,6 +612,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    //display the chat messages
     private void seeChatMessages(DataSnapshot dataSnapshot) {
         LayoutInflater inflator = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -693,9 +701,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     //Translate category if necessary
-    private String getCategory(String listitemCategory){
-        for (int i= 0; i<IMAGECOMPARISONS.length; i++){
-            if(listitemCategory.equals(IMAGECOMPARISONS[i])){
+    private String getCategory(String listitemCategory) {
+        for (int i = 0; i < IMAGECOMPARISONS.length; i++) {
+            if (listitemCategory.equals(IMAGECOMPARISONS[i])) {
                 return SUGGESTIONS[i];
             }
         }

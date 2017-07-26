@@ -19,6 +19,7 @@ import java.util.Locale;
 
 public class Helper {
 
+    //gets the Latitude and Longitude from an adress
     public static LatLng getLocationFromAddress(String strAddress, Context context){
         Geocoder coder = new Geocoder(context, Locale.getDefault());
 
@@ -58,6 +59,7 @@ public class Helper {
         return loc1.distanceTo(loc2);
     }
 
+    //not used anymore but kept for future comeback
     public static String distanceToString (float distance){
         String s = "";
         if(distance<100){
