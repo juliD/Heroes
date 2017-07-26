@@ -593,13 +593,14 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             LinearLayout linearlayout2 = (LinearLayout) item.findViewById(R.id.linearlayout2);
             LinearLayout containermessage = (LinearLayout) item.findViewById(R.id.containermessage);
 
-
+            //space between chat messages
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 12, 0, 12);
             item.setLayoutParams(layoutParams);
 
             chatmessage.setText(chat_message);
 
+            //colors chat messages and positions them depending on who wrote.
             if (chat_userid.equals(preferenceUserID)) {
                 usernamechat.setText(R.string.you);
                 linearlayout2.setGravity(Gravity.END);
@@ -636,6 +637,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    //updates when a new chat message was sent.
     private void messagesEventListener() {
         messagesref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -672,6 +674,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         return getResources().getString(R.string.not_available);
     }
 
+    //draws the dots and colors the dot for which page we are on in a darker shade.
     private void addBottomDots(int currentPage) {
         TextView[] dots = new TextView[layouts.length];
 
