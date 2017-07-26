@@ -209,9 +209,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                                 //set item as removed
                                 typeref.child(itemID).child("status").setValue("removed");
 
-                                // item is deleted in geofire and in the list
-                                //ref.child("geofire").child(type).child(itemID).removeValue();
-                                //typeref.child(itemID).removeValue();
 
                                 // finish activity and show toast
                                 finish();

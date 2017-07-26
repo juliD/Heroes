@@ -1,6 +1,8 @@
 package pem.de.heroes.profile;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -147,6 +149,7 @@ public class EditSettingsActivity extends AppCompatActivity {
                         editor.apply();
                     }
                 });
+
 
                 finish();
                 return true;

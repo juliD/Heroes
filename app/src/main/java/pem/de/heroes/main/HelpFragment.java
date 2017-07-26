@@ -110,6 +110,13 @@ public class HelpFragment extends Fragment {
         DatabaseReference georef = FirebaseDatabase.getInstance().getReference("geofire/"+fragment_type);
         geoFire = new GeoFire(georef);
 
+        if(geoQuery!=null) {
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+            home = new GeoLocation(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
+            final int radius = sharedPref.getInt("radius", 500);
+
+            geoQuery.setLocation(home, radius / 1000);
+        }
         //add Event Listeners
         setupListeners();
 
@@ -148,7 +155,10 @@ public class HelpFragment extends Fragment {
         userid = sharedPref.getString("userid","No UserID");
         final int radius = sharedPref.getInt("radius", 500);
 
-
+        //update query if already exists
+        if(geoQuery!=null) {
+            geoQuery.setLocation(home, radius / 1000);
+        }
         //Set up recyclerView
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
         adapter = new Adapter(list,userid,getActivity());
@@ -190,6 +200,18 @@ public class HelpFragment extends Fragment {
         //add listitems within specified radius
         fetchListItems(radius);
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG,"onResume");
+        if(geoQuery!=null){
+            SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+            final int radius = sharedPref.getInt("radius", 500);
+            geoQuery.removeAllListeners();
+            fetchListItems(radius);
+        }
     }
 
     public void onPause() {
