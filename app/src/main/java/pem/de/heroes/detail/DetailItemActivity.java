@@ -65,10 +65,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private static final String ARG_TYPE = "fragment_type";
     private static final String ITEM_ID = "item_id";
 
+    // current item with type and id
     private String type = "offer";
     private ListItem listitem;
     private String itemID;
 
+    // references to different firebase paths
     private DatabaseReference ref;
     private DatabaseReference typeref;
     private DatabaseReference userref;
@@ -77,16 +79,19 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private DatabaseReference messagesref;
     private SharedPreferences sharedPref;
 
-    private String preferenceUserID;
-    private boolean mine;
-    private boolean accepted;
-    private boolean acceptedByMe;
-    private String token;
+    // user related values
+    private String preferenceUserID; // current user id
+    private String token; // for notifications
+
+    private boolean mine; // shortcut if the current item was created by the current user
+    private boolean accepted; // shortcut if the current item was accepted by someone
+    private boolean acceptedByMe; // shortcut if the current item was accepted by the current user
 
     private LatLng home;
     private LatLng othersLocation;
     private String othersAddress;
 
+    // all views for the information page of details
     private TextView title;
     private TextView description;
     private TextView date;
@@ -123,6 +128,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             }
         }
 
+        // load the current item
         listitem = getIntent().getParcelableExtra("selected");
         String listUserID = listitem.getUserID();
         String listAgentID = listitem.getAgent();
@@ -130,6 +136,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         IMAGECOMPARISONS = getResources().getStringArray(R.array.image_comparison);
         SUGGESTIONS = getResources().getStringArray(R.array.suggestions);
 
+        // create firebase references
         ref = FirebaseDatabase.getInstance().getReference();
         typeref = ref.child(type);
         userref = ref.child("users");
@@ -137,11 +144,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         agentref = ref.child("users").child(listAgentID);
         messagesref = typeref.child(itemID).child("messages");
 
+        // load user related values from shared preferences
         sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
         preferenceUserID = sharedPref.getString("userid", "No UserID");
         token = sharedPref.getString("pushToken", "No token");
         home = new LatLng(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
 
+        // determine the shortcuts which are used multiple times e.g. to show different buttons
         mine = listUserID.equals(preferenceUserID);
         accepted = !listAgentID.equals("");
         acceptedByMe = listAgentID.equals(preferenceUserID);
@@ -181,6 +190,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         showChat();
     }
 
+    //option menu for delete button
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -188,15 +198,13 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
         MenuItem delete = menu.findItem(R.id.delete);
         if (mine) {
-            delete.setVisible(true);
+            delete.setVisible(true); // only the creator can delete an item
         } else {
             delete.setVisible(false);
         }
         delete.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                // owner gets -1 for his 'created' medal
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
                 //  build Alert dialog
@@ -204,9 +212,10 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         .setTitle(R.string.delete_title)
                         .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                // owner gets -1 for his 'created' medal
                                 ownerref.child(type + "sCreated").runTransaction(new CounterTransactionHandler(-1));
 
-                                //set item as removed
+                                // set item as removed
                                 typeref.child(itemID).child("status").setValue("removed");
 
 
@@ -222,7 +231,6 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                             }
                         });
 
-
                 // Create alert dialog and show it
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -234,6 +242,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         return true;
     }
 
+    /**
+     * displays two locations on a google maps fragment
+     *
+     * @param map GoogleMap
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         int dimen = 50;
@@ -247,6 +260,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    /**
+     * shows chat if there are two persons and if one of these persons is me
+     */
     private void showChat() {
         if (mine && accepted || acceptedByMe) {
             viewPager.setPagingEnabled(true);
@@ -257,6 +273,12 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    /**
+     * asynchronous loading of a user
+     *
+     * @param userID   id of the user in firebase
+     * @param listener callback
+     */
     private void loadUser(String userID, final UserLoadedEventListener listener) {
         userref.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -274,14 +296,21 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    /**
+     * displays the name of a user in view
+     *
+     * @param view           TextView where the username is shown
+     * @param userID         id of the user in firebase
+     * @param defaultTextRes value which is used if there is no user id
+     */
     private void loadUsername(final TextView view, String userID, int defaultTextRes) {
         if (userID.equals(preferenceUserID)) {
             view.setText(R.string.you);
         } else if (userID.equals("")) {
             view.setText(defaultTextRes);
-        } else if (!acceptedByMe){
+        } else if (!acceptedByMe) {
             view.setText(R.string.username_hint);
-        }else{
+        } else {
             loadUser(userID, new UserLoadedEventListener() {
                 @Override
                 public void onUserLoaded(User user) {
@@ -291,6 +320,11 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    /**
+     * initializes the static part of the request page where the general information is shown
+     *
+     * @param view view of the requeset page
+     */
     private void buildRequestPage(View view) {
         if (listitem != null) {
             title = (TextView) view.findViewById(R.id.title);
@@ -310,6 +344,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             description.setText(listitem.getDescription());
             category.setText(getCategory(listitem.getCategory()));
 
+            //display date
             SimpleDateFormat from = new SimpleDateFormat("yyyyMMddHHmm");
             SimpleDateFormat to = new SimpleDateFormat("dd.MM.yyyy HH:mm");
             try {
@@ -384,7 +419,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 @Override
                 public void onClick(View v) {
 
-                    if(mine) {
+                    if (mine) {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
@@ -419,7 +454,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         // Create alert dialog and show it
                         AlertDialog dialog = builder.create();
                         dialog.show();
-                    }else{
+                    } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailItemActivity.this);
 
                         //  build Alert dialog
@@ -477,6 +512,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    /**
+     * refreshes the content of the request page, especially the usernames, the addresses and the buttons
+     */
     private void refreshRequestPage() {
         // user and agent
         loadUsername(user, listitem.getUserID(), R.string.not_available);
@@ -497,9 +535,9 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                 }
             });
         } else {
-            if(mine){
+            if (mine) {
                 address.setText(R.string.hint_for_address_mine);
-            }else{
+            } else {
                 address.setText(R.string.hint_for_address);
             }
         }
@@ -533,6 +571,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    //sets up chat page
     private void buildChatPage(View view) {
         if (listitem != null) {
             final TextView chat_partner_textview = (TextView) view.findViewById(R.id.username);
@@ -574,6 +613,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         }
     }
 
+    //display the chat messages
     private void seeChatMessages(DataSnapshot dataSnapshot) {
         LayoutInflater inflator = (LayoutInflater) getBaseContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -590,13 +630,14 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
             LinearLayout linearlayout2 = (LinearLayout) item.findViewById(R.id.linearlayout2);
             LinearLayout containermessage = (LinearLayout) item.findViewById(R.id.containermessage);
 
-
+            //space between chat messages
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             layoutParams.setMargins(0, 12, 0, 12);
             item.setLayoutParams(layoutParams);
 
             chatmessage.setText(chat_message);
 
+            //colors chat messages and positions them depending on who wrote.
             if (chat_userid.equals(preferenceUserID)) {
                 usernamechat.setText(R.string.you);
                 linearlayout2.setGravity(Gravity.END);
@@ -633,6 +674,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
         });
     }
 
+    //updates when a new chat message was sent.
     private void messagesEventListener() {
         messagesref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -660,15 +702,16 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     }
 
     //Translate category if necessary
-    private String getCategory(String listitemCategory){
-        for (int i= 0; i<IMAGECOMPARISONS.length; i++){
-            if(listitemCategory.equals(IMAGECOMPARISONS[i])){
+    private String getCategory(String listitemCategory) {
+        for (int i = 0; i < IMAGECOMPARISONS.length; i++) {
+            if (listitemCategory.equals(IMAGECOMPARISONS[i])) {
                 return SUGGESTIONS[i];
             }
         }
         return getResources().getString(R.string.not_available);
     }
 
+    //draws the dots and colors the dot for which page we are on in a darker shade.
     private void addBottomDots(int currentPage) {
         TextView[] dots = new TextView[layouts.length];
 

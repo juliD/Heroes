@@ -19,6 +19,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         @Override
         public android.support.v4.app.Fragment getItem(int index)
         {
+            //depending on which index we are a different Fragment is shown
             switch (index)
             {
                 case 0:

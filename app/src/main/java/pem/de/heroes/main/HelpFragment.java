@@ -110,13 +110,6 @@ public class HelpFragment extends Fragment {
         DatabaseReference georef = FirebaseDatabase.getInstance().getReference("geofire/"+fragment_type);
         geoFire = new GeoFire(georef);
 
-        if(geoQuery!=null) {
-            SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-            home = new GeoLocation(Helper.getDouble(sharedPref, "homelat", 0), Helper.getDouble(sharedPref, "homelong", 0));
-            final int radius = sharedPref.getInt("radius", 500);
-
-            geoQuery.setLocation(home, radius / 1000);
-        }
         //add Event Listeners
         setupListeners();
 
@@ -155,10 +148,9 @@ public class HelpFragment extends Fragment {
         userid = sharedPref.getString("userid","No UserID");
         final int radius = sharedPref.getInt("radius", 500);
 
-        //update query if already exists
-        if(geoQuery!=null) {
-            geoQuery.setLocation(home, radius / 1000);
-        }
+        Log.d(TAG,"radius ="+(radius+100)/1000);
+
+
         //Set up recyclerView
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);
         adapter = new Adapter(list,userid,getActivity());
@@ -202,18 +194,8 @@ public class HelpFragment extends Fragment {
 
     }
 
-    @Override
-    public void onResume(){
-        super.onResume();
-        Log.d(TAG,"onResume");
-        if(geoQuery!=null){
-            SharedPreferences sharedPref = getActivity().getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
-            final int radius = sharedPref.getInt("radius", 500);
-            geoQuery.removeAllListeners();
-            fetchListItems(radius);
-        }
-    }
 
+    @Override
     public void onPause() {
         super.onPause();
         getActivity().invalidateOptionsMenu();
@@ -222,6 +204,8 @@ public class HelpFragment extends Fragment {
                 MenuItemCompat.collapseActionView(search);
             }
         }
+        geoQuery.removeAllListeners();
+
     }
     /*
     get position by key
@@ -239,9 +223,10 @@ public class HelpFragment extends Fragment {
      * Add GeoQuery to Firebase Data
      * @param radius max Distance for Query Items to be shown
      */
-    public void fetchListItems(int radius){
+    public void fetchListItems(double radius){
 
-        geoQuery = geoFire.queryAtLocation(home,radius/1000);
+
+        geoQuery = geoFire.queryAtLocation(home, radius/1000);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
@@ -265,6 +250,7 @@ public class HelpFragment extends Fragment {
                     list.remove(position);
                     itemToDistance.remove(key);
                     keys.remove(position);
+                    ref.child(key).removeEventListener(itemValueListener);
                     adapter.notifyItemRemoved(position);
                 }
 
@@ -415,9 +401,6 @@ public class HelpFragment extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("Fragment", "onCancelled: ", databaseError.toException());
             }
-
-
-
 
         };
     }

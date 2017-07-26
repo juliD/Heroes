@@ -66,6 +66,14 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        int selectTab = 1;
+
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras != null) {
+                selectTab = extras.getInt("tab");
+            }
+        }
 
         //set up shared preferences
         sharedPref=this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
@@ -118,19 +126,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         tabLayout.addOnTabSelectedListener(this);
 
 
-        //add Button
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-                                   @Override
-                                   public void onClick(View view) {
-                                       Intent i = new Intent(MainActivity.this, AddActivity.class);
-                                       i.putExtra(ARG_TYPE, viewPager.getCurrentItem() == 1 ? "ask" : "offer");
-                                       startActivity(i);
-                                   }
-                               });
+            //add Button
+            fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(MainActivity.this, AddActivity.class);
+                    i.putExtra(ARG_TYPE, viewPager.getCurrentItem() == 1 ? "ask" : "offer");
+                    startActivity(i);
+                }
+            });
 
+        if(selectTab==0) {
+            fab.setVisibility(View.GONE);
+        }
         //Select the tab in the middle
-        TabLayout.Tab tab = tabLayout.getTabAt(1);
+        TabLayout.Tab tab = tabLayout.getTabAt(selectTab);
         tab.select();
 
     }
@@ -302,6 +313,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             karma.setText(sharedPreferences.getInt("karma",0)+" Karma");
         }
     }
+
+
 
 
 

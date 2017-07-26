@@ -59,7 +59,7 @@ public class AddActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
-                //Title der Activity wird geändert mit bezug was erstellt wird.
+                //title of activity changed depending on what is created.
                 type = extras.getString(ARG_TYPE);
                 setTitle(type.equals("ask") ? R.string.create_ask : R.string.create_offer);
             }
@@ -67,6 +67,7 @@ public class AddActivity extends AppCompatActivity {
 
         ref = FirebaseDatabase.getInstance().getReference();
         SharedPreferences sharedPref = this.getSharedPreferences("pem.de.hero.userid", Context.MODE_PRIVATE);
+
         userid = sharedPref.getString("userid", "No UserID");
         street = sharedPref.getString("street", "");
         city = sharedPref.getString("city", "");
@@ -79,9 +80,11 @@ public class AddActivity extends AppCompatActivity {
         final EditText titleView = (EditText) findViewById(R.id.add_title);
         final EditText descView = (EditText) findViewById(R.id.add_description);
         final Spinner spinner = (Spinner) findViewById(R.id.category);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //hide categories accepted and own
                 categorie = IMAGECOMPARISON[position+2];
             }
 
@@ -104,6 +107,7 @@ public class AddActivity extends AppCompatActivity {
             }
         }) ;
 
+        //configure spinner
         List<String> categories = new ArrayList<String>(Arrays.asList(Arrays.copyOfRange(SUGGESTIONS,2,SUGGESTIONS.length)));
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,categories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -120,12 +124,15 @@ public class AddActivity extends AppCompatActivity {
                 String description = descView.getText().toString();
                 String address = street + ", " + city;
 
+                //Toast if not enough information was entered.
                 if (title.isEmpty() || description.isEmpty() || street.isEmpty() || city.isEmpty()) {
                     Toast.makeText(getApplicationContext(), R.string.fill_in, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 Log.d("AddActivity", "type: "+ type);
+
+
                 DatabaseReference typeref = ref.child(type);
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
