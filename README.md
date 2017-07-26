@@ -1,0 +1,1 @@
+index.js enthält den serverseitigen code für firebase um pushnachrichten automatisch zu versenden.
