@@ -67,6 +67,7 @@ public class EditSettingsActivity extends AppCompatActivity {
                 String city = me.getCity();
                 int radius = me.getRadius();
 
+                // set user values when data is loaded
                 usernameEdit.setText(username);
                 streetEdit.setText(street);
                 cityEdit.setText(city);
@@ -80,6 +81,7 @@ public class EditSettingsActivity extends AppCompatActivity {
             }
         });
 
+        // just for updating the label
         radiusBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -127,6 +129,7 @@ public class EditSettingsActivity extends AppCompatActivity {
                 userRef.runTransaction(new Transaction.Handler() {
                     @Override
                     public Transaction.Result doTransaction(MutableData mutableData) {
+                        // save values to firebase
                         User me = mutableData.getValue(User.class);
                         me.setUsername(username);
                         me.setCity(city);
@@ -138,6 +141,7 @@ public class EditSettingsActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+                        // some values like the radius and the home coordinates can be kept in shared preferences
                         SharedPreferences.Editor editor = sharedPref.edit();
                         editor.putInt("radius", radius);
                         Helper.putDouble(editor, "homelat", homelat);
