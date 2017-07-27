@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         if (auth.getCurrentUser() != null) {
             // already signed in
             userid = auth.getCurrentUser().getUid();
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("userid", userid);
+            editor.apply();
 
             //needed for custom language for notifications when app not running
             //needs to be checked every time in case user changes language
@@ -160,6 +163,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                             FirebaseUser user = auth.getCurrentUser();
                             addUserToDatabase(user);
 
+                            //to refresh listeners
+                            startActivity(new Intent(MainActivity.this, MainActivity.class));
+                            finish();
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInAnonymously:failure", task.getException());
@@ -178,6 +185,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
      */
     private void addUserToDatabase(FirebaseUser user) {
         userid = user.getUid();
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("userid", userid);
+        editor.putInt("radius", 500);
+        LatLng home = Helper.getLocationFromAddress(sharedPref.getString("street","Marienplatz 1") +", " + sharedPref.getString("city","München"),this);
+
+        editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
+        Helper.putDouble(editor,"homelat",home.latitude);
+        Helper.putDouble(editor,"homelong",home.longitude);
+        editor.apply();
+
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users").child(userid);
         users.child("username").setValue(sharedPref.getString("username","Anonym"));
         users.child("karma").setValue(0);
@@ -199,18 +216,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         }
 
         users.child("locale").setValue(locale.getDisplayLanguage());
-
-
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("userid", userid);
-        editor.putInt("radius", 500);
-        LatLng home = Helper.getLocationFromAddress(sharedPref.getString("street","Marienplatz 1") +", " + sharedPref.getString("city","München"),this);
-
-        editor.putLong("homelat",Double.doubleToRawLongBits(home.latitude));
-        Helper.putDouble(editor,"homelat",home.latitude);
-        Helper.putDouble(editor,"homelong",home.longitude);
-        editor.apply();
-
     }
 
 

@@ -148,8 +148,7 @@ public class HelpFragment extends Fragment {
         userid = sharedPref.getString("userid","No UserID");
         final int radius = sharedPref.getInt("radius", 500);
 
-        Log.d(TAG,"radius ="+(radius+100)/1000);
-
+        Log.d(TAG,"radius = "+radius);
 
         //Set up recyclerView
         recyclerView = (RecyclerView) getView().findViewById(R.id.recycler_view);

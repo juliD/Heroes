@@ -10,6 +10,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         if (sharedPref.contains("username")) {
             //username has already been written into shared preferences => not the first time using the app
+            Log.d("WelcomeActivity","radius = "+sharedPref.getInt("radius",5));
             launchHomeScreen();
             finish();
         }
@@ -180,6 +182,7 @@ public class WelcomeActivity extends AppCompatActivity {
         } else {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putString("username", username);
+            editor.putInt("radius", 500);
             editor.putInt("karma", 0);
             editor.apply();
             return true;
