@@ -104,6 +104,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     private Button accept;
     private Button reset;
 
+    private TextView chat_partner_textview;
+
     private CustomViewPager viewPager;
     private LinearLayout dotsLayout;
     private int[] layouts;
@@ -399,6 +401,8 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
 
                     } else if (!mine && !accepted) {
                         // refresh booleans
+
+
                         accepted = true;
                         acceptedByMe = true;
 
@@ -407,9 +411,16 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
                         typeref.child(itemID).child("follower").child("agent").setValue(token);
                         listitem.setAgent(preferenceUserID);
 
+                        if(!mine){
+                            loadUsername(chat_partner_textview,listitem.getUserID() , R.string.not_available);
+                        }else{
+                            loadUsername(chat_partner_textview,listitem.getAgent() , R.string.not_available);
+                        }
+
                         // refresh UI
                         showChat();
                         refreshRequestPage();
+
                     }
                 }
             });
@@ -574,7 +585,7 @@ public class DetailItemActivity extends AppCompatActivity implements OnMapReadyC
     //sets up chat page
     private void buildChatPage(View view) {
         if (listitem != null) {
-            final TextView chat_partner_textview = (TextView) view.findViewById(R.id.username);
+            chat_partner_textview = (TextView) view.findViewById(R.id.username);
             linear = (LinearLayout) view.findViewById(R.id.linearlayout);
 
             if (mine) {
