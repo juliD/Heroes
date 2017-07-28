@@ -354,8 +354,10 @@ public class HelpFragment extends Fragment {
                             //remove item if someone else than me took the offer, otherwise update listitem
                             if (!listItem.getAgent().equals("") && !listItem.getAgent().equals(userid) && !listItem.getUserID().equals(userid)) {
                                 Log.d(TAG, "removing item");
-                                list.remove(getUserPosition(dataSnapshot.getKey()));
-                                adapter.notifyDataSetChanged();
+                                if(getUserPosition(dataSnapshot.getKey())!=-1) {
+                                    list.remove(getUserPosition(dataSnapshot.getKey()));
+                                    adapter.notifyDataSetChanged();
+                                }
                             } else {
                                 itemUpdated(listItem);
                             }
