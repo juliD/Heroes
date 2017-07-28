@@ -394,8 +394,10 @@ public class HelpFragment extends Fragment {
             //update List Item
             private void itemUpdated(ListItem listItem){
                 int position = getUserPosition(listItem.getid());
-                list.set(position,listItem);
-                adapter.notifyItemChanged(position);
+                if(position!=-1) {
+                    list.set(position, listItem);
+                    adapter.notifyItemChanged(position);
+                }
             }
 
             @Override
