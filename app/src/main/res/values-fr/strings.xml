@@ -95,4 +95,18 @@
         <item>Réparation</item>
         <item>Autres</item>
     </string-array>
+
+    <string-array name="image_comparison">
+        <item>Meine</item>
+        <item>Angenommene</item>
+        <item>Einkaufen</item>
+        <item>Kochen</item>
+        <item>Waschen</item>
+        <item>Putzen</item>
+        <item>Transport</item>
+        <item>Gartenarbeit</item>
+        <item>Installation</item>
+        <item>Reparatur</item>
+        <item>Sonstiges</item>
+    </string-array>
 </resources>

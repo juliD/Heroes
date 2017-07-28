@@ -79,9 +79,7 @@
             android:resource="@color/notification_icon"/>
 
 
-        <uses-feature
-            android:glEsVersion="0x00020000"
-            android:required="true" />
+
 
         <service
             android:name=".service.MessagingService">
@@ -99,5 +97,9 @@
 
 
     </application>
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
 </manifest>

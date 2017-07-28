@@ -95,4 +95,18 @@
     <string name="notification_offer">has accepted your offer!</string>
     <string name="username_hint">The creator\'s name will be shown once you\'ve accepted this event.</string>
 
+    <string-array name="image_comparison">
+        <item>Meine</item>
+        <item>Angenommene</item>
+        <item>Einkaufen</item>
+        <item>Kochen</item>
+        <item>Waschen</item>
+        <item>Putzen</item>
+        <item>Transport</item>
+        <item>Gartenarbeit</item>
+        <item>Installation</item>
+        <item>Reparatur</item>
+        <item>Sonstiges</item>
+    </string-array>
+
 </resources>
